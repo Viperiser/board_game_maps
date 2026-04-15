@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import networkx as nx
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
+from matplotlib import font_manager
+import matplotlib.patheffects as pe
 
 
 def read_adjacency_matrix_from_excel(
@@ -52,6 +57,79 @@ def read_adjacency_matrix_from_excel(
     return row_labels, matrix
 
 
+def graph_from_adjacency_matrix(labels, matrix):
+
+    # Note that the GRAPH is the abstract object, not yet an embedding
+
+    matrix = np.asarray(matrix)
+
+    if matrix.ndim != 2:
+        raise ValueError("matrix must be 2-dimensional")
+
+    n_rows, n_cols = matrix.shape
+    if n_rows != n_cols:
+        raise ValueError("matrix must be square")
+
+    if len(labels) != n_rows:
+        raise ValueError("number of labels must match matrix size")
+
+    if not np.array_equal(matrix, matrix.T):
+        raise ValueError("matrix must be symmetric for an undirected graph")
+
+    G = nx.Graph()
+    G.add_nodes_from(labels)
+
+    for i in range(n_rows):
+        for j in range(i + 1, n_cols):
+            if matrix[i, j] != 0:
+                G.add_edge(labels[i], labels[j])
+
+    return G
+
+
+def get_planar_embedding(G, require_planar=True):
+    """
+    Check planarity and return a PlanarEmbedding if planar.
+
+    Parameters
+    ----------
+    G : nx.Graph
+        Input graph
+    require_planar : bool, default True
+        If True, raise an error when graph is not planar
+
+    Returns
+    -------
+    is_planar : bool
+    embedding : nx.PlanarEmbedding or None
+    """
+    is_planar, emb = nx.check_planarity(G)
+
+    if require_planar and not is_planar:
+        raise ValueError("Graph is not planar")
+
+    return is_planar, emb
+
+
 labels, matrix = read_adjacency_matrix_from_excel(
     "20260414-King is Dead Adjacency.xlsx"
 )
+print("Labels:", labels)
+print("Matrix:\n", matrix)
+
+G = graph_from_adjacency_matrix(labels, matrix)
+print("Graph nodes:", G.nodes())
+print("Graph edges:", G.edges())
+
+is_planar, embedding = get_planar_embedding(G)
+print("Is planar:", is_planar)
+print("Planar embedding:", embedding)
+
+for v in embedding:
+    print(v, list(embedding.neighbors_cw_order(v)))
+
+visual_data = get_visual_data(embedding)
+print("Visual data:", visual_data)
+
+fig, ax = draw_visual_data(visual_data, colour="#0077CC")
+plt.show()
