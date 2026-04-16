@@ -72,6 +72,169 @@ def quadratic_control_for_primal(p0, p2, alpha=0.5):
     return (1 - alpha) * p0 + alpha * p2
 
 
+def cubic_controls_for_primal(p0, p3, alpha1=1 / 3, alpha2=2 / 3):
+    """
+    Straight-line cubic controls.
+    """
+    p1 = (1 - alpha1) * p0 + alpha1 * p3
+    p2 = (1 - alpha2) * p0 + alpha2 * p3
+    return p1, p2
+
+
+def cubic_controls_for_dual(
+    p_face,
+    p_border,
+    primal_edge,
+    primal_pos,
+    idx,
+    n,
+    launch_strength=0.28,
+    arrival_strength=0.18,
+    tangent_strength=0.12,
+):
+    """
+    Cubic controls for a bounded-face dual edge.
+
+    c_face controls launch from the face node.
+    c_border controls arrival at the border node, making it roughly
+    perpendicular to the primal edge.
+    """
+    a, b = primal_edge
+    pa = np.array(primal_pos[a], dtype=float)
+    pb = np.array(primal_pos[b], dtype=float)
+
+    edge_vec = pb - pa
+    edge_len = np.linalg.norm(edge_vec)
+    if edge_len < 1e-12:
+        return cubic_controls_for_primal(p_face, p_border)
+
+    edge_unit = edge_vec / edge_len
+    n1 = np.array([-edge_unit[1], edge_unit[0]])
+    n2 = -n1
+
+    # Choose the normal pointing toward the face node
+    if np.dot(p_face - p_border, n1) > np.dot(p_face - p_border, n2):
+        inward = n1
+    else:
+        inward = n2
+
+    span = np.linalg.norm(p_border - p_face)
+
+    if n <= 1:
+        fan = 0.0
+    else:
+        fan = (idx - 0.5 * (n - 1)) / max(0.5 * (n - 1), 1e-12)
+
+    c_face = (
+        p_face
+        + arrival_strength * (p_border - p_face)
+        + tangent_strength * span * fan * edge_unit
+    )
+
+    c_border = p_border + launch_strength * span * inward
+
+    return c_face, c_border
+
+
+def cubic_controls_for_outer_dual(
+    p_face,
+    p_border,
+    primal_edge,
+    primal_pos,
+    idx,
+    n,
+    launch_strength=0.45,
+    arrival_strength=0.30,
+    tangent_strength=0.35,
+    curve_base=0.08,
+    distance_scale=1.25,
+    distance_power=2.0,
+    angle_scale=0.8,
+):
+    """
+    Cubic controls for an outer-face dual edge.
+
+    c_face controls launch from the outer node in a neat fan.
+    c_border controls arrival at the border node, perpendicular to the
+    outer side of the primal edge.
+    """
+    a, b = primal_edge
+    pa = np.array(primal_pos[a], dtype=float)
+    pb = np.array(primal_pos[b], dtype=float)
+
+    edge_vec = pb - pa
+    edge_len = np.linalg.norm(edge_vec)
+    if edge_len < 1e-12:
+        return cubic_controls_for_primal(p_face, p_border)
+
+    edge_unit = edge_vec / edge_len
+    n1 = np.array([-edge_unit[1], edge_unit[0]])
+    n2 = -n1
+
+    pts = np.array(list(primal_pos.values()), dtype=float)
+    centre = pts.mean(axis=0)
+
+    # outward normal
+    if np.dot(p_border - centre, n1) > np.dot(p_border - centre, n2):
+        outward = n1
+    else:
+        outward = n2
+
+    min_xy = pts.min(axis=0)
+    max_xy = pts.max(axis=0)
+    span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1])
+
+    dist = np.linalg.norm(p_border - p_face)
+    dynamic = dist / max(span, 1e-12)
+    dynamic_term = dynamic**distance_power
+
+    to_face = p_face - p_border
+    to_face_norm = np.linalg.norm(to_face)
+
+    if to_face_norm < 1e-12:
+        alignment = 0.0
+    else:
+        to_face_unit = to_face / to_face_norm
+        alignment = np.dot(to_face_unit, outward)
+
+    awkwardness = 0.5 * (1 - alignment)
+
+    outward_push = (
+        span
+        * (curve_base + distance_scale * dynamic_term)
+        * (1 + angle_scale * awkwardness)
+    )
+
+    if n <= 1:
+        fan = 0.0
+    else:
+        fan = (idx - 0.5 * (n - 1)) / max(0.5 * (n - 1), 1e-12)
+
+    # Launch fan at outer node
+    c_face = (
+        p_face
+        + launch_strength * (p_border - p_face)
+        + tangent_strength * span * fan * edge_unit
+    )
+
+    # Perpendicular arrival at border from outside
+    c_border = p_border + arrival_strength * outward_push * outward
+
+    return c_face, c_border
+
+
+def cubic_bezier_point(p0, p1, p2, p3, t=0.5):
+    """
+    Point on a cubic Bezier curve.
+    """
+    return (
+        ((1 - t) ** 3) * p0
+        + 3 * ((1 - t) ** 2) * t * p1
+        + 3 * (1 - t) * (t**2) * p2
+        + (t**3) * p3
+    )
+
+
 def quadratic_control_for_dual(
     p_face, p_border, idx, n, alpha=0.55, beta=0.18, max_fan_offset=1.0
 ):
@@ -161,16 +324,19 @@ def quadratic_control_for_outer_dual(
     n,
     strength=1.0,
     tangent_strength=0.35,
+    curve_base=0.08,
+    distance_scale=1.25,
+    distance_power=2.0,
+    angle_scale=0.8,
 ):
     """
     Control point for an outer-face dual edge.
 
-    The control point is anchored near the border node, pushed outward
-    normal to the corresponding primal edge, with an additional tangential
-    fan term so neighbouring outer curves spread apart.
-
-    Edges whose border node is nearer to the outer face node get less
-    outward push; farther ones get more.
+    The control point is placed near the border node, with:
+    - outward push normal to the corresponding primal edge
+    - tangential fan-out along the primal edge
+    - outward push increasing with distance from outer face node
+    - outward push increasing when the launch angle is awkward
     """
     import numpy as np
 
@@ -185,14 +351,14 @@ def quadratic_control_for_outer_dual(
 
     edge_unit = edge_vec / edge_len
 
-    # Two candidate normals to the primal edge
+    # Two normals to the primal edge
     n1 = np.array([-edge_unit[1], edge_unit[0]])
     n2 = -n1
 
     pts = np.array(list(primal_pos.values()), dtype=float)
     centre = pts.mean(axis=0)
 
-    # Pick the normal pointing away from the graph centre
+    # Choose the normal pointing away from the graph centre
     if np.dot(p_border - centre, n1) > np.dot(p_border - centre, n2):
         outward = n1
     else:
@@ -202,13 +368,38 @@ def quadratic_control_for_outer_dual(
     max_xy = pts.max(axis=0)
     span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1])
 
-    # Dynamic outward push based on distance from outer face node
+    # ---------------------------
+    # 1. Distance-based bendiness
+    # ---------------------------
     dist = np.linalg.norm(p_border - p_face)
     dynamic = dist / max(span, 1e-12)
+    dynamic_term = dynamic**distance_power
 
-    outward_push = strength * span * (0.35 + 0.9 * dynamic)
+    # ---------------------------
+    # 2. Angle-based awkwardness
+    # ---------------------------
+    to_face = p_face - p_border
+    to_face_norm = np.linalg.norm(to_face)
 
-    # Fan neighbouring curves apart along the primal-edge tangent
+    if to_face_norm < 1e-12:
+        alignment = 0.0
+    else:
+        to_face_unit = to_face / to_face_norm
+        alignment = np.dot(to_face_unit, outward)
+
+    # 0 = already well aligned outward, 1 = very awkward
+    awkwardness = 0.5 * (1 - alignment)
+
+    outward_push = (
+        strength
+        * span
+        * (curve_base + distance_scale * dynamic_term)
+        * (1 + angle_scale * awkwardness)
+    )
+
+    # ---------------------------
+    # 3. Tangential fan-out
+    # ---------------------------
     if n <= 1:
         fan = 0.0
     else:
@@ -688,7 +879,7 @@ def get_visual_data(master_embedding, primal_pos, style=None):
 
     # ------------------------------------------------------------
     # 5. Build edge paths
-    #    Everything is quadratic: [start, control, end]
+    #    Everything is cubic: [start, control1, control2, end]
     # ------------------------------------------------------------
     edge_paths = []
 
@@ -707,14 +898,16 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     for edge_id, edge in master_embedding["edges"].items():
         u = edge["u"]
         v = edge["v"]
+
         p0 = np.array(node_xy[u], dtype=float)
-        p2 = np.array(node_xy[v], dtype=float)
+        p3 = np.array(node_xy[v], dtype=float)
 
         if edge["type"] == "primal":
-            p1 = quadratic_control_for_primal(
+            p1, p2 = cubic_controls_for_primal(
                 p0,
-                p2,
-                alpha=style["primal_control_alpha"],
+                p3,
+                alpha1=style["primal_control_alpha1"],
+                alpha2=style["primal_control_alpha2"],
             )
 
         elif edge["type"] == "dual":
@@ -722,46 +915,66 @@ def get_visual_data(master_embedding, primal_pos, style=None):
             if master_embedding["nodes"][u]["type"] == "face":
                 face_id = u
                 border_id = v
+                p_face = p0
+                p_border = p3
+                face_at_start = True
             else:
                 face_id = v
                 border_id = u
+                p_face = p3
+                p_border = p0
+                face_at_start = False
 
             ordered_dual_ids = face_dual_order[face_id]
             idx = ordered_dual_ids.index(edge_id)
             n = len(ordered_dual_ids)
 
-            p_face = np.array(node_xy[face_id], dtype=float)
-            p_border = np.array(node_xy[border_id], dtype=float)
+            primal_edge = master_embedding["nodes"][border_id]["primal_edge"]
 
             if face_id == outer_face_id:
-                primal_edge = master_embedding["nodes"][border_id]["primal_edge"]
-
-                p1 = quadratic_control_for_outer_dual(
+                c_face, c_border = cubic_controls_for_outer_dual(
                     p_face,
                     p_border,
                     primal_edge,
                     primal_pos,
                     idx=idx,
                     n=n,
-                    strength=style["outer_curve_strength"],
+                    launch_strength=style["outer_launch_strength"],
+                    arrival_strength=style["outer_arrival_strength"],
                     tangent_strength=style["outer_tangent_strength"],
+                    curve_base=style["outer_curve_base"],
+                    distance_scale=style["outer_curve_distance_scale"],
+                    distance_power=style["outer_curve_distance_power"],
+                    angle_scale=style["outer_curve_angle_scale"],
                 )
-
             else:
-                p1 = quadratic_control_for_dual(
+                c_face, c_border = cubic_controls_for_dual(
                     p_face,
                     p_border,
+                    primal_edge,
+                    primal_pos,
                     idx=idx,
                     n=n,
-                    alpha=style["dual_control_alpha"],
-                    beta=style["dual_control_beta"],
-                    max_fan_offset=style["dual_max_fan_offset"],
+                    launch_strength=style["dual_launch_strength"],
+                    arrival_strength=style["dual_arrival_strength"],
+                    tangent_strength=style["dual_tangent_strength"],
                 )
-        else:
-            # Fallback: straight-looking quadratic
-            p1 = 0.5 * (p0 + p2)
 
-        midpoint = quadratic_bezier_point(p0, p1, p2, t=0.5)
+            # Re-orient controls to match edge direction u -> v
+            if face_at_start:
+                p1, p2 = c_face, c_border
+            else:
+                p1, p2 = c_border, c_face
+
+        else:
+            p1, p2 = cubic_controls_for_primal(
+                p0,
+                p3,
+                alpha1=style["primal_control_alpha1"],
+                alpha2=style["primal_control_alpha2"],
+            )
+
+        midpoint = cubic_bezier_point(p0, p1, p2, p3, t=0.5)
 
         edge_paths.append(
             {
@@ -769,11 +982,10 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                 "u": u,
                 "v": v,
                 "type": edge["type"],
-                "points": [tuple(p0), tuple(p1), tuple(p2)],
+                "points": [tuple(p0), tuple(p1), tuple(p2), tuple(p3)],
                 "midpoint": tuple(midpoint),
             }
         )
-
     # ------------------------------------------------------------
     # 6. Labels
     # ------------------------------------------------------------
@@ -845,13 +1057,13 @@ def draw_visual_data(visual_data, style=None):
     fig, ax = plt.subplots(figsize=(8, 6))
 
     # ------------------------------------------------------------
-    # 1. Draw edges (quadratic Bezier)
+    # 1. Draw edges (cubic Bezier)
     # ------------------------------------------------------------
     for edge in visual_data["edge_paths"]:
-        p0, p1, p2 = edge["points"]
+        p0, p1, p2, p3 = edge["points"]
 
-        verts = [p0, p1, p2]
-        codes = [Path.MOVETO, Path.CURVE3, Path.CURVE3]
+        verts = [p0, p1, p2, p3]
+        codes = [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]
 
         path = Path(verts, codes)
 
@@ -978,7 +1190,7 @@ VIS_STYLE = {
     "border_t": 0.5,
     # Face-node placement
     "face_centroid_shrink": 0.88,  # pull bounded-face centroids slightly inward
-    "outer_face_offset": 0.2,  # how far outside the primal drawing to place outer face
+    "outer_face_offset": 0.4,  # how far outside the primal drawing to place outer face
     "outer_face_angle": 135,  # degrees, direction from graph centre
     # Dual-edge control points
     "dual_control_alpha": 0.55,  # how far from face node toward border node
@@ -991,9 +1203,19 @@ VIS_STYLE = {
     "show_node_labels": True,
     "show_face_labels": False,
     # Outer face curves and margin
-    "outer_curve_strength": 1.2,  # strength of curve bending for outer-face dual edges
-    "outer_box_margin": 0.5,  # margin around primal drawing for outer face node placement
-    "outer_tangent_strength": 0.5,
+    "outer_curve_strength": 1.0,  # overall multiplier
+    "outer_curve_base": 0.00,  # minimum outward bend even for nearby/easy edges
+    "outer_curve_distance_scale": 1,  # how much distance matters
+    "outer_curve_distance_power": 3,  # how nonlinear the distance effect is
+    "outer_curve_angle_scale": 1,  # how much extra bend you add when the outer node is at an awkward angle
+    "primal_control_alpha1": 1.0 / 3.0,
+    "primal_control_alpha2": 2.0 / 3.0,
+    "dual_launch_strength": 0.28,
+    "dual_arrival_strength": 0.18,
+    "dual_tangent_strength": 0.12,
+    "outer_launch_strength": 0.45,
+    "outer_arrival_strength": 0.30,
+    "outer_tangent_strength": 0.55,
 }
 
 VIS_STYLE.update(
