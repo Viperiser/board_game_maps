@@ -1242,7 +1242,9 @@ VIS_STYLE.update(
     }
 )
 
-labels, matrix = read_adjacency_matrix_from_excel("20260416-Test square diagonal.xlsx")
+labels, matrix = read_adjacency_matrix_from_excel(
+    "20260414-King is Dead Adjacency.xlsx"
+)
 print("Labels:", labels)
 print("Matrix:\n", matrix)
 
