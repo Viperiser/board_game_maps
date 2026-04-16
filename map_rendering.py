@@ -1,10 +1,228 @@
 import pandas as pd
 import numpy as np
 import networkx as nx
+import math
+
+
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle
-from matplotlib import font_manager
-import matplotlib.patheffects as pe
+from matplotlib.patches import PathPatch
+from matplotlib.path import Path
+
+
+# ======================================================================
+# Helpers
+# ======================================================================
+
+
+def detect_outer_face_id(master_embedding, primal_pos):
+    """
+    Pick the face with the largest absolute polygon area, based on the
+    boundary nodes in the primal drawing.
+    """
+    best_face_id = None
+    best_area = -1.0
+
+    for face in master_embedding["faces"]:
+        pts = [primal_pos[n] for n in face["boundary_nodes"]]
+        area = abs(polygon_signed_area(pts))
+
+        if area > best_area:
+            best_area = area
+            best_face_id = face["id"]
+
+    return best_face_id
+
+
+def place_bounded_face_node(face, primal_pos, shrink=0.88):
+    """
+    Place a bounded face node near the polygon centroid, shrunk slightly
+    toward the average of boundary vertices to keep it away from edges.
+    """
+    pts = np.array([primal_pos[n] for n in face["boundary_nodes"]], dtype=float)
+
+    centroid = np.array(polygon_centroid(pts), dtype=float)
+    mean_pt = pts.mean(axis=0)
+
+    p = shrink * centroid + (1 - shrink) * mean_pt
+    return tuple(p)
+
+
+def place_outer_face_node(face, primal_pos, offset_factor=0.35, angle_degrees=135):
+    """
+    Place outer face node outside the primal drawing's bounding box.
+    """
+    pts = np.array(list(primal_pos.values()), dtype=float)
+
+    centre = pts.mean(axis=0)
+    min_xy = pts.min(axis=0)
+    max_xy = pts.max(axis=0)
+    span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1])
+
+    angle = math.radians(angle_degrees)
+    direction = np.array([math.cos(angle), math.sin(angle)], dtype=float)
+
+    p = centre + direction * span * (0.5 + offset_factor)
+    return tuple(p)
+
+
+def quadratic_control_for_primal(p0, p2, alpha=0.5):
+    """
+    Straight-looking quadratic control point.
+    """
+    return (1 - alpha) * p0 + alpha * p2
+
+
+def quadratic_control_for_dual(
+    p_face, p_border, idx, n, alpha=0.55, beta=0.18, max_fan_offset=1.0
+):
+    """
+    Quadratic control point for a face-to-border edge.
+
+    The control point lies partway toward the border node, with a sideways
+    offset to fan neighbouring edges apart.
+    """
+    d = p_border - p_face
+    norm = np.linalg.norm(d)
+
+    if norm < 1e-12:
+        return p_face.copy()
+
+    unit = d / norm
+    normal = np.array([-unit[1], unit[0]])
+
+    # Centre the fan around 0
+    if n <= 1:
+        fan = 0.0
+    else:
+        fan = (idx - 0.5 * (n - 1)) / max(0.5 * (n - 1), 1e-12)
+        fan *= max_fan_offset
+
+    control = p_face + alpha * d + beta * fan * norm * normal
+    return control
+
+
+def quadratic_bezier_point(p0, p1, p2, t=0.5):
+    """
+    Point on quadratic Bezier curve.
+    """
+    return ((1 - t) ** 2) * p0 + 2 * (1 - t) * t * p1 + (t**2) * p2
+
+
+def polygon_signed_area(points):
+    """
+    Signed area of polygon given by ordered points.
+    """
+    pts = np.array(points, dtype=float)
+    n = len(pts)
+    area = 0.0
+
+    for i in range(n):
+        x1, y1 = pts[i]
+        x2, y2 = pts[(i + 1) % n]
+        area += x1 * y2 - x2 * y1
+
+    return 0.5 * area
+
+
+def polygon_centroid(points):
+    """
+    Polygon centroid. Falls back to mean point if area is tiny.
+    """
+    pts = np.array(points, dtype=float)
+    n = len(pts)
+
+    area2 = 0.0
+    cx = 0.0
+    cy = 0.0
+
+    for i in range(n):
+        x1, y1 = pts[i]
+        x2, y2 = pts[(i + 1) % n]
+        cross = x1 * y2 - x2 * y1
+        area2 += cross
+        cx += (x1 + x2) * cross
+        cy += (y1 + y2) * cross
+
+    if abs(area2) < 1e-12:
+        mean_pt = pts.mean(axis=0)
+        return tuple(mean_pt)
+
+    cx /= 3.0 * area2
+    cy /= 3.0 * area2
+    return (cx, cy)
+
+
+def quadratic_control_for_outer_dual(
+    p_face,
+    p_border,
+    primal_edge,
+    primal_pos,
+    idx,
+    n,
+    strength=1.0,
+    tangent_strength=0.35,
+):
+    """
+    Control point for an outer-face dual edge.
+
+    The control point is anchored near the border node, pushed outward
+    normal to the corresponding primal edge, with an additional tangential
+    fan term so neighbouring outer curves spread apart.
+
+    Edges whose border node is nearer to the outer face node get less
+    outward push; farther ones get more.
+    """
+    import numpy as np
+
+    a, b = primal_edge
+    pa = np.array(primal_pos[a], dtype=float)
+    pb = np.array(primal_pos[b], dtype=float)
+
+    edge_vec = pb - pa
+    edge_len = np.linalg.norm(edge_vec)
+    if edge_len < 1e-12:
+        return 0.5 * (p_face + p_border)
+
+    edge_unit = edge_vec / edge_len
+
+    # Two candidate normals to the primal edge
+    n1 = np.array([-edge_unit[1], edge_unit[0]])
+    n2 = -n1
+
+    pts = np.array(list(primal_pos.values()), dtype=float)
+    centre = pts.mean(axis=0)
+
+    # Pick the normal pointing away from the graph centre
+    if np.dot(p_border - centre, n1) > np.dot(p_border - centre, n2):
+        outward = n1
+    else:
+        outward = n2
+
+    min_xy = pts.min(axis=0)
+    max_xy = pts.max(axis=0)
+    span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1])
+
+    # Dynamic outward push based on distance from outer face node
+    dist = np.linalg.norm(p_border - p_face)
+    dynamic = dist / max(span, 1e-12)
+
+    outward_push = strength * span * (0.35 + 0.9 * dynamic)
+
+    # Fan neighbouring curves apart along the primal-edge tangent
+    if n <= 1:
+        fan = 0.0
+    else:
+        fan = (idx - 0.5 * (n - 1)) / max(0.5 * (n - 1), 1e-12)
+
+    tangent_push = tangent_strength * span * fan
+
+    control = p_border + outward_push * outward + tangent_push * edge_unit
+    return control
+
+
+# ======================================================================
+# Main functions
+# ======================================================================
 
 
 def read_adjacency_matrix_from_excel(
@@ -111,25 +329,711 @@ def get_planar_embedding(G, require_planar=True):
     return is_planar, emb
 
 
-labels, matrix = read_adjacency_matrix_from_excel(
-    "20260414-King is Dead Adjacency.xlsx"
+def build_master_embedding(primal_embedding):
+    """
+    Build a master embedding from a primal NetworkX PlanarEmbedding.
+
+    The master embedding contains:
+    - primal region nodes
+    - border nodes, one per primal edge
+    - face nodes, one per primal face
+
+    And edges of two types:
+    - primal: region <-> border
+    - dual:   face   <-> border
+
+    Returns a lightweight custom embedding structure:
+    {
+        "nodes": {...},
+        "edges": {...},
+        "rotation": {...},
+        "faces": [...],
+        "primal_edge_to_border": {...},
+        "halfedge_to_face": {...},
+    }
+    """
+
+    master = {
+        "nodes": {},
+        "edges": {},
+        "rotation": {},
+        "faces": [],
+        "primal_edge_to_border": {},
+        "halfedge_to_face": {},
+    }
+
+    edge_counter = 0
+
+    def add_node(node_id, **attrs):
+        master["nodes"][node_id] = attrs
+        master["rotation"][node_id] = []
+
+    def add_edge(u, v, edge_type, **attrs):
+        nonlocal edge_counter
+        edge_id = f"e{edge_counter}"
+        edge_counter += 1
+        master["edges"][edge_id] = {
+            "u": u,
+            "v": v,
+            "type": edge_type,
+            **attrs,
+        }
+        return edge_id
+
+    def canonical_edge(u, v):
+        return tuple(sorted((u, v), key=str))
+
+    # ------------------------------------------------------------------
+    # 1. Add primal region nodes
+    # ------------------------------------------------------------------
+    for v in primal_embedding.nodes():
+        add_node(v, type="region", label=str(v))
+
+    # ------------------------------------------------------------------
+    # 2. Extract primal faces from half-edges
+    # ------------------------------------------------------------------
+    seen_half_edges = set()
+    face_counter = 0
+
+    for u, v in primal_embedding.edges():
+        if (u, v) in seen_half_edges:
+            continue
+
+        boundary_nodes = list(primal_embedding.traverse_face(u, v, seen_half_edges))
+        half_edges = [
+            (boundary_nodes[i], boundary_nodes[(i + 1) % len(boundary_nodes)])
+            for i in range(len(boundary_nodes))
+        ]
+
+        face_id = f"face_{face_counter}"
+        face_counter += 1
+
+        # Crude label for now
+        if len(set(boundary_nodes)) == len(primal_embedding.nodes()):
+            label = "Outer"
+        else:
+            label = "-".join(str(x) for x in boundary_nodes) + " Nexus"
+
+        master["faces"].append(
+            {
+                "id": face_id,
+                "label": label,
+                "boundary_nodes": boundary_nodes,
+                "half_edges": half_edges,
+            }
+        )
+
+        add_node(face_id, type="face", label=label)
+
+        for he in half_edges:
+            master["halfedge_to_face"][he] = face_id
+
+    # ------------------------------------------------------------------
+    # 3. Add border nodes, one per primal undirected edge
+    # ------------------------------------------------------------------
+    seen_undirected = set()
+
+    for u, v in primal_embedding.edges():
+        uv = canonical_edge(u, v)
+        if uv in seen_undirected:
+            continue
+        seen_undirected.add(uv)
+
+        a, b = uv
+        border_id = f"{a}-{b} Border"
+
+        add_node(
+            border_id,
+            type="border",
+            label=border_id,
+            primal_edge=uv,
+        )
+
+        master["primal_edge_to_border"][uv] = border_id
+
+    # ------------------------------------------------------------------
+    # 4. Add primal edges: region <-> border
+    # ------------------------------------------------------------------
+    # Also record which master edge is the primal incidence for each
+    # directed primal half-edge endpoint occurrence.
+    primal_incidence_edge = {}
+
+    seen_undirected.clear()
+
+    for u, v in primal_embedding.edges():
+        uv = canonical_edge(u, v)
+        if uv in seen_undirected:
+            continue
+        seen_undirected.add(uv)
+
+        border_id = master["primal_edge_to_border"][uv]
+
+        e1 = add_edge(u, border_id, "primal", primal_edge=uv, endpoint=u)
+        e2 = add_edge(v, border_id, "primal", primal_edge=uv, endpoint=v)
+
+        primal_incidence_edge[(u, uv)] = e1
+        primal_incidence_edge[(v, uv)] = e2
+
+    # ------------------------------------------------------------------
+    # 5. Add dual edges: face <-> border
+    # One per half-edge occurrence on each face boundary
+    # ------------------------------------------------------------------
+    face_border_edge = {}
+
+    for face in master["faces"]:
+        face_id = face["id"]
+
+        for he in face["half_edges"]:
+            uv = canonical_edge(*he)
+            border_id = master["primal_edge_to_border"][uv]
+
+            e = add_edge(
+                face_id,
+                border_id,
+                "dual",
+                primal_halfedge=he,
+                primal_edge=uv,
+                face=face_id,
+            )
+
+            face_border_edge[(face_id, he)] = e
+
+    # ------------------------------------------------------------------
+    # 6. Build cyclic order around each region node
+    # Inherit order from primal embedding neighbours
+    # ------------------------------------------------------------------
+    for v in primal_embedding.nodes():
+        nbrs = list(primal_embedding.neighbors_cw_order(v))
+        rotation = []
+
+        for nbr in nbrs:
+            uv = canonical_edge(v, nbr)
+            rotation.append(primal_incidence_edge[(v, uv)])
+
+        master["rotation"][v] = rotation
+
+    # ------------------------------------------------------------------
+    # 7. Build cyclic order around each face node
+    # Follow face boundary order exactly, including repeats
+    # ------------------------------------------------------------------
+    for face in master["faces"]:
+        face_id = face["id"]
+        rotation = []
+
+        for he in face["half_edges"]:
+            rotation.append(face_border_edge[(face_id, he)])
+
+        master["rotation"][face_id] = rotation
+
+    # ------------------------------------------------------------------
+    # 8. Build cyclic order around each border node
+    # [region A, face right of (A,B), region B, face right of (B,A)]
+    # ------------------------------------------------------------------
+    for uv, border_id in master["primal_edge_to_border"].items():
+        a, b = uv
+
+        face_ab = master["halfedge_to_face"][(a, b)]
+        face_ba = master["halfedge_to_face"][(b, a)]
+
+        e_a = primal_incidence_edge[(a, uv)]
+        e_b = primal_incidence_edge[(b, uv)]
+
+        # Need the exact dual-edge IDs for these two face incidences
+        e_face_ab = None
+        e_face_ba = None
+
+        for edge_id in master["rotation"][face_ab]:
+            edge = master["edges"][edge_id]
+            if edge["type"] == "dual" and edge["primal_halfedge"] == (a, b):
+                if edge["u"] == face_ab or edge["v"] == face_ab:
+                    e_face_ab = edge_id
+                    break
+
+        for edge_id in master["rotation"][face_ba]:
+            edge = master["edges"][edge_id]
+            if edge["type"] == "dual" and edge["primal_halfedge"] == (b, a):
+                if edge["u"] == face_ba or edge["v"] == face_ba:
+                    e_face_ba = edge_id
+                    break
+
+        master["rotation"][border_id] = [e_a, e_face_ab, e_b, e_face_ba]
+
+    return master
+
+
+def get_visual_data(master_embedding, primal_pos, style=None):
+    """
+    Generate visual data for a master embedding.
+
+    Parameters
+    ----------
+    master_embedding : dict
+        Output from build_master_embedding(...)
+
+    primal_pos : dict
+        Mapping from primal region node -> (x, y), typically from
+        nx.combinatorial_embedding_to_pos(primal_embedding)
+
+    style : dict or None
+        Settings dict. If None, defaults are used.
+
+    Returns
+    -------
+    visual_data : dict
+        {
+            "nodes": [
+                {"id": ..., "xy": (..., ...), "type": ..., "label": ...},
+                ...
+            ],
+            "edge_paths": [
+                {
+                    "id": ...,
+                    "u": ...,
+                    "v": ...,
+                    "type": ...,
+                    "points": [p0, p1, p2],   # quadratic Bezier control points
+                    "midpoint": (..., ...),
+                },
+                ...
+            ],
+            "node_labels": [
+                {"text": ..., "xy": (..., ...), "node_id": ..., "type": ...},
+                ...
+            ],
+            "face_labels": [
+                {"text": ..., "xy": (..., ...), "node_id": ..., "type": ...},
+                ...
+            ],
+        }
+    """
+    if style is None:
+        style = {}
+
+    style = {
+        "border_t": 0.5,
+        "face_centroid_shrink": 0.88,
+        "outer_face_offset": 0.35,
+        "outer_face_angle": 135,
+        "dual_control_alpha": 0.55,
+        "dual_control_beta": 0.18,
+        "dual_max_fan_offset": 1.0,
+        "primal_control_alpha": 0.5,
+        "region_label_offset_y": 0.06,
+        "show_node_labels": True,
+        "show_face_labels": False,
+        **style,
+    }
+
+    node_xy = {}
+
+    # ------------------------------------------------------------
+    # 1. Region nodes inherit primal positions directly
+    # ------------------------------------------------------------
+    for node_id, attrs in master_embedding["nodes"].items():
+        if attrs["type"] == "region":
+            node_xy[node_id] = tuple(primal_pos[node_id])
+
+    # ------------------------------------------------------------
+    # 2. Border nodes sit on primal-edge midpoints (or t-point)
+    # ------------------------------------------------------------
+    for node_id, attrs in master_embedding["nodes"].items():
+        if attrs["type"] != "border":
+            continue
+
+        a, b = attrs["primal_edge"]
+        pa = np.array(node_xy[a], dtype=float)
+        pb = np.array(node_xy[b], dtype=float)
+
+        t = style["border_t"]
+        p = (1 - t) * pa + t * pb
+        node_xy[node_id] = tuple(p)
+
+    # ------------------------------------------------------------
+    # 3. Face nodes
+    #    - bounded faces: shrunk polygon centroid
+    #    - outer face: placed outside the primal drawing
+    # ------------------------------------------------------------
+    outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+
+    for face in master_embedding["faces"]:
+        face_id = face["id"]
+
+        if face_id == outer_face_id:
+            node_xy[face_id] = place_outer_face_node(
+                face,
+                primal_pos,
+                offset_factor=style["outer_face_offset"],
+                angle_degrees=style["outer_face_angle"],
+            )
+        else:
+            node_xy[face_id] = place_bounded_face_node(
+                face,
+                primal_pos,
+                shrink=style["face_centroid_shrink"],
+            )
+
+    # ------------------------------------------------------------
+    # 4. Build node list
+    # ------------------------------------------------------------
+    nodes = []
+    for node_id, attrs in master_embedding["nodes"].items():
+        nodes.append(
+            {
+                "id": node_id,
+                "xy": node_xy[node_id],
+                "type": attrs["type"],
+                "label": attrs.get("label", str(node_id)),
+            }
+        )
+
+    # ------------------------------------------------------------
+    # 5. Build edge paths
+    #    Everything is quadratic: [start, control, end]
+    # ------------------------------------------------------------
+    edge_paths = []
+
+    # Precompute face-local ordering for dual edges
+    face_dual_order = {}
+    for node_id, attrs in master_embedding["nodes"].items():
+        if attrs["type"] != "face":
+            continue
+
+        edge_ids = master_embedding["rotation"][node_id]
+        dual_ids = [
+            eid for eid in edge_ids if master_embedding["edges"][eid]["type"] == "dual"
+        ]
+        face_dual_order[node_id] = dual_ids
+
+    for edge_id, edge in master_embedding["edges"].items():
+        u = edge["u"]
+        v = edge["v"]
+        p0 = np.array(node_xy[u], dtype=float)
+        p2 = np.array(node_xy[v], dtype=float)
+
+        if edge["type"] == "primal":
+            p1 = quadratic_control_for_primal(
+                p0,
+                p2,
+                alpha=style["primal_control_alpha"],
+            )
+
+        elif edge["type"] == "dual":
+            # Identify the face endpoint
+            if master_embedding["nodes"][u]["type"] == "face":
+                face_id = u
+                border_id = v
+            else:
+                face_id = v
+                border_id = u
+
+            ordered_dual_ids = face_dual_order[face_id]
+            idx = ordered_dual_ids.index(edge_id)
+            n = len(ordered_dual_ids)
+
+            p_face = np.array(node_xy[face_id], dtype=float)
+            p_border = np.array(node_xy[border_id], dtype=float)
+
+            if face_id == outer_face_id:
+                primal_edge = master_embedding["nodes"][border_id]["primal_edge"]
+
+                p1 = quadratic_control_for_outer_dual(
+                    p_face,
+                    p_border,
+                    primal_edge,
+                    primal_pos,
+                    idx=idx,
+                    n=n,
+                    strength=style["outer_curve_strength"],
+                    tangent_strength=style["outer_tangent_strength"],
+                )
+
+            else:
+                p1 = quadratic_control_for_dual(
+                    p_face,
+                    p_border,
+                    idx=idx,
+                    n=n,
+                    alpha=style["dual_control_alpha"],
+                    beta=style["dual_control_beta"],
+                    max_fan_offset=style["dual_max_fan_offset"],
+                )
+        else:
+            # Fallback: straight-looking quadratic
+            p1 = 0.5 * (p0 + p2)
+
+        midpoint = quadratic_bezier_point(p0, p1, p2, t=0.5)
+
+        edge_paths.append(
+            {
+                "id": edge_id,
+                "u": u,
+                "v": v,
+                "type": edge["type"],
+                "points": [tuple(p0), tuple(p1), tuple(p2)],
+                "midpoint": tuple(midpoint),
+            }
+        )
+
+    # ------------------------------------------------------------
+    # 6. Labels
+    # ------------------------------------------------------------
+    node_labels = []
+    face_labels = []
+
+    if style["show_node_labels"]:
+        for node_id, attrs in master_embedding["nodes"].items():
+            if attrs["type"] != "region":
+                continue
+
+            x, y = node_xy[node_id]
+            node_labels.append(
+                {
+                    "text": attrs.get("label", str(node_id)),
+                    "xy": (x, y + style["region_label_offset_y"]),
+                    "node_id": node_id,
+                    "type": "region",
+                }
+            )
+
+    if style["show_face_labels"]:
+        for node_id, attrs in master_embedding["nodes"].items():
+            if attrs["type"] != "face":
+                continue
+
+            face_labels.append(
+                {
+                    "text": attrs.get("label", str(node_id)),
+                    "xy": node_xy[node_id],
+                    "node_id": node_id,
+                    "type": "face",
+                }
+            )
+
+    return {
+        "nodes": nodes,
+        "edge_paths": edge_paths,
+        "node_labels": node_labels,
+        "face_labels": face_labels,
+    }
+
+
+def draw_visual_data(visual_data, style=None):
+    if style is None:
+        style = {}
+
+    # Defaults
+    style = {
+        "region_node_facecolor": "#ffffff",
+        "region_node_edgecolor": "#444444",
+        "border_node_facecolor": "#dddddd",
+        "border_node_edgecolor": "#666666",
+        "face_node_facecolor": "#ffcccc",
+        "face_node_edgecolor": "#aa4444",
+        "primal_edge_color": "#444444",
+        "dual_edge_color": "#cc4444",
+        "region_node_size": 300,
+        "border_node_size": 120,
+        "face_node_size": 200,
+        "edge_width": 1.5,
+        "font_family": "Open Sans",
+        "font_size": 10,
+        "label_color": "#222222",
+        "label_bbox_alpha": 0.8,
+        **style,
+    }
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # ------------------------------------------------------------
+    # 1. Draw edges (quadratic Bezier)
+    # ------------------------------------------------------------
+    for edge in visual_data["edge_paths"]:
+        p0, p1, p2 = edge["points"]
+
+        verts = [p0, p1, p2]
+        codes = [Path.MOVETO, Path.CURVE3, Path.CURVE3]
+
+        path = Path(verts, codes)
+
+        color = (
+            style["primal_edge_color"]
+            if edge["type"] == "primal"
+            else style["dual_edge_color"]
+        )
+
+        patch = PathPatch(
+            path,
+            facecolor="none",
+            edgecolor=color,
+            lw=style["edge_width"],
+            alpha=0.9,
+        )
+        ax.add_patch(patch)
+
+    # ------------------------------------------------------------
+    # 2. Draw nodes by type
+    # ------------------------------------------------------------
+    node_groups = {
+        "region": [],
+        "border": [],
+        "face": [],
+    }
+
+    for node in visual_data["nodes"]:
+        node_groups[node["type"]].append(node)
+
+    def draw_nodes(nodes, facecolor, edgecolor, size):
+        if not nodes:
+            return
+        xs = [float(n["xy"][0]) for n in nodes]
+        ys = [float(n["xy"][1]) for n in nodes]
+
+        ax.scatter(
+            xs,
+            ys,
+            s=size,
+            c=facecolor,
+            edgecolors=edgecolor,
+            linewidths=style["edge_width"],
+            zorder=3,
+        )
+
+    draw_nodes(
+        node_groups["region"],
+        style["region_node_facecolor"],
+        style["region_node_edgecolor"],
+        style["region_node_size"],
+    )
+
+    draw_nodes(
+        node_groups["border"],
+        style["border_node_facecolor"],
+        style["border_node_edgecolor"],
+        style["border_node_size"],
+    )
+
+    draw_nodes(
+        node_groups["face"],
+        style["face_node_facecolor"],
+        style["face_node_edgecolor"],
+        style["face_node_size"],
+    )
+
+    # ------------------------------------------------------------
+    # 3. Draw labels
+    # ------------------------------------------------------------
+    for label in visual_data.get("node_labels", []):
+        x, y = label["xy"]
+
+        ax.text(
+            float(x),
+            float(y),
+            label["text"],
+            fontsize=style["font_size"],
+            family=style["font_family"],
+            color=style["label_color"],
+            ha="center",
+            va="center",
+            bbox=dict(
+                facecolor="white",
+                alpha=style["label_bbox_alpha"],
+                edgecolor="none",
+            ),
+            zorder=4,
+        )
+
+    for label in visual_data.get("face_labels", []):
+        x, y = label["xy"]
+
+        ax.text(
+            float(x),
+            float(y),
+            label["text"],
+            fontsize=style["font_size"],
+            family=style["font_family"],
+            color="#aa0000",
+            ha="center",
+            va="center",
+            bbox=dict(
+                facecolor="white",
+                alpha=style["label_bbox_alpha"],
+                edgecolor="none",
+            ),
+            zorder=4,
+        )
+
+    # ------------------------------------------------------------
+    # 4. Final formatting
+    # ------------------------------------------------------------
+    ax.set_aspect("equal")
+    ax.axis("off")
+
+    plt.tight_layout()
+
+    return fig, ax
+
+
+VIS_STYLE = {
+    # Border nodes sit at this fraction along the primal edge
+    "border_t": 0.5,
+    # Face-node placement
+    "face_centroid_shrink": 0.88,  # pull bounded-face centroids slightly inward
+    "outer_face_offset": 0.2,  # how far outside the primal drawing to place outer face
+    "outer_face_angle": 135,  # degrees, direction from graph centre
+    # Dual-edge control points
+    "dual_control_alpha": 0.55,  # how far from face node toward border node
+    "dual_control_beta": 0.08,  # sideways fan-out strength
+    "dual_max_fan_offset": 1.0,  # scale for index-based spreading
+    # Primal-edge control points
+    "primal_control_alpha": 0.5,  # midpoint for straight-looking primal edges
+    # Labels
+    "region_label_offset_y": 0.06,
+    "show_node_labels": True,
+    "show_face_labels": False,
+    # Outer face curves and margin
+    "outer_curve_strength": 1.2,  # strength of curve bending for outer-face dual edges
+    "outer_box_margin": 0.5,  # margin around primal drawing for outer face node placement
+    "outer_tangent_strength": 0.5,
+}
+
+VIS_STYLE.update(
+    {
+        # Colours
+        "region_node_facecolor": "#ffffff",
+        "region_node_edgecolor": "#444444",
+        "border_node_facecolor": "#dddddd",
+        "border_node_edgecolor": "#666666",
+        "face_node_facecolor": "#ffcccc",
+        "face_node_edgecolor": "#aa4444",
+        "primal_edge_color": "#444444",
+        "dual_edge_color": "#cc4444",
+        # Sizes
+        "region_node_size": 300,
+        "border_node_size": 120,
+        "face_node_size": 200,
+        "edge_width": 1.5,
+        # Labels
+        "font_family": "Open Sans",
+        "font_size": 10,
+        "label_color": "#222222",
+        "label_bbox_alpha": 0.8,
+    }
 )
+
+labels, matrix = read_adjacency_matrix_from_excel("20260416-Test square diagonal.xlsx")
 print("Labels:", labels)
 print("Matrix:\n", matrix)
 
 G = graph_from_adjacency_matrix(labels, matrix)
-print("Graph nodes:", G.nodes())
-print("Graph edges:", G.edges())
 
-is_planar, embedding = get_planar_embedding(G)
-print("Is planar:", is_planar)
-print("Planar embedding:", embedding)
+is_planar, primal_embedding = get_planar_embedding(G)
 
-for v in embedding:
-    print(v, list(embedding.neighbors_cw_order(v)))
+master_embedding = build_master_embedding(primal_embedding)
 
-visual_data = get_visual_data(embedding)
+primal_pos = nx.combinatorial_embedding_to_pos(primal_embedding)
+
+visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
 print("Visual data:", visual_data)
 
-fig, ax = draw_visual_data(visual_data, colour="#0077CC")
+fig, ax = draw_visual_data(visual_data, style=VIS_STYLE)
 plt.show()
