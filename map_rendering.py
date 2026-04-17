@@ -82,22 +82,29 @@ def cubic_controls_for_primal(p0, p3, alpha1=1 / 3, alpha2=2 / 3):
     return p1, p2
 
 
-def make_outer_square(outer_centre, primal_pos, style):
+def make_outer_square(primal_pos, style):
     pts = np.array(list(primal_pos.values()), dtype=float)
 
     min_xy = pts.min(axis=0)
     max_xy = pts.max(axis=0)
 
-    span_x = max_xy[0] - min_xy[0]
-    span_y = max_xy[1] - min_xy[1]
-    span = max(span_x, span_y)
+    min_x, min_y = min_xy
+    max_x, max_y = max_xy
+
+    width = max_x - min_x
+    height = max_y - min_y
+    span = max(width, height)
+
+    margin = style["outer_square_margin"] * span
 
     if style.get("outer_square_side") is None:
-        side = span * (1.0 + style["outer_square_margin"])
+        side = span + 2 * margin
     else:
         side = style["outer_square_side"]
 
-    cx, cy = outer_centre
+    cx = 0.5 * (min_x + max_x)
+    cy = 0.5 * (min_y + max_y)
+
     half = 0.5 * side
 
     return {
@@ -968,7 +975,8 @@ def get_visual_data(master_embedding, primal_pos, style=None):
         ]
         face_dual_order[node_id] = dual_ids
 
-    outer_square = make_outer_square(node_xy[outer_face_id], primal_pos, style)
+    outer_square = make_outer_square(primal_pos, style)
+    node_xy[outer_face_id] = outer_square["centre"]
     outer_ports = assign_outer_square_ports(
         outer_square,
         face_dual_order[outer_face_id],
@@ -1295,8 +1303,8 @@ VIS_STYLE = {
     "border_t": 0.5,
     # Face-node placement
     "face_centroid_shrink": 0.88,  # pull bounded-face centroids slightly inward
-    "outer_face_offset": 0.4,  # how far outside the primal drawing to place outer face
-    "outer_face_angle": 135,  # degrees, direction from graph centre
+    "outer_face_offset": 0,  # how far outside the primal drawing to place outer face
+    "outer_face_angle": 0,  # degrees, direction from graph centre
     # Dual-edge control points
     "dual_control_alpha": 0.55,  # how far from face node toward border node
     "dual_control_beta": 0.08,  # sideways fan-out strength
