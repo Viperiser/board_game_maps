@@ -7,6 +7,7 @@ import math
 import matplotlib.pyplot as plt
 from matplotlib.patches import PathPatch
 from matplotlib.path import Path
+from matplotlib.patches import Rectangle
 
 
 # ======================================================================
@@ -79,6 +80,78 @@ def cubic_controls_for_primal(p0, p3, alpha1=1 / 3, alpha2=2 / 3):
     p1 = (1 - alpha1) * p0 + alpha1 * p3
     p2 = (1 - alpha2) * p0 + alpha2 * p3
     return p1, p2
+
+
+def make_outer_square(outer_centre, primal_pos, style):
+    pts = np.array(list(primal_pos.values()), dtype=float)
+
+    min_xy = pts.min(axis=0)
+    max_xy = pts.max(axis=0)
+
+    span_x = max_xy[0] - min_xy[0]
+    span_y = max_xy[1] - min_xy[1]
+    span = max(span_x, span_y)
+
+    if style.get("outer_square_side") is None:
+        side = span * (1.0 + style["outer_square_margin"])
+    else:
+        side = style["outer_square_side"]
+
+    cx, cy = outer_centre
+    half = 0.5 * side
+
+    return {
+        "centre": (cx, cy),
+        "side": side,
+        "left": cx - half,
+        "right": cx + half,
+        "bottom": cy - half,
+        "top": cy + half,
+    }
+
+
+def assign_outer_square_ports(outer_square, ordered_edge_ids):
+    """
+    Assign one attachment point on the square boundary to each outer-face edge,
+    in the given cyclic order.
+    """
+    n = len(ordered_edge_ids)
+    if n == 0:
+        return {}
+
+    left = outer_square["left"]
+    right = outer_square["right"]
+    bottom = outer_square["bottom"]
+    top = outer_square["top"]
+
+    perimeter = 4.0
+    ports = {}
+
+    for i, edge_id in enumerate(ordered_edge_ids):
+        t = i / n  # [0,1)
+
+        s = t * perimeter
+
+        if s < 1.0:
+            # top edge, left -> right
+            x = left + (right - left) * s
+            y = top
+        elif s < 2.0:
+            # right edge, top -> bottom
+            x = right
+            y = top - (top - bottom) * (s - 1.0)
+        elif s < 3.0:
+            # bottom edge, right -> left
+            x = right - (right - left) * (s - 2.0)
+            y = bottom
+        else:
+            # left edge, bottom -> top
+            x = left
+            y = bottom + (top - bottom) * (s - 3.0)
+
+        ports[edge_id] = (x, y)
+
+    return ports
 
 
 def cubic_controls_for_dual(
@@ -895,6 +968,12 @@ def get_visual_data(master_embedding, primal_pos, style=None):
         ]
         face_dual_order[node_id] = dual_ids
 
+    outer_square = make_outer_square(node_xy[outer_face_id], primal_pos, style)
+    outer_ports = assign_outer_square_ports(
+        outer_square,
+        face_dual_order[outer_face_id],
+    )
+
     for edge_id, edge in master_embedding["edges"].items():
         u = edge["u"]
         v = edge["v"]
@@ -932,21 +1011,17 @@ def get_visual_data(master_embedding, primal_pos, style=None):
             primal_edge = master_embedding["nodes"][border_id]["primal_edge"]
 
             if face_id == outer_face_id:
-                c_face, c_border = cubic_controls_for_outer_dual(
-                    p_face,
-                    p_border,
-                    primal_edge,
-                    primal_pos,
-                    idx=idx,
-                    n=n,
-                    launch_strength=style["outer_launch_strength"],
-                    arrival_strength=style["outer_arrival_strength"],
-                    tangent_strength=style["outer_tangent_strength"],
-                    curve_base=style["outer_curve_base"],
-                    distance_scale=style["outer_curve_distance_scale"],
-                    distance_power=style["outer_curve_distance_power"],
-                    angle_scale=style["outer_curve_angle_scale"],
-                )
+                p_outer_port = np.array(outer_ports[edge_id], dtype=float)
+
+                if face_at_start:
+                    p0 = p_outer_port
+                    p_face = p0
+                    p_border = p3
+                else:
+                    p3 = p_outer_port
+                    p_face = p3
+                    p_border = p0
+
             else:
                 c_face, c_border = cubic_controls_for_dual(
                     p_face,
@@ -1026,6 +1101,7 @@ def get_visual_data(master_embedding, primal_pos, style=None):
         "edge_paths": edge_paths,
         "node_labels": node_labels,
         "face_labels": face_labels,
+        "outer_square": outer_square,
     }
 
 
@@ -1091,7 +1167,14 @@ def draw_visual_data(visual_data, style=None):
         "face": [],
     }
 
+    outer_face_id = None
     for node in visual_data["nodes"]:
+        if node["type"] == "face" and node["label"] == "Outer":
+            outer_face_id = node["id"]
+
+    for node in visual_data["nodes"]:
+        if node["id"] == outer_face_id:
+            continue
         node_groups[node["type"]].append(node)
 
     def draw_nodes(nodes, facecolor, edgecolor, size):
@@ -1173,9 +1256,31 @@ def draw_visual_data(visual_data, style=None):
             ),
             zorder=4,
         )
+    # ------------------------------------------------------------
+    # 4. Draw outer square if present
+    # ------------------------------------------------------------
+
+    outer_square = visual_data.get("outer_square")
+
+    if outer_square is not None:
+        left = outer_square["left"]
+        bottom = outer_square["bottom"]
+        side = outer_square["side"]
+
+        rect = Rectangle(
+            (left, bottom),
+            side,
+            side,
+            facecolor="none",
+            edgecolor=style.get("outer_square_color", style["dual_edge_color"]),
+            linewidth=style.get("outer_square_width", style["edge_width"]),
+            linestyle=style.get("outer_square_linestyle", "-"),
+            zorder=2,
+        )
+        ax.add_patch(rect)
 
     # ------------------------------------------------------------
-    # 4. Final formatting
+    # 5. Final formatting
     # ------------------------------------------------------------
     ax.set_aspect("equal")
     ax.axis("off")
@@ -1216,6 +1321,9 @@ VIS_STYLE = {
     "outer_launch_strength": 0.45,
     "outer_arrival_strength": 0.30,
     "outer_tangent_strength": 0.55,
+    "outer_square_margin": 0.35,
+    "outer_square_side": None,  # optional fixed size; None = derive from primal bbox
+    "outer_port_inset": 0.0,  # if you later want ports slightly inset from corners
 }
 
 VIS_STYLE.update(
@@ -1239,12 +1347,13 @@ VIS_STYLE.update(
         "font_size": 10,
         "label_color": "#222222",
         "label_bbox_alpha": 0.8,
+        "outer_square_color": "#cc4444",
+        "outer_square_width": 1.5,
+        "outer_square_linestyle": "-",
     }
 )
 
-labels, matrix = read_adjacency_matrix_from_excel(
-    "20260414-King is Dead Adjacency.xlsx"
-)
+labels, matrix = read_adjacency_matrix_from_excel("20260416-Test square diagonal.xlsx")
 print("Labels:", labels)
 print("Matrix:\n", matrix)
 
