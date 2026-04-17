@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import networkx as nx
+import math
 
 
 import matplotlib.pyplot as plt
@@ -33,17 +34,333 @@ def detect_outer_face_id(master_embedding, primal_pos):
     return best_face_id
 
 
+def point_in_polygon(point, polygon):
+    """
+    Ray-casting point-in-polygon test.
+    polygon: sequence of (x, y)
+    point: (x, y)
+    """
+    x, y = point
+    pts = np.asarray(polygon, dtype=float)
+    inside = False
+    n = len(pts)
+
+    for i in range(n):
+        x1, y1 = pts[i]
+        x2, y2 = pts[(i + 1) % n]
+
+        intersects = (y1 > y) != (y2 > y)
+        if intersects:
+            x_at_y = x1 + (y - y1) * (x2 - x1) / (y2 - y1)
+            if x < x_at_y:
+                inside = not inside
+
+    return inside
+
+
+def outer_face_roundness_penalty(pos, outer_face_nodes):
+    """
+    Penalise deviation from a common radius around the outer-face centre.
+    Lower is better.
+    """
+    pts = np.array([pos[n] for n in outer_face_nodes], dtype=float)
+    centre = pts.mean(axis=0)
+    radii = np.linalg.norm(pts - centre, axis=1)
+    return float(np.var(radii))
+
+
+def extract_faces_from_embedding(primal_embedding):
+    """
+    Return list of faces, each as an ordered list of nodes.
+    """
+    seen_half_edges = set()
+    faces = []
+
+    for u, v in primal_embedding.edges():
+        if (u, v) in seen_half_edges:
+            continue
+        face = list(primal_embedding.traverse_face(u, v, seen_half_edges))
+        faces.append(face)
+
+    return faces
+
+
+def segments_intersect(p1, p2, q1, q2, eps=1e-12):
+    """
+    Proper segment intersection test, ignoring shared endpoints.
+    """
+    p1 = np.asarray(p1, dtype=float)
+    p2 = np.asarray(p2, dtype=float)
+    q1 = np.asarray(q1, dtype=float)
+    q2 = np.asarray(q2, dtype=float)
+
+    def orient(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+    def on_segment(a, b, c):
+        return (
+            min(a[0], b[0]) - eps <= c[0] <= max(a[0], b[0]) + eps
+            and min(a[1], b[1]) - eps <= c[1] <= max(a[1], b[1]) + eps
+        )
+
+    o1 = orient(p1, p2, q1)
+    o2 = orient(p1, p2, q2)
+    o3 = orient(q1, q2, p1)
+    o4 = orient(q1, q2, p2)
+
+    # Proper crossing
+    if (o1 * o2 < -eps) and (o3 * o4 < -eps):
+        return True
+
+    # Collinear edge cases
+    if abs(o1) <= eps and on_segment(p1, p2, q1):
+        return True
+    if abs(o2) <= eps and on_segment(p1, p2, q2):
+        return True
+    if abs(o3) <= eps and on_segment(q1, q2, p1):
+        return True
+    if abs(o4) <= eps and on_segment(q1, q2, p2):
+        return True
+
+    return False
+
+
+def layout_has_crossing(G, pos):
+    """
+    True if any two non-adjacent edges cross.
+    """
+    edges = list(G.edges())
+
+    for i, (a, b) in enumerate(edges):
+        p1 = pos[a]
+        p2 = pos[b]
+
+        for j in range(i + 1, len(edges)):
+            c, d = edges[j]
+
+            # Ignore edges sharing a vertex
+            if len({a, b, c, d}) < 4:
+                continue
+
+            q1 = pos[c]
+            q2 = pos[d]
+
+            if segments_intersect(p1, p2, q1, q2):
+                return True
+
+    return False
+
+
+def polygon_min_angle(points):
+    """
+    Minimum angle at vertices of a polygon (in radians).
+    Used as a proxy for 'skinniness'.
+    """
+    pts = np.asarray(points, dtype=float)
+    n = len(pts)
+
+    if n < 3:
+        return 0.0
+
+    best = float("inf")
+
+    for i in range(n):
+        a = pts[i - 1]
+        b = pts[i]
+        c = pts[(i + 1) % n]
+
+        u = a - b
+        v = c - b
+
+        nu = np.linalg.norm(u)
+        nv = np.linalg.norm(v)
+
+        if nu < 1e-12 or nv < 1e-12:
+            continue
+
+        cosang = np.dot(u, v) / (nu * nv)
+        cosang = max(-1.0, min(1.0, cosang))
+        ang = math.acos(cosang)
+
+        best = min(best, ang)
+
+    if best == float("inf"):
+        return 0.0
+
+    return best
+
+
+def layout_score(G, pos, faces, weights=None, outer_face_nodes=None):
+    """
+    Higher is better.
+    """
+    if weights is None:
+        weights = {
+            "node_spread": 1.0,
+            "edge_uniformity": 0.35,
+            "face_area": 0.8,
+            "angle_penalty": 0.15,
+            "outer_roundness": 0.0,
+        }
+    nodes = list(G.nodes())
+    edges = list(G.edges())
+
+    # --------------------------------------------------
+    # 1. Node spread: reward separation
+    # --------------------------------------------------
+    min_node_dist = float("inf")
+    for i, u in enumerate(nodes):
+        for v in nodes[i + 1 :]:
+            d = np.linalg.norm(np.asarray(pos[u]) - np.asarray(pos[v]))
+            min_node_dist = min(min_node_dist, d)
+
+    if min_node_dist == float("inf"):
+        min_node_dist = 0.0
+
+    # --------------------------------------------------
+    # 2. Edge uniformity: penalise high variance
+    # --------------------------------------------------
+    edge_lengths = [
+        np.linalg.norm(np.asarray(pos[u]) - np.asarray(pos[v])) for u, v in edges
+    ]
+    if edge_lengths:
+        edge_var = float(np.var(edge_lengths))
+    else:
+        edge_var = 0.0
+
+    # --------------------------------------------------
+    # 3. Face area: reward larger bounded faces
+    # --------------------------------------------------
+    face_areas = []
+    for face in faces:
+        pts = [pos[n] for n in face]
+        area = abs(polygon_signed_area(pts))
+        face_areas.append(area)
+
+    if face_areas:
+        max_area = max(face_areas)
+        bounded_areas = [a for a in face_areas if a < max_area - 1e-12]
+        mean_bounded_area = np.mean(bounded_areas) if bounded_areas else 0.0
+    else:
+        mean_bounded_area = 0.0
+
+    # --------------------------------------------------
+    # 4. Angle penalty: penalise skinny faces
+    # --------------------------------------------------
+    angle_penalty = 0.0
+    for face in faces:
+        pts = [pos[n] for n in face]
+        min_ang = polygon_min_angle(pts)
+        if min_ang > 0:
+            angle_penalty += 1.0 / max(min_ang, 1e-6)
+
+    outer_roundness_penalty = 0.0
+    if outer_face_nodes is not None and len(outer_face_nodes) >= 3:
+        outer_roundness_penalty = outer_face_roundness_penalty(pos, outer_face_nodes)
+
+    score = (
+        weights["node_spread"] * min_node_dist
+        - weights["edge_uniformity"] * edge_var
+        + weights["face_area"] * mean_bounded_area
+        - weights["angle_penalty"] * angle_penalty
+        - weights["outer_roundness"] * outer_roundness_penalty
+    )
+
+    return float(score)
+
+
+def point_to_polygon_boundary_distance(point, polygon):
+    """
+    Minimum distance from point to any polygon edge.
+    """
+    pts = np.asarray(polygon, dtype=float)
+    n = len(pts)
+
+    return min(
+        point_to_segment_distance(point, pts[i], pts[(i + 1) % n]) for i in range(n)
+    )
+
+
+def interior_point_of_polygon(points, grid_size=25):
+    """
+    Find a point inside a polygon.
+
+    Strategy:
+    - use centroid if it lies inside
+    - otherwise search a regular grid over the bounding box and choose
+      the interior point farthest from the polygon boundary
+    """
+    pts = np.asarray(points, dtype=float)
+
+    # First try centroid
+    c = polygon_centroid(pts)
+    if point_in_polygon(c, pts):
+        return tuple(c)
+
+    min_x, min_y = pts.min(axis=0)
+    max_x, max_y = pts.max(axis=0)
+
+    best_point = None
+    best_score = -1.0
+
+    xs = np.linspace(min_x, max_x, grid_size)
+    ys = np.linspace(min_y, max_y, grid_size)
+
+    for x in xs:
+        for y in ys:
+            p = (x, y)
+            if point_in_polygon(p, pts):
+                score = point_to_polygon_boundary_distance(p, pts)
+                if score > best_score:
+                    best_score = score
+                    best_point = p
+
+    if best_point is not None:
+        return best_point
+
+    # Very degenerate fallback
+    return tuple(pts.mean(axis=0))
+
+
+def point_to_segment_distance(point, a, b):
+    """
+    Euclidean distance from point to line segment ab.
+    """
+    p = np.asarray(point, dtype=float)
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+
+    ab = b - a
+    denom = np.dot(ab, ab)
+
+    if denom < 1e-12:
+        return np.linalg.norm(p - a)
+
+    t = np.dot(p - a, ab) / denom
+    t = max(0.0, min(1.0, t))
+    proj = a + t * ab
+    return np.linalg.norm(p - proj)
+
+
 def place_bounded_face_node(face, primal_pos, shrink=0.88):
     """
-    Place a bounded face node near the polygon centroid, shrunk slightly
-    toward the average of boundary vertices to keep it away from edges.
+    Place a bounded face node at a robust interior point.
+
+    For convex faces, this is usually close to the centroid.
+    For concave faces, this avoids placing the face node outside
+    the polygon.
     """
     pts = np.array([primal_pos[n] for n in face["boundary_nodes"]], dtype=float)
 
-    centroid = np.array(polygon_centroid(pts), dtype=float)
-    mean_pt = pts.mean(axis=0)
+    p = np.array(interior_point_of_polygon(pts), dtype=float)
 
-    p = shrink * centroid + (1 - shrink) * mean_pt
+    # Optional slight pull toward vertex mean, but only keep it if still inside
+    mean_pt = pts.mean(axis=0)
+    candidate = shrink * p + (1 - shrink) * mean_pt
+
+    if point_in_polygon(candidate, pts):
+        return tuple(candidate)
+
     return tuple(p)
 
 
@@ -741,6 +1058,133 @@ def build_master_embedding(primal_embedding):
     return master
 
 
+def refine_primal_layout(
+    G,
+    primal_embedding,
+    initial_pos,
+    iterations=3000,
+    step_scale=0.08,
+    temperature_start=0.05,
+    temperature_end=0.001,
+    fixed_nodes=None,
+    weights=None,
+    seed=42,
+    outer_face_nodes=None,
+):
+    """
+    Optional refinement pass for a planar primal layout.
+
+    Starts from an existing planar layout and makes small random moves
+    that try to improve spacing and face quality, while rejecting any
+    move that creates an edge crossing.
+
+    Parameters
+    ----------
+    G : nx.Graph
+        The primal graph.
+
+    primal_embedding : nx.PlanarEmbedding
+        Embedding used to determine face boundaries.
+
+    initial_pos : dict
+        Mapping node -> (x, y), typically from
+        nx.combinatorial_embedding_to_pos(...)
+
+    iterations : int
+        Number of refinement steps.
+
+    step_scale : float
+        Typical size of proposed moves, as a fraction of layout span.
+
+    temperature_start, temperature_end : float
+        Simulated annealing schedule. Early on, slightly worse moves can
+        be accepted. Later, behaviour becomes greedier.
+
+    fixed_nodes : iterable or None
+        Nodes that should not move. Often you may want to pin outer-face
+        boundary nodes.
+
+    weights : dict or None
+        Weights for score terms.
+
+    seed : int
+        Random seed.
+
+    Returns
+    -------
+    pos : dict
+        Refined positions.
+    """
+    import random
+
+    if fixed_nodes is None:
+        fixed_nodes = set()
+    else:
+        fixed_nodes = set(fixed_nodes)
+
+    if weights is None:
+        weights = {
+            "node_spread": 1.0,
+            "edge_uniformity": 0.35,
+            "face_area": 0.8,
+            "angle_penalty": 0.15,
+        }
+
+    rng = random.Random(seed)
+
+    pos = {k: np.array(v, dtype=float).copy() for k, v in initial_pos.items()}
+
+    nodes = list(G.nodes())
+    movable_nodes = [n for n in nodes if n not in fixed_nodes]
+    if not movable_nodes:
+        return {k: tuple(v) for k, v in pos.items()}
+
+    faces = extract_faces_from_embedding(primal_embedding)
+
+    pts = np.array(list(pos.values()), dtype=float)
+    min_xy = pts.min(axis=0)
+    max_xy = pts.max(axis=0)
+    span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1], 1e-9)
+    step = step_scale * span
+
+    current_score = layout_score(
+        G, pos, faces, weights=weights, outer_face_nodes=outer_face_nodes
+    )
+
+    for t in range(iterations):
+        alpha = t / max(iterations - 1, 1)
+        temperature = (1 - alpha) * temperature_start + alpha * temperature_end
+
+        node = rng.choice(movable_nodes)
+        old_xy = pos[node].copy()
+
+        dx = rng.uniform(-step, step)
+        dy = rng.uniform(-step, step)
+        pos[node] = old_xy + np.array([dx, dy], dtype=float)
+
+        if layout_has_crossing(G, pos):
+            pos[node] = old_xy
+            continue
+
+        new_score = layout_score(
+            G, pos, faces, weights=weights, outer_face_nodes=outer_face_nodes
+        )
+
+        delta = new_score - current_score
+
+        if delta >= 0:
+            current_score = new_score
+        else:
+            # Annealing acceptance
+            accept_prob = math.exp(delta / max(temperature, 1e-12))
+            if rng.random() < accept_prob:
+                current_score = new_score
+            else:
+                pos[node] = old_xy
+
+    return {k: tuple(v) for k, v in pos.items()}
+
+
 def get_visual_data(master_embedding, primal_pos, style=None):
     """
     Generate visual data for a master embedding.
@@ -1057,6 +1501,8 @@ def draw_visual_data(visual_data, style=None):
         "font_size": 10,
         "label_color": "#222222",
         "label_bbox_alpha": 0.8,
+        "draw_primal_edges": True,
+        "draw_dual_edges": True,
         **style,
     }
 
@@ -1066,6 +1512,11 @@ def draw_visual_data(visual_data, style=None):
     # 1. Draw edges (cubic Bezier)
     # ------------------------------------------------------------
     for edge in visual_data["edge_paths"]:
+        if edge["type"] == "primal" and not style["draw_primal_edges"]:
+            continue
+        if edge["type"] == "dual" and not style["draw_dual_edges"]:
+            continue
+
         p0, p1, p2, p3 = edge["points"]
 
         verts = [p0, p1, p2, p3]
@@ -1273,7 +1724,7 @@ VIS_STYLE.update(
     }
 )
 
-labels, matrix = read_adjacency_matrix_from_excel("20260416-Test with bridge.xlsx")
+labels, matrix = read_adjacency_matrix_from_excel("20260417-Ticket to Ride London.xlsx")
 print("Labels:", labels)
 print("Matrix:\n", matrix)
 
@@ -1283,19 +1734,69 @@ is_planar, primal_embedding = get_planar_embedding(G)
 
 master_embedding = build_master_embedding(primal_embedding)
 
-seed_pos = nx.combinatorial_embedding_to_pos(primal_embedding)
-
-primal_pos = nx.spring_layout(
-    G,
-    pos=seed_pos,
-    fixed=None,
-    iterations=200,
-    k=1.2,
-    seed=1,
+primal_pos = nx.combinatorial_embedding_to_pos(
+    primal_embedding,
+    fully_triangulate=True,
 )
 
+outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+face_lookup = {face["id"]: face for face in master_embedding["faces"]}
+outer_face_nodes = list(dict.fromkeys(face_lookup[outer_face_id]["boundary_nodes"]))
+
+weights = {
+    "node_spread": 1.0,
+    "edge_uniformity": 0.25,
+    "face_area": 0.9,
+    "angle_penalty": 0.1,
+    "outer_roundness": 3.0,
+}
+
+primal_pos = refine_primal_layout(
+    G,
+    primal_embedding,
+    primal_pos,
+    iterations=4000,
+    step_scale=0.04,
+    temperature_start=0.02,
+    temperature_end=0.0005,
+    fixed_nodes=None,
+    weights=weights,
+    outer_face_nodes=outer_face_nodes,
+    seed=42,
+)
 visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
 print("Visual data:", visual_data)
 
-fig, ax = draw_visual_data(visual_data, style=VIS_STYLE)
+fig, ax = draw_visual_data(
+    visual_data,
+    style={
+        **VIS_STYLE,
+        "draw_primal_edges": True,
+        "draw_dual_edges": False,
+    },
+)
+
+plt.show()
+
+fig, ax = draw_visual_data(
+    visual_data,
+    style={
+        **VIS_STYLE,
+        "draw_primal_edges": False,
+        "draw_dual_edges": True,
+    },
+)
+
+plt.show()
+
+
+fig, ax = draw_visual_data(
+    visual_data,
+    style={
+        **VIS_STYLE,
+        "draw_primal_edges": True,
+        "draw_dual_edges": True,
+    },
+)
+
 plt.show()
