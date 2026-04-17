@@ -91,76 +91,113 @@ def make_outer_square(primal_pos, style):
     }
 
 
+def outer_dual_outward_normal(edge, master_embedding, primal_pos, node_xy):
+    """
+    Return the outward unit normal for a specific outer dual edge.
+
+    For a normal outer edge, choose the normal pointing away from the
+    adjacent interior face.
+
+    For a bridge, where both sides are outer, use the stored halfedge_sign
+    so the two outer incidences get opposite normals.
+    """
+    a, b = edge["primal_edge"]
+    pa = np.array(primal_pos[a], dtype=float)
+    pb = np.array(primal_pos[b], dtype=float)
+
+    edge_vec = pb - pa
+    edge_len = np.linalg.norm(edge_vec)
+    if edge_len < 1e-12:
+        return np.array([1.0, 0.0], dtype=float)
+
+    edge_unit = edge_vec / edge_len
+    n1 = np.array([-edge_unit[1], edge_unit[0]])
+    n2 = -n1
+
+    he = edge["primal_halfedge"]
+    opp_he = (he[1], he[0])
+    opp_face_id = master_embedding["halfedge_to_face"][opp_he]
+
+    # If the opposite face is not outer, point away from it
+    if master_embedding["nodes"][opp_face_id]["label"] != "Outer":
+        p_border = np.array(
+            node_xy[master_embedding["primal_edge_to_border"][edge["primal_edge"]]],
+            dtype=float,
+        )
+        p_inner = np.array(node_xy[opp_face_id], dtype=float)
+
+        if np.dot(p_border - p_inner, n1) > np.dot(p_border - p_inner, n2):
+            return n1
+        else:
+            return n2
+
+    # Bridge case: both sides are outer, so use halfedge sign
+    if edge["halfedge_sign"] == +1:
+        return n1
+    else:
+        return n2
+
+
 def assign_outer_square_ports(
-    outer_square, ordered_edge_ids, master_embedding, node_xy
+    outer_square, ordered_edge_ids, master_embedding, primal_pos, node_xy
 ):
     """
-    Assign one attachment point on the square boundary to each outer-face edge.
+    Assign one square-boundary attachment point per outer dual edge.
 
-    Each port is chosen by casting a ray from the square centre toward the
-    corresponding border node, and intersecting that ray with the square.
+    Each port is found by casting a ray from the corresponding border node
+    outward along that incidence's outward normal.
     """
     ports = {}
 
-    cx, cy = outer_square["centre"]
     left = outer_square["left"]
     right = outer_square["right"]
     bottom = outer_square["bottom"]
     top = outer_square["top"]
 
-    centre = np.array([cx, cy], dtype=float)
-
     for edge_id in ordered_edge_ids:
         edge = master_embedding["edges"][edge_id]
+
         u = edge["u"]
         v = edge["v"]
 
-        # Identify the border endpoint of this dual edge
         if master_embedding["nodes"][u]["type"] == "border":
             border_id = u
         else:
             border_id = v
 
-        border_xy = np.array(node_xy[border_id], dtype=float)
-        d = border_xy - centre
+        p_border = np.array(node_xy[border_id], dtype=float)
+        outward = outer_dual_outward_normal(edge, master_embedding, primal_pos, node_xy)
 
-        dx, dy = d
-
-        if abs(dx) < 1e-12 and abs(dy) < 1e-12:
-            # Degenerate fallback
-            ports[edge_id] = (right, cy)
-            continue
+        bx, by = p_border
+        dx, dy = outward
 
         candidates = []
 
-        # Intersections with vertical sides
         if abs(dx) > 1e-12:
-            t_left = (left - cx) / dx
-            y_left = cy + t_left * dy
+            t_left = (left - bx) / dx
+            y_left = by + t_left * dy
             if t_left > 0 and bottom <= y_left <= top:
                 candidates.append((t_left, (left, y_left)))
 
-            t_right = (right - cx) / dx
-            y_right = cy + t_right * dy
+            t_right = (right - bx) / dx
+            y_right = by + t_right * dy
             if t_right > 0 and bottom <= y_right <= top:
                 candidates.append((t_right, (right, y_right)))
 
-        # Intersections with horizontal sides
         if abs(dy) > 1e-12:
-            t_bottom = (bottom - cy) / dy
-            x_bottom = cx + t_bottom * dx
+            t_bottom = (bottom - by) / dy
+            x_bottom = bx + t_bottom * dx
             if t_bottom > 0 and left <= x_bottom <= right:
                 candidates.append((t_bottom, (x_bottom, bottom)))
 
-            t_top = (top - cy) / dy
-            x_top = cx + t_top * dx
+            t_top = (top - by) / dy
+            x_top = bx + t_top * dx
             if t_top > 0 and left <= x_top <= right:
                 candidates.append((t_top, (x_top, top)))
 
         if not candidates:
-            ports[edge_id] = (right, cy)
+            ports[edge_id] = tuple(p_border)
         else:
-            # Nearest positive intersection along the ray
             _, pt = min(candidates, key=lambda x: x[0])
             ports[edge_id] = pt
 
@@ -225,6 +262,7 @@ def cubic_controls_for_dual(
 def cubic_controls_for_outer_dual(
     p_face,
     p_border,
+    outward,
     primal_edge,
     primal_pos,
     idx,
@@ -254,16 +292,6 @@ def cubic_controls_for_outer_dual(
         return cubic_controls_for_primal(p_face, p_border)
 
     edge_unit = edge_vec / edge_len
-    n1 = np.array([-edge_unit[1], edge_unit[0]])
-    n2 = -n1
-
-    # outward normal: choose the one pointing toward the assigned square port
-    to_outer = p_face - p_border
-
-    if np.dot(to_outer, n1) > np.dot(to_outer, n2):
-        outward = n1
-    else:
-        outward = n2
 
     pts = np.array(list(primal_pos.values()), dtype=float)
     min_xy = pts.min(axis=0)
@@ -632,6 +660,13 @@ def build_master_embedding(primal_embedding):
             uv = canonical_edge(*he)
             border_id = master["primal_edge_to_border"][uv]
 
+            if he == uv:
+                halfedge_sign = +1
+            elif he == (uv[1], uv[0]):
+                halfedge_sign = -1
+            else:
+                raise ValueError(f"Half-edge {he} does not match canonical edge {uv}")
+
             e = add_edge(
                 face_id,
                 border_id,
@@ -639,10 +674,10 @@ def build_master_embedding(primal_embedding):
                 primal_halfedge=he,
                 primal_edge=uv,
                 face=face_id,
+                halfedge_sign=halfedge_sign,
             )
 
             face_border_edge[(face_id, he)] = e
-
     # ------------------------------------------------------------------
     # 6. Build cyclic order around each region node
     # Inherit order from primal embedding neighbours
@@ -849,6 +884,7 @@ def get_visual_data(master_embedding, primal_pos, style=None):
         outer_square,
         face_dual_order[outer_face_id],
         master_embedding,
+        primal_pos,
         node_xy,
     )
     for edge_id, edge in master_embedding["edges"].items():
@@ -898,9 +934,14 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                     p_face = p3
                     p_border = p0
 
+                outward = outer_dual_outward_normal(
+                    edge, master_embedding, primal_pos, node_xy
+                )
+
                 c_face, c_border = cubic_controls_for_outer_dual(
                     p_face,
                     p_border,
+                    outward,
                     primal_edge,
                     primal_pos,
                     idx=idx,
@@ -913,7 +954,6 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                     distance_power=style["outer_curve_distance_power"],
                     angle_scale=style["outer_curve_angle_scale"],
                 )
-
             else:
                 c_face, c_border = cubic_controls_for_dual(
                     p_face,
