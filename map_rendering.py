@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import networkx as nx
-import math
 
 
 import matplotlib.pyplot as plt
@@ -46,31 +45,6 @@ def place_bounded_face_node(face, primal_pos, shrink=0.88):
 
     p = shrink * centroid + (1 - shrink) * mean_pt
     return tuple(p)
-
-
-def place_outer_face_node(face, primal_pos, offset_factor=0.35, angle_degrees=135):
-    """
-    Place outer face node outside the primal drawing's bounding box.
-    """
-    pts = np.array(list(primal_pos.values()), dtype=float)
-
-    centre = pts.mean(axis=0)
-    min_xy = pts.min(axis=0)
-    max_xy = pts.max(axis=0)
-    span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1])
-
-    angle = math.radians(angle_degrees)
-    direction = np.array([math.cos(angle), math.sin(angle)], dtype=float)
-
-    p = centre + direction * span * (0.5 + offset_factor)
-    return tuple(p)
-
-
-def quadratic_control_for_primal(p0, p2, alpha=0.5):
-    """
-    Straight-looking quadratic control point.
-    """
-    return (1 - alpha) * p0 + alpha * p2
 
 
 def cubic_controls_for_primal(p0, p3, alpha1=1 / 3, alpha2=2 / 3):
@@ -347,42 +321,6 @@ def cubic_bezier_point(p0, p1, p2, p3, t=0.5):
     )
 
 
-def quadratic_control_for_dual(
-    p_face, p_border, idx, n, alpha=0.55, beta=0.18, max_fan_offset=1.0
-):
-    """
-    Quadratic control point for a face-to-border edge.
-
-    The control point lies partway toward the border node, with a sideways
-    offset to fan neighbouring edges apart.
-    """
-    d = p_border - p_face
-    norm = np.linalg.norm(d)
-
-    if norm < 1e-12:
-        return p_face.copy()
-
-    unit = d / norm
-    normal = np.array([-unit[1], unit[0]])
-
-    # Centre the fan around 0
-    if n <= 1:
-        fan = 0.0
-    else:
-        fan = (idx - 0.5 * (n - 1)) / max(0.5 * (n - 1), 1e-12)
-        fan *= max_fan_offset
-
-    control = p_face + alpha * d + beta * fan * norm * normal
-    return control
-
-
-def quadratic_bezier_point(p0, p1, p2, t=0.5):
-    """
-    Point on quadratic Bezier curve.
-    """
-    return ((1 - t) ** 2) * p0 + 2 * (1 - t) * t * p1 + (t**2) * p2
-
-
 def polygon_signed_area(points):
     """
     Signed area of polygon given by ordered points.
@@ -425,102 +363,6 @@ def polygon_centroid(points):
     cx /= 3.0 * area2
     cy /= 3.0 * area2
     return (cx, cy)
-
-
-def quadratic_control_for_outer_dual(
-    p_face,
-    p_border,
-    primal_edge,
-    primal_pos,
-    idx,
-    n,
-    strength=1.0,
-    tangent_strength=0.35,
-    curve_base=0.08,
-    distance_scale=1.25,
-    distance_power=2.0,
-    angle_scale=0.8,
-):
-    """
-    Control point for an outer-face dual edge.
-
-    The control point is placed near the border node, with:
-    - outward push normal to the corresponding primal edge
-    - tangential fan-out along the primal edge
-    - outward push increasing with distance from outer face node
-    - outward push increasing when the launch angle is awkward
-    """
-    import numpy as np
-
-    a, b = primal_edge
-    pa = np.array(primal_pos[a], dtype=float)
-    pb = np.array(primal_pos[b], dtype=float)
-
-    edge_vec = pb - pa
-    edge_len = np.linalg.norm(edge_vec)
-    if edge_len < 1e-12:
-        return 0.5 * (p_face + p_border)
-
-    edge_unit = edge_vec / edge_len
-
-    # Two normals to the primal edge
-    n1 = np.array([-edge_unit[1], edge_unit[0]])
-    n2 = -n1
-
-    pts = np.array(list(primal_pos.values()), dtype=float)
-    centre = pts.mean(axis=0)
-
-    # Choose the normal pointing away from the graph centre
-    if np.dot(p_border - centre, n1) > np.dot(p_border - centre, n2):
-        outward = n1
-    else:
-        outward = n2
-
-    min_xy = pts.min(axis=0)
-    max_xy = pts.max(axis=0)
-    span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1])
-
-    # ---------------------------
-    # 1. Distance-based bendiness
-    # ---------------------------
-    dist = np.linalg.norm(p_border - p_face)
-    dynamic = dist / max(span, 1e-12)
-    dynamic_term = dynamic**distance_power
-
-    # ---------------------------
-    # 2. Angle-based awkwardness
-    # ---------------------------
-    to_face = p_face - p_border
-    to_face_norm = np.linalg.norm(to_face)
-
-    if to_face_norm < 1e-12:
-        alignment = 0.0
-    else:
-        to_face_unit = to_face / to_face_norm
-        alignment = np.dot(to_face_unit, outward)
-
-    # 0 = already well aligned outward, 1 = very awkward
-    awkwardness = 0.5 * (1 - alignment)
-
-    outward_push = (
-        strength
-        * span
-        * (curve_base + distance_scale * dynamic_term)
-        * (1 + angle_scale * awkwardness)
-    )
-
-    # ---------------------------
-    # 3. Tangential fan-out
-    # ---------------------------
-    if n <= 1:
-        fan = 0.0
-    else:
-        fan = (idx - 0.5 * (n - 1)) / max(0.5 * (n - 1), 1e-12)
-
-    tangent_push = tangent_strength * span * fan
-
-    control = p_border + outward_push * outward + tangent_push * edge_unit
-    return control
 
 
 # ======================================================================
@@ -957,24 +799,18 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     #    - outer face: placed outside the primal drawing
     # ------------------------------------------------------------
     outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+    outer_square = make_outer_square(primal_pos, style)
+    node_xy[outer_face_id] = outer_square["centre"]
 
     for face in master_embedding["faces"]:
         face_id = face["id"]
 
-        if face_id == outer_face_id:
-            node_xy[face_id] = place_outer_face_node(
-                face,
-                primal_pos,
-                offset_factor=style["outer_face_offset"],
-                angle_degrees=style["outer_face_angle"],
-            )
-        else:
+        if face_id != outer_face_id:
             node_xy[face_id] = place_bounded_face_node(
                 face,
                 primal_pos,
                 shrink=style["face_centroid_shrink"],
             )
-
     # ------------------------------------------------------------
     # 4. Build node list
     # ------------------------------------------------------------
@@ -1349,24 +1185,15 @@ VIS_STYLE = {
     "border_t": 0.5,
     # Face-node placement
     "face_centroid_shrink": 0.88,  # pull bounded-face centroids slightly inward
-    "outer_face_offset": 0,  # how far outside the primal drawing to place outer face
-    "outer_face_angle": 0,  # degrees, direction from graph centre
-    # Dual-edge control points
-    "dual_control_alpha": 0.55,  # how far from face node toward border node
-    "dual_control_beta": 0.08,  # sideways fan-out strength
-    "dual_max_fan_offset": 1.0,  # scale for index-based spreading
-    # Primal-edge control points
-    "primal_control_alpha": 0.5,  # midpoint for straight-looking primal edges
     # Labels
-    "region_label_offset_y": 0.06,
+    "region_label_offset_y": 0.3,
     "show_node_labels": True,
     "show_face_labels": False,
     # Outer face curves and margin
-    "outer_curve_strength": 1.0,  # overall multiplier
     "outer_curve_base": 0.00,  # minimum outward bend even for nearby/easy edges
-    "outer_curve_distance_scale": 1,  # how much distance matters
-    "outer_curve_distance_power": 3,  # how nonlinear the distance effect is
-    "outer_curve_angle_scale": 1,  # how much extra bend you add when the outer node is at an awkward angle
+    "outer_curve_distance_scale": 0.5,  # how much distance matters
+    "outer_curve_distance_power": 1,  # how nonlinear the distance effect is
+    "outer_curve_angle_scale": 0,  # how much extra bend you add when the outer node is at an awkward angle
     "primal_control_alpha1": 1.0 / 3.0,
     "primal_control_alpha2": 2.0 / 3.0,
     "dual_launch_strength": 0.28,
@@ -1374,10 +1201,9 @@ VIS_STYLE = {
     "dual_tangent_strength": 0.12,
     "outer_launch_strength": 0.45,
     "outer_arrival_strength": 0.30,
-    "outer_tangent_strength": 0.55,
+    "outer_tangent_strength": 0.05,
     "outer_square_margin": 0.35,
     "outer_square_side": None,  # optional fixed size; None = derive from primal bbox
-    "outer_port_inset": 0.0,  # if you later want ports slightly inset from corners
 }
 
 VIS_STYLE.update(
@@ -1400,7 +1226,7 @@ VIS_STYLE.update(
         "font_family": "Open Sans",
         "font_size": 10,
         "label_color": "#222222",
-        "label_bbox_alpha": 0.8,
+        "label_bbox_alpha": 0,
         "outer_square_color": "#cc4444",
         "outer_square_width": 1.5,
         "outer_square_linestyle": "-",
