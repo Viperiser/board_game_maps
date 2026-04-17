@@ -1202,7 +1202,7 @@ VIS_STYLE = {
     "outer_launch_strength": 0.45,
     "outer_arrival_strength": 0.30,
     "outer_tangent_strength": 0.05,
-    "outer_square_margin": 0.35,
+    "outer_square_margin": 0.1,
     "outer_square_side": None,  # optional fixed size; None = derive from primal bbox
 }
 
@@ -1219,8 +1219,8 @@ VIS_STYLE.update(
         "dual_edge_color": "#cc4444",
         # Sizes
         "region_node_size": 300,
-        "border_node_size": 120,
-        "face_node_size": 200,
+        "border_node_size": 0,
+        "face_node_size": 0,
         "edge_width": 1.5,
         # Labels
         "font_family": "Open Sans",
@@ -1233,7 +1233,7 @@ VIS_STYLE.update(
     }
 )
 
-labels, matrix = read_adjacency_matrix_from_excel("20260416-Test square diagonal.xlsx")
+labels, matrix = read_adjacency_matrix_from_excel("20260416-Test with bridge.xlsx")
 print("Labels:", labels)
 print("Matrix:\n", matrix)
 
@@ -1243,7 +1243,16 @@ is_planar, primal_embedding = get_planar_embedding(G)
 
 master_embedding = build_master_embedding(primal_embedding)
 
-primal_pos = nx.combinatorial_embedding_to_pos(primal_embedding)
+seed_pos = nx.combinatorial_embedding_to_pos(primal_embedding)
+
+primal_pos = nx.spring_layout(
+    G,
+    pos=seed_pos,
+    fixed=None,
+    iterations=200,
+    k=1.2,
+    seed=1,
+)
 
 visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
 print("Visual data:", visual_data)
