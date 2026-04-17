@@ -117,46 +117,78 @@ def make_outer_square(primal_pos, style):
     }
 
 
-def assign_outer_square_ports(outer_square, ordered_edge_ids):
+def assign_outer_square_ports(
+    outer_square, ordered_edge_ids, master_embedding, node_xy
+):
     """
-    Assign one attachment point on the square boundary to each outer-face edge,
-    in the given cyclic order.
-    """
-    n = len(ordered_edge_ids)
-    if n == 0:
-        return {}
+    Assign one attachment point on the square boundary to each outer-face edge.
 
+    Each port is chosen by casting a ray from the square centre toward the
+    corresponding border node, and intersecting that ray with the square.
+    """
+    ports = {}
+
+    cx, cy = outer_square["centre"]
     left = outer_square["left"]
     right = outer_square["right"]
     bottom = outer_square["bottom"]
     top = outer_square["top"]
 
-    perimeter = 4.0
-    ports = {}
+    centre = np.array([cx, cy], dtype=float)
 
-    for i, edge_id in enumerate(ordered_edge_ids):
-        t = i / n  # [0,1)
+    for edge_id in ordered_edge_ids:
+        edge = master_embedding["edges"][edge_id]
+        u = edge["u"]
+        v = edge["v"]
 
-        s = t * perimeter
-
-        if s < 1.0:
-            # top edge, left -> right
-            x = left + (right - left) * s
-            y = top
-        elif s < 2.0:
-            # right edge, top -> bottom
-            x = right
-            y = top - (top - bottom) * (s - 1.0)
-        elif s < 3.0:
-            # bottom edge, right -> left
-            x = right - (right - left) * (s - 2.0)
-            y = bottom
+        # Identify the border endpoint of this dual edge
+        if master_embedding["nodes"][u]["type"] == "border":
+            border_id = u
         else:
-            # left edge, bottom -> top
-            x = left
-            y = bottom + (top - bottom) * (s - 3.0)
+            border_id = v
 
-        ports[edge_id] = (x, y)
+        border_xy = np.array(node_xy[border_id], dtype=float)
+        d = border_xy - centre
+
+        dx, dy = d
+
+        if abs(dx) < 1e-12 and abs(dy) < 1e-12:
+            # Degenerate fallback
+            ports[edge_id] = (right, cy)
+            continue
+
+        candidates = []
+
+        # Intersections with vertical sides
+        if abs(dx) > 1e-12:
+            t_left = (left - cx) / dx
+            y_left = cy + t_left * dy
+            if t_left > 0 and bottom <= y_left <= top:
+                candidates.append((t_left, (left, y_left)))
+
+            t_right = (right - cx) / dx
+            y_right = cy + t_right * dy
+            if t_right > 0 and bottom <= y_right <= top:
+                candidates.append((t_right, (right, y_right)))
+
+        # Intersections with horizontal sides
+        if abs(dy) > 1e-12:
+            t_bottom = (bottom - cy) / dy
+            x_bottom = cx + t_bottom * dx
+            if t_bottom > 0 and left <= x_bottom <= right:
+                candidates.append((t_bottom, (x_bottom, bottom)))
+
+            t_top = (top - cy) / dy
+            x_top = cx + t_top * dx
+            if t_top > 0 and left <= x_top <= right:
+                candidates.append((t_top, (x_top, top)))
+
+        if not candidates:
+            ports[edge_id] = (right, cy)
+        else:
+            # Nearest positive intersection along the ray
+            _, pt = min(candidates, key=lambda x: x[0])
+            ports[edge_id] = pt
 
     return ports
 
@@ -251,15 +283,15 @@ def cubic_controls_for_outer_dual(
     n1 = np.array([-edge_unit[1], edge_unit[0]])
     n2 = -n1
 
-    pts = np.array(list(primal_pos.values()), dtype=float)
-    centre = pts.mean(axis=0)
+    # outward normal: choose the one pointing toward the assigned square port
+    to_outer = p_face - p_border
 
-    # outward normal
-    if np.dot(p_border - centre, n1) > np.dot(p_border - centre, n2):
+    if np.dot(to_outer, n1) > np.dot(to_outer, n2):
         outward = n1
     else:
         outward = n2
 
+    pts = np.array(list(primal_pos.values()), dtype=float)
     min_xy = pts.min(axis=0)
     max_xy = pts.max(axis=0)
     span = max(max_xy[0] - min_xy[0], max_xy[1] - min_xy[1])
@@ -980,8 +1012,9 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     outer_ports = assign_outer_square_ports(
         outer_square,
         face_dual_order[outer_face_id],
+        master_embedding,
+        node_xy,
     )
-
     for edge_id, edge in master_embedding["edges"].items():
         u = edge["u"]
         v = edge["v"]
@@ -998,7 +1031,6 @@ def get_visual_data(master_embedding, primal_pos, style=None):
             )
 
         elif edge["type"] == "dual":
-            # Identify the face endpoint
             if master_embedding["nodes"][u]["type"] == "face":
                 face_id = u
                 border_id = v
@@ -1030,6 +1062,22 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                     p_face = p3
                     p_border = p0
 
+                c_face, c_border = cubic_controls_for_outer_dual(
+                    p_face,
+                    p_border,
+                    primal_edge,
+                    primal_pos,
+                    idx=idx,
+                    n=n,
+                    launch_strength=style["outer_launch_strength"],
+                    arrival_strength=style["outer_arrival_strength"],
+                    tangent_strength=style["outer_tangent_strength"],
+                    curve_base=style["outer_curve_base"],
+                    distance_scale=style["outer_curve_distance_scale"],
+                    distance_power=style["outer_curve_distance_power"],
+                    angle_scale=style["outer_curve_angle_scale"],
+                )
+
             else:
                 c_face, c_border = cubic_controls_for_dual(
                     p_face,
@@ -1043,12 +1091,10 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                     tangent_strength=style["dual_tangent_strength"],
                 )
 
-            # Re-orient controls to match edge direction u -> v
             if face_at_start:
                 p1, p2 = c_face, c_border
             else:
                 p1, p2 = c_border, c_face
-
         else:
             p1, p2 = cubic_controls_for_primal(
                 p0,
