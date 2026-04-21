@@ -511,7 +511,9 @@ def make_outer_square(primal_pos, style):
     }
 
 
-def outer_dual_outward_normal(edge, master_embedding, primal_pos, node_xy):
+def outer_dual_outward_normal(
+    edge, master_embedding, primal_pos, node_xy, outer_face_id
+):
     """
     Return the outward unit normal for a specific outer dual edge.
 
@@ -539,7 +541,7 @@ def outer_dual_outward_normal(edge, master_embedding, primal_pos, node_xy):
     opp_face_id = master_embedding["halfedge_to_face"][opp_he]
 
     # If the opposite face is not outer, point away from it
-    if master_embedding["nodes"][opp_face_id]["label"] != "Outer":
+    if opp_face_id != outer_face_id:
         p_border = np.array(
             node_xy[master_embedding["primal_edge_to_border"][edge["primal_edge"]]],
             dtype=float,
@@ -586,7 +588,10 @@ def assign_outer_square_ports(
             border_id = v
 
         p_border = np.array(node_xy[border_id], dtype=float)
-        outward = outer_dual_outward_normal(edge, master_embedding, primal_pos, node_xy)
+        outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+        outward = outer_dual_outward_normal(
+            edge, master_embedding, primal_pos, node_xy, outer_face_id
+        )
 
         bx, by = p_border
         dx, dy = outward
@@ -1550,8 +1555,9 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                     p_face = p3
                     p_border = p0
 
+                outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
                 outward = outer_dual_outward_normal(
-                    edge, master_embedding, primal_pos, node_xy
+                    edge, master_embedding, primal_pos, node_xy, outer_face_id
                 )
 
                 c_face, c_border = cubic_controls_for_outer_dual(
@@ -1864,18 +1870,6 @@ def main(filename, weights):
 
     master_embedding = build_master_embedding(primal_embedding)
 
-    for eid in ["e26", "e33"]:
-        edge = master_embedding["edges"][eid]
-        print(
-            eid,
-            "primal_edge =",
-            edge.get("primal_edge"),
-            "primal_halfedge =",
-            edge.get("primal_halfedge"),
-            "halfedge_sign =",
-            edge.get("halfedge_sign"),
-        )
-
     primal_pos = nx.combinatorial_embedding_to_pos(
         primal_embedding,
         fully_triangulate=False,
@@ -1895,11 +1889,11 @@ def main(filename, weights):
 
     if weights is None:
         weights = {
-            "node_spread": 0.0,
+            "node_spread": 0.1,
             "edge_uniformity": 0.0,
-            "face_area": 0.0,
+            "face_area": 0.1,
             "angle_penalty": 1.0,
-            "outer_roundness": 1.0,
+            "outer_roundness": 0.0,
             "outer_concavity": 100.0,
         }
 
@@ -1967,6 +1961,15 @@ def main(filename, weights):
         (
             "fig5",
             {
+                "draw_primal_edges": True,
+                "draw_dual_edges": True,
+                "border_node_size": 0,
+            },
+            False,
+        ),
+        (
+            "fig6",
+            {
                 "draw_primal_edges": False,
                 "draw_dual_edges": True,
                 "border_node_size": 0,
@@ -1976,7 +1979,7 @@ def main(filename, weights):
             False,
         ),
         (
-            "fig6",
+            "fig7",
             {
                 "draw_primal_edges": True,
                 "draw_dual_edges": True,
@@ -2014,7 +2017,7 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     "border_t": 0.5,
     "face_centroid_shrink": 0.88,
-    "region_label_offset_y": 2 * SCALE_PARAM,
+    "region_label_offset_y": 1.5 * SCALE_PARAM,
     "show_node_labels": True,
     "show_face_labels": False,
     "outer_curve_base": 0.00,
@@ -2071,7 +2074,7 @@ VIS_STYLE = {
     # Label styling
     # ------------------------------------------------------------
     "font_family": "Open Sans",
-    "font_size": 10 * SCALE_PARAM,
+    "font_size": 16 * SCALE_PARAM,
     "label_fontweight": "bold",
     "label_color": "#3A3A3A",
     "label_alpha": 0.85,
@@ -2094,13 +2097,13 @@ VIS_STYLE = {
 }
 
 
-PATH = "20260414-King is Dead Adjacency.xlsx"
+PATH = "20260421-Test Pentagon.xlsx"
 
 WEIGHTS = {
-    "node_spread": 0.0,
-    "edge_uniformity": 0.0,
+    "node_spread": 0.1,
+    "edge_uniformity": 0.5,
     "face_area": 0.0,
-    "angle_penalty": 5,
+    "angle_penalty": 0.1,
     "outer_roundness": 0.0,
     "outer_concavity": 0.0,
 }
