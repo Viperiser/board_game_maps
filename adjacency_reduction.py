@@ -113,6 +113,26 @@ def adjacency_matrix_from_graph(G):
     return labels, matrix
 
 
+def remove_degree_one_nodes(G):
+    """
+    Repeatedly remove degree-1 nodes until none remain.
+    """
+    H = G.copy()
+
+    changed = True
+    while changed:
+        changed = False
+
+        for n in list(H.nodes()):
+            if H.degree(n) == 1:
+                H.remove_node(n)
+                changed = True
+
+        # loop again in case new danglers were created
+
+    return H
+
+
 def save_adjacency_matrix_to_excel(labels, matrix, path):
     """
     Save adjacency matrix to an Excel file with labels as both row and column headers.
@@ -121,10 +141,17 @@ def save_adjacency_matrix_to_excel(labels, matrix, path):
     df.to_excel(path)
 
 
-def reduce_adjacency_matrix_excel(input_path):
+def reduce_adjacency_matrix_excel(input_path, remove_danglers=False):
     """
-    Read adjacency matrix from Excel, suppress degree-2 nodes, and save
-    reduced matrix to a new Excel file with '-reduced' appended.
+    Read adjacency matrix from Excel, suppress degree-2 nodes, optionally
+    remove degree-1 nodes, and save reduced matrix to a new Excel file.
+
+    If remove_danglers is True, repeatedly removes nodes of degree 1 after
+    suppressing degree-2 nodes.
+
+    Output file name:
+    - normal:   originalname-reduced.xlsx
+    - danglers: originalname-reduced-nodanglers.xlsx
     """
     input_path = Path(input_path)
 
@@ -134,12 +161,27 @@ def reduce_adjacency_matrix_excel(input_path):
     print(f"Original graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
 
     H = suppress_degree_two_nodes(G)
+    print(
+        f"After suppressing degree-2 nodes: {H.number_of_nodes()} nodes, {H.number_of_edges()} edges"
+    )
 
-    print(f"Reduced graph:  {H.number_of_nodes()} nodes, {H.number_of_edges()} edges")
+    if remove_danglers:
+        H = remove_degree_one_nodes(H)
+        print(
+            f"After removing danglers:        {H.number_of_nodes()} nodes, {H.number_of_edges()} edges"
+        )
 
     reduced_labels, reduced_matrix = adjacency_matrix_from_graph(H)
 
-    output_path = input_path.with_name(f"{input_path.stem}-reduced{input_path.suffix}")
+    if remove_danglers:
+        output_path = input_path.with_name(
+            f"{input_path.stem}-reduced-nodanglers{input_path.suffix}"
+        )
+    else:
+        output_path = input_path.with_name(
+            f"{input_path.stem}-reduced{input_path.suffix}"
+        )
+
     save_adjacency_matrix_to_excel(reduced_labels, reduced_matrix, output_path)
 
     print(f"Saved reduced adjacency matrix to: {output_path}")
@@ -149,4 +191,4 @@ def reduce_adjacency_matrix_excel(input_path):
 
 if __name__ == "__main__":
     INPUT_FILE = "20260421-Zone 1-Bank-Mon.xlsx"
-    reduce_adjacency_matrix_excel(INPUT_FILE)
+    reduce_adjacency_matrix_excel(INPUT_FILE, remove_danglers=True)

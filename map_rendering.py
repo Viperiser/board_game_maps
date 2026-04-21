@@ -1878,7 +1878,7 @@ def main(filename, weights):
 
     primal_pos = nx.combinatorial_embedding_to_pos(
         primal_embedding,
-        fully_triangulate=True,
+        fully_triangulate=False,
     )
 
     print("INITIAL POS:")
@@ -2109,15 +2109,15 @@ VIS_STYLE = {
 # VIS_STYLE above is the style dict for the visualisation - tweak as desired, but it should be mostly fine as is for different matrices
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
-PATH = "20260421-Zone 1-Bank-Mon-reduced.xlsx"
+PATH = "20260421-Test pentagon.xlsx"
 
 WEIGHTS = {
-    "node_spread": 1,  # Rewards spreading out nodes
+    "node_spread": 0,  # Rewards spreading out nodes
     "edge_uniformity": 0.1,  # Rewards edges of similar length
     "face_area": 0.0,  # Rewards faces having similar area
-    "angle_penalty": 0.5,  # Rewards angles that are nicely spread around their nodes
+    "angle_penalty": 0.1,  # Rewards angles that are nicely spread around their nodes
     "outer_roundness": 2.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
-    "outer_concavity": 1000.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
+    "outer_concavity": 100.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
 
 if __name__ == "__main__":
