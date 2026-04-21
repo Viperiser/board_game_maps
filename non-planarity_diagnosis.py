@@ -85,6 +85,13 @@ def suppress_degree_two_nodes(H):
 def diagnose_nonplanarity(path):
     G = read_graph_from_excel(path)
 
+    print("Holborn-Vauxhall in G?", G.has_edge("Holborn", "Vauxhall"))
+    print("Holborn neighbours:", sorted(G.neighbors("Holborn")))
+    print("Vauxhall neighbours:", sorted(G.neighbors("Vauxhall")))
+    print("Bank-Monument in G?", "Bank-Monument" in G.nodes)
+    print("Bank in G?", "Bank" in G.nodes)
+    print("Monument in G?", "Monument" in G.nodes)
+
     is_planar, embedding = nx.check_planarity(G, counterexample=True)
 
     print(f"Planar: {is_planar}")
@@ -126,4 +133,4 @@ def diagnose_nonplanarity(path):
 
 
 if __name__ == "__main__":
-    diagnose_nonplanarity("20260421-Zones 1 and 2.xlsx")
+    diagnose_nonplanarity("20260421-Zone 1-Bank-Mon.xlsx")
