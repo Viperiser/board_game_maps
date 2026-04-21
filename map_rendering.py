@@ -83,15 +83,93 @@ def point_in_polygon(point, polygon):
     return inside
 
 
-def outer_face_roundness_penalty(pos, outer_face_nodes):
+def node_angle_penalty(G, pos):
     """
-    Penalise deviation from a common radius around the outer-face centre.
+    Penalise uneven angular spacing of incident edges around each node.
+    Lower is better.
+    """
+    penalty = 0.0
+
+    for u in G.nodes():
+        neighbours = list(G.neighbors(u))
+        d = len(neighbours)
+
+        if d < 2:
+            continue
+
+        p = np.asarray(pos[u], dtype=float)
+
+        angles = []
+        for v in neighbours:
+            q = np.asarray(pos[v], dtype=float)
+            dx, dy = q - p
+            ang = math.atan2(dy, dx)
+            angles.append(ang)
+
+        angles.sort()
+
+        gaps = []
+        for i in range(d):
+            a1 = angles[i]
+            a2 = angles[(i + 1) % d]
+            gap = a2 - a1
+            if i == d - 1:
+                gap += 2 * math.pi
+            gaps.append(gap)
+
+        target = 2 * math.pi / d
+        penalty += sum((gap - target) ** 2 for gap in gaps)
+
+    return float(penalty)
+
+
+def outer_face_roundness_penalty(pos, outer_face_nodes, concavity_weight=5.0):
+    """
+    Penalise outer-face shapes that are uneven in radius and that contain
+    concave inward dents.
+
     Lower is better.
     """
     pts = np.array([pos[n] for n in outer_face_nodes], dtype=float)
+
+    # --------------------------------------------------
+    # 1. Existing radial-variance term
+    # --------------------------------------------------
     centre = pts.mean(axis=0)
     radii = np.linalg.norm(pts - centre, axis=1)
-    return float(np.var(radii))
+    radius_var = float(np.var(radii))
+
+    # --------------------------------------------------
+    # 2. New concavity penalty
+    #    Penalise turns that go the "wrong way" around the boundary
+    # --------------------------------------------------
+    area2 = 0.0
+    n = len(pts)
+    for i in range(n):
+        x1, y1 = pts[i]
+        x2, y2 = pts[(i + 1) % n]
+        area2 += x1 * y2 - x2 * y1
+
+    orientation = 1.0 if area2 >= 0 else -1.0
+
+    concavity_penalty = 0.0
+    for i in range(n):
+        p_prev = pts[(i - 1) % n]
+        p = pts[i]
+        p_next = pts[(i + 1) % n]
+
+        v1 = p - p_prev
+        v2 = p_next - p
+
+        cross_z = v1[0] * v2[1] - v1[1] * v2[0]
+
+        # If the signed turn disagrees with the polygon orientation,
+        # this is a concave kink. Penalise its magnitude.
+        bad_turn = -orientation * cross_z
+        if bad_turn > 0:
+            concavity_penalty += bad_turn
+
+    return radius_var + concavity_weight * concavity_penalty
 
 
 def extract_faces_from_embedding(primal_embedding):
@@ -221,14 +299,15 @@ def layout_score(G, pos, faces, weights=None, outer_face_nodes=None):
     """
     Higher is better.
     """
-    if weights is None:
-        weights = {
-            "node_spread": 1.0,
-            "edge_uniformity": 0.35,
-            "face_area": 0.8,
-            "angle_penalty": 0.15,
-            "outer_roundness": 0.0,
-        }
+    # if weights is None:
+    #     weights = {
+    #         "node_spread": 1.0,
+    #         "edge_uniformity": 0.35,
+    #         "face_area": 0.8,
+    #         "angle_penalty": 0.15,
+    #         "outer_roundness": 0.0,
+    #     }
+
     nodes = list(G.nodes())
     edges = list(G.edges())
 
@@ -272,18 +351,15 @@ def layout_score(G, pos, faces, weights=None, outer_face_nodes=None):
         mean_bounded_area = 0.0
 
     # --------------------------------------------------
-    # 4. Angle penalty: penalise skinny faces
+    # 4. Angle penalty: penalise uneven edge fans at nodes
     # --------------------------------------------------
-    angle_penalty = 0.0
-    for face in faces:
-        pts = [pos[n] for n in face]
-        min_ang = polygon_min_angle(pts)
-        if min_ang > 0:
-            angle_penalty += 1.0 / max(min_ang, 1e-6)
+    angle_penalty = node_angle_penalty(G, pos)
 
     outer_roundness_penalty = 0.0
     if outer_face_nodes is not None and len(outer_face_nodes) >= 3:
-        outer_roundness_penalty = outer_face_roundness_penalty(pos, outer_face_nodes)
+        outer_roundness_penalty = outer_face_roundness_penalty(
+            pos, outer_face_nodes, concavity_weight=weights.get("outer_concavity", 20.0)
+        )
 
     score = (
         weights["node_spread"] * min_node_dist
@@ -538,7 +614,6 @@ def assign_outer_square_ports(
             x_top = bx + t_top * dx
             if t_top > 0 and left <= x_top <= right:
                 candidates.append((t_top, (x_top, top)))
-
         if not candidates:
             ports[edge_id] = tuple(p_border)
         else:
@@ -1212,13 +1287,13 @@ def refine_primal_layout(
     else:
         fixed_nodes = set(fixed_nodes)
 
-    if weights is None:
-        weights = {
-            "node_spread": 1.0,
-            "edge_uniformity": 0.35,
-            "face_area": 0.8,
-            "angle_penalty": 0.15,
-        }
+    # if weights is None:
+    #     weights = {
+    #         "node_spread": 1.0,
+    #         "edge_uniformity": 0.35,
+    #         "face_area": 0.8,
+    #         "angle_penalty": 0.15,
+    #     }
 
     rng = random.Random(seed)
 
@@ -1390,6 +1465,9 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     # ------------------------------------------------------------
     nodes = []
     for node_id, attrs in master_embedding["nodes"].items():
+        if node_id == outer_face_id:
+            continue
+
         nodes.append(
             {
                 "id": node_id,
@@ -1398,7 +1476,6 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                 "label": attrs.get("label", str(node_id)),
             }
         )
-
     # ------------------------------------------------------------
     # 5. Build edge paths
     #    Everything is cubic: [start, control1, control2, end]
@@ -1545,7 +1622,7 @@ def get_visual_data(master_embedding, primal_pos, style=None):
             node_labels.append(
                 {
                     "text": attrs.get("label", str(node_id)),
-                    "xy": (x, y + style["region_label_offset_y"]),
+                    "xy": (x, y),
                     "node_id": node_id,
                     "type": "region",
                 }
@@ -1554,6 +1631,8 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     if style["show_face_labels"]:
         for node_id, attrs in master_embedding["nodes"].items():
             if attrs["type"] != "face":
+                continue
+            if node_id == outer_face_id:
                 continue
 
             face_labels.append(
@@ -1688,6 +1767,7 @@ def draw_visual_data(visual_data, style=None):
     if style["show_node_labels"]:
         for label in visual_data.get("node_labels", []):
             x, y = label["xy"]
+            y = y + style["region_label_offset_y"]
 
             ax.text(
                 float(x),
@@ -1767,7 +1847,7 @@ def draw_visual_data(visual_data, style=None):
     return fig, ax
 
 
-def main(filename):
+def main(filename, weights):
     labels, matrix = read_adjacency_matrix_from_excel(filename)
     print("Labels:", labels)
     print("Matrix:\n", matrix)
@@ -1783,6 +1863,18 @@ def main(filename):
         print(u, list(primal_embedding.neighbors_cw_order(u)))
 
     master_embedding = build_master_embedding(primal_embedding)
+
+    for eid in ["e26", "e33"]:
+        edge = master_embedding["edges"][eid]
+        print(
+            eid,
+            "primal_edge =",
+            edge.get("primal_edge"),
+            "primal_halfedge =",
+            edge.get("primal_halfedge"),
+            "halfedge_sign =",
+            edge.get("halfedge_sign"),
+        )
 
     primal_pos = nx.combinatorial_embedding_to_pos(
         primal_embedding,
@@ -1801,13 +1893,17 @@ def main(filename):
     print("OUTER FACE ID:", outer_face_id)
     print("OUTER FACE NODES:", outer_face_nodes)
 
-    weights = {
-        "node_spread": 1.0,
-        "edge_uniformity": 0.1,
-        "face_area": 0.3,
-        "angle_penalty": 0.2,
-        "outer_roundness": 3.0,
-    }
+    if weights is None:
+        weights = {
+            "node_spread": 0.0,
+            "edge_uniformity": 0.0,
+            "face_area": 0.0,
+            "angle_penalty": 1.0,
+            "outer_roundness": 1.0,
+            "outer_concavity": 100.0,
+        }
+
+    print("WEIGHTS IN MAIN:", weights)
 
     primal_pos = refine_primal_layout(
         G,
@@ -1824,7 +1920,7 @@ def main(filename):
     )
 
     visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
-    # print("Visual data:", visual_data)
+    print("Visual data:", visual_data)
 
     base_path = Path(filename)
     stem = base_path.stem
@@ -1856,7 +1952,7 @@ def main(filename):
             "fig3",
             {
                 "draw_primal_edges": True,
-                "draw_dual_edges": True,
+                "draw_dual_edges": False,
             },
             True,
         ),
@@ -1876,6 +1972,16 @@ def main(filename):
                 "border_node_size": 0,
                 "face_node_size": 0,
                 "region_label_offset_y": 0,
+            },
+            False,
+        ),
+        (
+            "fig6",
+            {
+                "draw_primal_edges": True,
+                "draw_dual_edges": True,
+                "border_node_size": 0,
+                "face_node_size": 0,
             },
             False,
         ),
@@ -1908,7 +2014,7 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     "border_t": 0.5,
     "face_centroid_shrink": 0.88,
-    "region_label_offset_y": 3.5 * SCALE_PARAM,
+    "region_label_offset_y": 2 * SCALE_PARAM,
     "show_node_labels": True,
     "show_face_labels": False,
     "outer_curve_base": 0.00,
@@ -1988,7 +2094,17 @@ VIS_STYLE = {
 }
 
 
-PATH = "20260421-Test Pentagon.xlsx"
+PATH = "20260414-King is Dead Adjacency.xlsx"
+
+WEIGHTS = {
+    "node_spread": 0.0,
+    "edge_uniformity": 0.0,
+    "face_area": 0.0,
+    "angle_penalty": 5,
+    "outer_roundness": 0.0,
+    "outer_concavity": 0.0,
+}
+
 
 if __name__ == "__main__":
-    main(PATH)
+    main(PATH, WEIGHTS)
