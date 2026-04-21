@@ -2,12 +2,13 @@ import pandas as pd
 import numpy as np
 import networkx as nx
 import math
-
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import PathPatch
-from matplotlib.path import Path
+from matplotlib.path import Path as MplPath
 from matplotlib.patches import Rectangle
+from matplotlib.colors import to_rgba
 
 
 # ======================================================================
@@ -1483,31 +1484,12 @@ def draw_visual_data(visual_data, style=None):
     if style is None:
         style = {}
 
-    # Defaults
-    style = {
-        "region_node_facecolor": "#ffffff",
-        "region_node_edgecolor": "#444444",
-        "border_node_facecolor": "#dddddd",
-        "border_node_edgecolor": "#666666",
-        "face_node_facecolor": "#ffcccc",
-        "face_node_edgecolor": "#aa4444",
-        "primal_edge_color": "#444444",
-        "dual_edge_color": "#cc4444",
-        "region_node_size": 300,
-        "border_node_size": 120,
-        "face_node_size": 200,
-        "edge_width": 1.5,
-        "font_family": "Open Sans",
-        "font_size": 10,
-        "label_color": "#222222",
-        "label_bbox_alpha": 0.8,
-        "draw_primal_edges": True,
-        "draw_dual_edges": True,
-        **style,
-    }
+    style = {**VIS_STYLE, **style}
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-
+    fig, ax = plt.subplots(
+        figsize=style["figure_size"],
+        dpi=style.get("figure_dpi", 200),
+    )
     # ------------------------------------------------------------
     # 1. Draw edges (cubic Bezier)
     # ------------------------------------------------------------
@@ -1520,11 +1502,10 @@ def draw_visual_data(visual_data, style=None):
         p0, p1, p2, p3 = edge["points"]
 
         verts = [p0, p1, p2, p3]
-        codes = [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4]
+        codes = [MplPath.MOVETO, MplPath.CURVE4, MplPath.CURVE4, MplPath.CURVE4]
+        path = MplPath(verts, codes)
 
-        path = Path(verts, codes)
-
-        color = (
+        edgecolor = (
             style["primal_edge_color"]
             if edge["type"] == "primal"
             else style["dual_edge_color"]
@@ -1533,9 +1514,11 @@ def draw_visual_data(visual_data, style=None):
         patch = PathPatch(
             path,
             facecolor="none",
-            edgecolor=color,
+            edgecolor=edgecolor,
             lw=style["edge_width"],
-            alpha=0.9,
+            alpha=style["edge_alpha"],
+            capstyle=style["edge_capstyle"],
+            joinstyle=style["edge_joinstyle"],
         )
         ax.add_patch(patch)
 
@@ -1558,28 +1541,38 @@ def draw_visual_data(visual_data, style=None):
             continue
         node_groups[node["type"]].append(node)
 
+    node_linewidth = (
+        style["edge_width"]
+        if style["node_linewidth"] is None
+        else style["node_linewidth"]
+    )
+
     def draw_nodes(nodes, facecolor, edgecolor, size):
         if not nodes:
             return
+
         xs = [float(n["xy"][0]) for n in nodes]
         ys = [float(n["xy"][1]) for n in nodes]
+
+        edge_rgba = to_rgba(edgecolor, style["edge_alpha"])
 
         ax.scatter(
             xs,
             ys,
             s=size,
             c=facecolor,
-            edgecolors=edgecolor,
-            linewidths=style["edge_width"],
-            zorder=3,
+            edgecolors=edge_rgba,
+            linewidths=node_linewidth,
+            zorder=style["node_zorder"],
         )
 
-    draw_nodes(
-        node_groups["region"],
-        style["region_node_facecolor"],
-        style["region_node_edgecolor"],
-        style["region_node_size"],
-    )
+    if style["draw_primal_edges"]:
+        draw_nodes(
+            node_groups["region"],
+            style["region_node_facecolor"],
+            style["region_node_edgecolor"],
+            style["region_node_size"],
+        )
 
     draw_nodes(
         node_groups["border"],
@@ -1598,49 +1591,53 @@ def draw_visual_data(visual_data, style=None):
     # ------------------------------------------------------------
     # 3. Draw labels
     # ------------------------------------------------------------
-    for label in visual_data.get("node_labels", []):
-        x, y = label["xy"]
+    if style["show_node_labels"]:
+        for label in visual_data.get("node_labels", []):
+            x, y = label["xy"]
 
-        ax.text(
-            float(x),
-            float(y),
-            label["text"],
-            fontsize=style["font_size"],
-            family=style["font_family"],
-            color=style["label_color"],
-            ha="center",
-            va="center",
-            bbox=dict(
-                facecolor="white",
-                alpha=style["label_bbox_alpha"],
-                edgecolor="none",
-            ),
-            zorder=4,
-        )
+            ax.text(
+                float(x),
+                float(y),
+                label["text"],
+                fontsize=style["font_size"],
+                family=style["font_family"],
+                color=style["label_color"],
+                ha=style["label_ha"],
+                va=style["label_va"],
+                bbox=dict(
+                    boxstyle=style["label_bbox_boxstyle"],
+                    facecolor=style["label_bbox_facecolor"],
+                    alpha=style["label_bbox_alpha"],
+                    edgecolor=style["label_bbox_edgecolor"],
+                ),
+                zorder=style["label_zorder"],
+            )
 
-    for label in visual_data.get("face_labels", []):
-        x, y = label["xy"]
+    if style["show_face_labels"]:
+        for label in visual_data.get("face_labels", []):
+            x, y = label["xy"]
 
-        ax.text(
-            float(x),
-            float(y),
-            label["text"],
-            fontsize=style["font_size"],
-            family=style["font_family"],
-            color="#aa0000",
-            ha="center",
-            va="center",
-            bbox=dict(
-                facecolor="white",
-                alpha=style["label_bbox_alpha"],
-                edgecolor="none",
-            ),
-            zorder=4,
-        )
+            ax.text(
+                float(x),
+                float(y),
+                label["text"],
+                fontsize=style["font_size"],
+                family=style["font_family"],
+                color=style["face_label_color"],
+                ha=style["label_ha"],
+                va=style["label_va"],
+                bbox=dict(
+                    boxstyle=style["label_bbox_boxstyle"],
+                    facecolor=style["label_bbox_facecolor"],
+                    alpha=style["label_bbox_alpha"],
+                    edgecolor=style["label_bbox_edgecolor"],
+                ),
+                zorder=style["label_zorder"],
+            )
+
     # ------------------------------------------------------------
     # 4. Draw outer square if present
     # ------------------------------------------------------------
-
     outer_square = visual_data.get("outer_square")
 
     if outer_square is not None:
@@ -1652,39 +1649,116 @@ def draw_visual_data(visual_data, style=None):
             (left, bottom),
             side,
             side,
-            facecolor="none",
-            edgecolor=style.get("outer_square_color", style["dual_edge_color"]),
-            linewidth=style.get("outer_square_width", style["edge_width"]),
-            linestyle=style.get("outer_square_linestyle", "-"),
-            zorder=2,
+            facecolor=style["outer_square_facecolor"],
+            edgecolor=style["outer_square_color"],
+            linewidth=style["outer_square_width"],
+            linestyle=style["outer_square_linestyle"],
+            zorder=style["outer_square_zorder"],
         )
         ax.add_patch(rect)
 
     # ------------------------------------------------------------
     # 5. Final formatting
     # ------------------------------------------------------------
-    ax.set_aspect("equal")
-    ax.axis("off")
+    ax.set_aspect(style["axis_aspect"])
 
-    plt.tight_layout()
+    if not style["axis_visible"]:
+        ax.axis("off")
+
+    if style["tight_layout"]:
+        plt.tight_layout()
 
     return fig, ax
 
 
+def main(filename):
+    labels, matrix = read_adjacency_matrix_from_excel(filename)
+    print("Labels:", labels)
+    print("Matrix:\n", matrix)
+
+    G = graph_from_adjacency_matrix(labels, matrix)
+
+    is_planar, primal_embedding = get_planar_embedding(G)
+    if not is_planar:
+        raise ValueError(f"Graph from {filename!r} is not planar")
+
+    master_embedding = build_master_embedding(primal_embedding)
+
+    primal_pos = nx.combinatorial_embedding_to_pos(
+        primal_embedding,
+        fully_triangulate=True,
+    )
+
+    outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+    face_lookup = {face["id"]: face for face in master_embedding["faces"]}
+    outer_face_nodes = list(dict.fromkeys(face_lookup[outer_face_id]["boundary_nodes"]))
+
+    weights = {
+        "node_spread": 1.0,
+        "edge_uniformity": 0.25,
+        "face_area": 0.9,
+        "angle_penalty": 0.1,
+        "outer_roundness": 3.0,
+    }
+
+    primal_pos = refine_primal_layout(
+        G,
+        primal_embedding,
+        primal_pos,
+        iterations=4000,
+        step_scale=0.04,
+        temperature_start=0.02,
+        temperature_end=0.0005,
+        fixed_nodes=None,
+        weights=weights,
+        outer_face_nodes=outer_face_nodes,
+        seed=42,
+    )
+
+    visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
+    print("Visual data:", visual_data)
+
+    base_path = Path(filename)
+    stem = base_path.stem
+
+    figure_specs = [
+        ("fig1", {"draw_primal_edges": True, "draw_dual_edges": False}, False),
+        ("fig2", {"draw_primal_edges": False, "draw_dual_edges": True}, False),
+        ("fig3", {"draw_primal_edges": True, "draw_dual_edges": True}, True),
+    ]
+
+    for suffix, layer_style, show_figure in figure_specs:
+        fig, ax = draw_visual_data(
+            visual_data,
+            style={
+                **VIS_STYLE,
+                **layer_style,
+            },
+        )
+
+        output_path = base_path.with_name(f"{stem}-{suffix}.png")
+        fig.savefig(output_path, dpi=VIS_STYLE["figure_dpi"], bbox_inches="tight")
+        print(f"Saved {output_path}")
+
+        if show_figure:
+            plt.show()
+        else:
+            plt.close(fig)
+
+
 VIS_STYLE = {
-    # Border nodes sit at this fraction along the primal edge
+    # ------------------------------------------------------------
+    # Geometry / construction parameters
+    # ------------------------------------------------------------
     "border_t": 0.5,
-    # Face-node placement
-    "face_centroid_shrink": 0.88,  # pull bounded-face centroids slightly inward
-    # Labels
-    "region_label_offset_y": 0.3,
+    "face_centroid_shrink": 0.88,
+    "region_label_offset_y": 3.5,
     "show_node_labels": True,
     "show_face_labels": False,
-    # Outer face curves and margin
-    "outer_curve_base": 0.00,  # minimum outward bend even for nearby/easy edges
-    "outer_curve_distance_scale": 0.5,  # how much distance matters
-    "outer_curve_distance_power": 1,  # how nonlinear the distance effect is
-    "outer_curve_angle_scale": 0,  # how much extra bend you add when the outer node is at an awkward angle
+    "outer_curve_base": 0.00,
+    "outer_curve_distance_scale": 0.5,
+    "outer_curve_distance_power": 1,
+    "outer_curve_angle_scale": 0,
     "primal_control_alpha1": 1.0 / 3.0,
     "primal_control_alpha2": 2.0 / 3.0,
     "dual_launch_strength": 0.28,
@@ -1695,108 +1769,68 @@ VIS_STYLE = {
     "outer_tangent_strength": 0.05,
     "outer_square_margin": 0.1,
     "outer_square_side": None,  # optional fixed size; None = derive from primal bbox
+    # ------------------------------------------------------------
+    # Visibility
+    # ------------------------------------------------------------
+    "draw_primal_edges": True,
+    "draw_dual_edges": True,
+    # ------------------------------------------------------------
+    # Figure
+    # ------------------------------------------------------------
+    "figure_size": (8, 6),
+    "figure_dpi": 200,
+    "axis_aspect": "equal",
+    "axis_visible": False,
+    "tight_layout": True,
+    # ------------------------------------------------------------
+    # Edge styling
+    # ------------------------------------------------------------
+    "primal_edge_color": "#303030",
+    "dual_edge_color": "#b24a4a",
+    "edge_width": 2,
+    "edge_alpha": 0.7,
+    "edge_capstyle": "round",
+    "edge_joinstyle": "round",
+    # ------------------------------------------------------------
+    # Node styling
+    # ------------------------------------------------------------
+    "region_node_facecolor": "#fcfcfc",
+    "region_node_edgecolor": "#303030",
+    "border_node_facecolor": "#d9d9d9",
+    "border_node_edgecolor": "#6b6b6b",
+    "face_node_facecolor": "#f3d9d9",
+    "face_node_edgecolor": "#9e4b4b",
+    "region_node_size": 300,
+    "border_node_size": 0,
+    "face_node_size": 0,
+    "node_linewidth": None,  # None means use edge_width
+    "node_zorder": 3,
+    # ------------------------------------------------------------
+    # Label styling
+    # ------------------------------------------------------------
+    "font_family": "Open Sans",
+    "font_size": 10,
+    "label_color": "#333333",
+    "face_label_color": "#aa0000",
+    "label_ha": "center",
+    "label_va": "center",
+    "label_zorder": 4,
+    "label_bbox_boxstyle": "round,pad=0.2",
+    "label_bbox_facecolor": "#ffffff",
+    "label_bbox_alpha": 0,
+    "label_bbox_edgecolor": "none",
+    # ------------------------------------------------------------
+    # Outer square styling
+    # ------------------------------------------------------------
+    "outer_square_color": "#cc4444",
+    "outer_square_width": 2,
+    "outer_square_linestyle": "-",
+    "outer_square_facecolor": "none",
+    "outer_square_zorder": 2,
 }
 
-VIS_STYLE.update(
-    {
-        # Colours
-        "region_node_facecolor": "#ffffff",
-        "region_node_edgecolor": "#444444",
-        "border_node_facecolor": "#dddddd",
-        "border_node_edgecolor": "#666666",
-        "face_node_facecolor": "#ffcccc",
-        "face_node_edgecolor": "#aa4444",
-        "primal_edge_color": "#444444",
-        "dual_edge_color": "#cc4444",
-        # Sizes
-        "region_node_size": 300,
-        "border_node_size": 0,
-        "face_node_size": 0,
-        "edge_width": 1.5,
-        # Labels
-        "font_family": "Open Sans",
-        "font_size": 10,
-        "label_color": "#222222",
-        "label_bbox_alpha": 0,
-        "outer_square_color": "#cc4444",
-        "outer_square_width": 1.5,
-        "outer_square_linestyle": "-",
-    }
-)
 
-labels, matrix = read_adjacency_matrix_from_excel("20260417-Ticket to Ride London.xlsx")
-print("Labels:", labels)
-print("Matrix:\n", matrix)
+PATH = "20260416-Test square diagonal.xlsx"
 
-G = graph_from_adjacency_matrix(labels, matrix)
-
-is_planar, primal_embedding = get_planar_embedding(G)
-
-master_embedding = build_master_embedding(primal_embedding)
-
-primal_pos = nx.combinatorial_embedding_to_pos(
-    primal_embedding,
-    fully_triangulate=True,
-)
-
-outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
-face_lookup = {face["id"]: face for face in master_embedding["faces"]}
-outer_face_nodes = list(dict.fromkeys(face_lookup[outer_face_id]["boundary_nodes"]))
-
-weights = {
-    "node_spread": 1.0,
-    "edge_uniformity": 0.25,
-    "face_area": 0.9,
-    "angle_penalty": 0.1,
-    "outer_roundness": 3.0,
-}
-
-primal_pos = refine_primal_layout(
-    G,
-    primal_embedding,
-    primal_pos,
-    iterations=4000,
-    step_scale=0.04,
-    temperature_start=0.02,
-    temperature_end=0.0005,
-    fixed_nodes=None,
-    weights=weights,
-    outer_face_nodes=outer_face_nodes,
-    seed=42,
-)
-visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
-print("Visual data:", visual_data)
-
-fig, ax = draw_visual_data(
-    visual_data,
-    style={
-        **VIS_STYLE,
-        "draw_primal_edges": True,
-        "draw_dual_edges": False,
-    },
-)
-
-plt.show()
-
-fig, ax = draw_visual_data(
-    visual_data,
-    style={
-        **VIS_STYLE,
-        "draw_primal_edges": False,
-        "draw_dual_edges": True,
-    },
-)
-
-plt.show()
-
-
-fig, ax = draw_visual_data(
-    visual_data,
-    style={
-        **VIS_STYLE,
-        "draw_primal_edges": True,
-        "draw_dual_edges": True,
-    },
-)
-
-plt.show()
+if __name__ == "__main__":
+    main(PATH)
