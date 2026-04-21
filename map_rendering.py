@@ -42,9 +42,15 @@ def _outer_face_size_score(embedding):
 
 def detect_outer_face_id(master_embedding, primal_pos):
     """
-    Pick the face with the largest absolute polygon area, based on the
-    boundary nodes in the primal drawing.
+    Return the face labelled 'Outer' if present.
+    Otherwise fall back to largest polygon area.
     """
+    for face in master_embedding["faces"]:
+        face_id = face["id"]
+        label = master_embedding["nodes"][face_id].get("label")
+        if label == "Outer":
+            return face_id
+
     best_face_id = None
     best_area = -1.0
 
@@ -2009,7 +2015,7 @@ def main(filename, weights):
             plt.close(fig)
 
 
-SCALE_PARAM = 0.5
+SCALE_PARAM = 0.2
 
 VIS_STYLE = {
     # ------------------------------------------------------------
@@ -2097,17 +2103,22 @@ VIS_STYLE = {
 }
 
 
-PATH = "20260421-Test Pentagon.xlsx"
+#### Notes to future Nick
+# PATH is the file with the adjacency matrix in - must be binary and symmetric
+# WEIGHTS is a dict of weights for finding the best layout - these need tweaking for different matrices
+# VIS_STYLE above is the style dict for the visualisation - tweak as desired, but it should be mostly fine as is for different matrices
+# Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
+
+PATH = "20260421-Zone 1 Tube Map-Bank-Mon.xlsx"
 
 WEIGHTS = {
-    "node_spread": 0.1,
-    "edge_uniformity": 0.5,
-    "face_area": 0.0,
-    "angle_penalty": 0.1,
-    "outer_roundness": 0.0,
-    "outer_concavity": 0.0,
+    "node_spread": 0.1,  # Rewards spreading out nodes
+    "edge_uniformity": 0.1,  # Rewards edges of similar length
+    "face_area": 0.0,  # Rewards faces having similar area
+    "angle_penalty": 0.1,  # Rewards angles that are nicely spread around their nodes
+    "outer_roundness": 2.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
+    "outer_concavity": 1000.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
-
 
 if __name__ == "__main__":
     main(PATH, WEIGHTS)
