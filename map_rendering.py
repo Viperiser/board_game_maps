@@ -3,6 +3,7 @@ import numpy as np
 import networkx as nx
 import math
 from pathlib import Path
+import random
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import PathPatch
@@ -10,10 +11,33 @@ from matplotlib.path import Path as MplPath
 from matplotlib.patches import Rectangle
 from matplotlib.colors import to_rgba
 
+import matplotlib as mpl
+
+mpl.rcParams["svg.fonttype"] = "path"
+mpl.rcParams["pdf.fonttype"] = 42
 
 # ======================================================================
 # Helpers
 # ======================================================================
+
+
+def _embedding_faces(embedding):
+    """Return all faces of a PlanarEmbedding as lists of nodes."""
+    counted_half_edges = set()
+    faces = []
+
+    for v in embedding:
+        for w in embedding.neighbors_cw_order(v):
+            if (v, w) not in counted_half_edges:
+                face = embedding.traverse_face(v, w, counted_half_edges)
+                faces.append(face)
+
+    return faces
+
+
+def _outer_face_size_score(embedding):
+    faces = _embedding_faces(embedding)
+    return -max(len(face) for face in faces)
 
 
 def detect_outer_face_id(master_embedding, primal_pos):
@@ -73,15 +97,17 @@ def outer_face_roundness_penalty(pos, outer_face_nodes):
 def extract_faces_from_embedding(primal_embedding):
     """
     Return list of faces, each as an ordered list of nodes.
+    Deterministic ordering.
     """
     seen_half_edges = set()
     faces = []
 
-    for u, v in primal_embedding.edges():
-        if (u, v) in seen_half_edges:
-            continue
-        face = list(primal_embedding.traverse_face(u, v, seen_half_edges))
-        faces.append(face)
+    for u in sorted(primal_embedding.nodes(), key=str):
+        for v in primal_embedding.neighbors_cw_order(u):
+            if (u, v) in seen_half_edges:
+                continue
+            face = list(primal_embedding.traverse_face(u, v, seen_half_edges))
+            faces.append(face)
 
     return faces
 
@@ -711,6 +737,48 @@ def polygon_centroid(points):
     return (cx, cy)
 
 
+def _ordered_copy(G, node_order):
+    H = nx.Graph()
+    H.add_nodes_from(node_order)
+    H.add_edges_from(G.edges())
+    return H
+
+
+def _generate_orderings(G, n_trials, seed):
+    rng = random.Random(seed)
+
+    nodes = list(G.nodes())
+
+    # deterministic base heuristics
+    deg = dict(G.degree())
+    try:
+        core = nx.core_number(G)
+    except:
+        core = {v: 0 for v in G.nodes()}
+
+    orderings = []
+
+    # 1. original order
+    orderings.append(nodes)
+
+    # 2. low degree first (more "boundary-like")
+    orderings.append(sorted(nodes, key=lambda v: (deg[v], str(v))))
+
+    # 3. high degree first
+    orderings.append(sorted(nodes, key=lambda v: (-deg[v], str(v))))
+
+    # 4. low core first
+    orderings.append(sorted(nodes, key=lambda v: (core[v], str(v))))
+
+    # 5+. random but deterministic
+    for i in range(max(0, n_trials - len(orderings))):
+        shuffled = nodes[:]
+        rng.shuffle(shuffled)
+        orderings.append(shuffled)
+
+    return orderings[:n_trials]
+
+
 # ======================================================================
 # Main functions
 # ======================================================================
@@ -796,28 +864,49 @@ def graph_from_adjacency_matrix(labels, matrix):
     return G
 
 
-def get_planar_embedding(G, require_planar=True):
+def get_planar_embedding(
+    G,
+    require_planar=True,
+    n_trials=1,
+    seed=42,
+    score_fn=None,
+):
     """
     Check planarity and return a PlanarEmbedding if planar.
-
-    Parameters
-    ----------
-    G : nx.Graph
-        Input graph
-    require_planar : bool, default True
-        If True, raise an error when graph is not planar
-
-    Returns
-    -------
-    is_planar : bool
-    embedding : nx.PlanarEmbedding or None
+    Optionally try multiple node orderings and pick the best embedding.
     """
-    is_planar, emb = nx.check_planarity(G)
 
-    if require_planar and not is_planar:
+    if score_fn is None:
+        score_fn = _outer_face_size_score
+
+    best_emb = None
+    best_score = None
+    is_planar_global = False
+
+    orderings = _generate_orderings(G, n_trials, seed)
+
+    for node_order in orderings:
+        H = nx.Graph()
+        H.add_nodes_from(node_order)
+        H.add_edges_from(G.edges())
+
+        is_planar, emb = nx.check_planarity(H)
+
+        if not is_planar:
+            continue
+
+        is_planar_global = True
+
+        score = score_fn(emb)
+
+        if best_emb is None or score < best_score:
+            best_emb = emb
+            best_score = score
+
+    if require_planar and not is_planar_global:
         raise ValueError("Graph is not planar")
 
-    return is_planar, emb
+    return is_planar_global, best_emb
 
 
 def build_master_embedding(primal_embedding):
@@ -1182,6 +1271,11 @@ def refine_primal_layout(
                 current_score = new_score
             else:
                 pos[node] = old_xy
+
+    print("FINAL SCORE:", current_score)
+    print("FINAL POS:")
+    for k in sorted(pos, key=str):
+        print(k, tuple(round(x, 6) for x in pos[k]))
 
     return {k: tuple(v) for k, v in pos.items()}
 
@@ -1601,6 +1695,8 @@ def draw_visual_data(visual_data, style=None):
                 label["text"],
                 fontsize=style["font_size"],
                 family=style["font_family"],
+                fontweight=style["label_fontweight"],
+                alpha=style["label_alpha"],
                 color=style["label_color"],
                 ha=style["label_ha"],
                 va=style["label_va"],
@@ -1678,26 +1774,38 @@ def main(filename):
 
     G = graph_from_adjacency_matrix(labels, matrix)
 
-    is_planar, primal_embedding = get_planar_embedding(G)
+    is_planar, primal_embedding = get_planar_embedding(G, n_trials=10, seed=42)
     if not is_planar:
         raise ValueError(f"Graph from {filename!r} is not planar")
+
+    print("EMBEDDING SIGNATURE:")
+    for u in sorted(primal_embedding.nodes(), key=str):
+        print(u, list(primal_embedding.neighbors_cw_order(u)))
 
     master_embedding = build_master_embedding(primal_embedding)
 
     primal_pos = nx.combinatorial_embedding_to_pos(
         primal_embedding,
-        fully_triangulate=True,
+        fully_triangulate=False,
     )
 
+    print("INITIAL POS:")
+    for k in sorted(primal_pos, key=str):
+        print(k, tuple(round(x, 6) for x in primal_pos[k]))
+
     outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+
     face_lookup = {face["id"]: face for face in master_embedding["faces"]}
     outer_face_nodes = list(dict.fromkeys(face_lookup[outer_face_id]["boundary_nodes"]))
 
+    print("OUTER FACE ID:", outer_face_id)
+    print("OUTER FACE NODES:", outer_face_nodes)
+
     weights = {
         "node_spread": 1.0,
-        "edge_uniformity": 0.25,
-        "face_area": 0.9,
-        "angle_penalty": 0.1,
+        "edge_uniformity": 0.1,
+        "face_area": 0.3,
+        "angle_penalty": 0.2,
         "outer_roundness": 3.0,
     }
 
@@ -1716,15 +1824,61 @@ def main(filename):
     )
 
     visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
-    print("Visual data:", visual_data)
+    # print("Visual data:", visual_data)
 
     base_path = Path(filename)
     stem = base_path.stem
 
+    figures_dir = base_path.parent / "Figures"
+    figures_dir.mkdir(exist_ok=True)
+
     figure_specs = [
-        ("fig1", {"draw_primal_edges": True, "draw_dual_edges": False}, False),
-        ("fig2", {"draw_primal_edges": False, "draw_dual_edges": True}, False),
-        ("fig3", {"draw_primal_edges": True, "draw_dual_edges": True}, True),
+        (
+            "fig1",
+            {
+                "draw_primal_edges": True,
+                "draw_dual_edges": False,
+                "border_node_size": 0,
+                "face_node_size": 0,
+            },
+            False,
+        ),
+        (
+            "fig2",
+            {
+                "draw_primal_edges": True,
+                "draw_dual_edges": False,
+                "border_node_size": 0,
+            },
+            False,
+        ),
+        (
+            "fig3",
+            {
+                "draw_primal_edges": True,
+                "draw_dual_edges": True,
+            },
+            True,
+        ),
+        (
+            "fig4",
+            {
+                "draw_primal_edges": True,
+                "draw_dual_edges": True,
+            },
+            False,
+        ),
+        (
+            "fig5",
+            {
+                "draw_primal_edges": False,
+                "draw_dual_edges": True,
+                "border_node_size": 0,
+                "face_node_size": 0,
+                "region_label_offset_y": 0,
+            },
+            False,
+        ),
     ]
 
     for suffix, layer_style, show_figure in figure_specs:
@@ -1736,7 +1890,7 @@ def main(filename):
             },
         )
 
-        output_path = base_path.with_name(f"{stem}-{suffix}.png")
+        output_path = figures_dir / f"{stem}-{suffix}.png"
         fig.savefig(output_path, dpi=VIS_STYLE["figure_dpi"], bbox_inches="tight")
         print(f"Saved {output_path}")
 
@@ -1746,13 +1900,15 @@ def main(filename):
             plt.close(fig)
 
 
+SCALE_PARAM = 0.5
+
 VIS_STYLE = {
     # ------------------------------------------------------------
     # Geometry / construction parameters
     # ------------------------------------------------------------
     "border_t": 0.5,
     "face_centroid_shrink": 0.88,
-    "region_label_offset_y": 3.5,
+    "region_label_offset_y": 3.5 * SCALE_PARAM,
     "show_node_labels": True,
     "show_face_labels": False,
     "outer_curve_base": 0.00,
@@ -1785,8 +1941,8 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     # Edge styling
     # ------------------------------------------------------------
-    "primal_edge_color": "#303030",
-    "dual_edge_color": "#b24a4a",
+    "primal_edge_color": "#A45A6F",
+    "dual_edge_color": "#4A6FA4",
     "edge_width": 2,
     "edge_alpha": 0.7,
     "edge_capstyle": "round",
@@ -1794,26 +1950,28 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     # Node styling
     # ------------------------------------------------------------
-    "region_node_facecolor": "#fcfcfc",
-    "region_node_edgecolor": "#303030",
-    "border_node_facecolor": "#d9d9d9",
-    "border_node_edgecolor": "#6b6b6b",
-    "face_node_facecolor": "#f3d9d9",
-    "face_node_edgecolor": "#9e4b4b",
-    "region_node_size": 300,
-    "border_node_size": 0,
-    "face_node_size": 0,
+    "region_node_facecolor": "#E7C8CF",
+    "region_node_edgecolor": "#A45A6F",
+    "border_node_facecolor": "#D6D2CB",
+    "border_node_edgecolor": "#6B665E",
+    "face_node_facecolor": "#C9D6EA",
+    "face_node_edgecolor": "#4A6FA4",
+    "region_node_size": 300 * SCALE_PARAM,
+    "border_node_size": 150 * SCALE_PARAM,
+    "face_node_size": 300 * SCALE_PARAM,
     "node_linewidth": None,  # None means use edge_width
     "node_zorder": 3,
     # ------------------------------------------------------------
     # Label styling
     # ------------------------------------------------------------
     "font_family": "Open Sans",
-    "font_size": 10,
-    "label_color": "#333333",
+    "font_size": 10 * SCALE_PARAM,
+    "label_fontweight": "bold",
+    "label_color": "#3A3A3A",
+    "label_alpha": 0.85,
     "face_label_color": "#aa0000",
     "label_ha": "center",
-    "label_va": "center",
+    "label_va": "center_baseline",
     "label_zorder": 4,
     "label_bbox_boxstyle": "round,pad=0.2",
     "label_bbox_facecolor": "#ffffff",
@@ -1822,7 +1980,7 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     # Outer square styling
     # ------------------------------------------------------------
-    "outer_square_color": "#cc4444",
+    "outer_square_color": "#6A8BB8",
     "outer_square_width": 2,
     "outer_square_linestyle": "-",
     "outer_square_facecolor": "none",
@@ -1830,7 +1988,7 @@ VIS_STYLE = {
 }
 
 
-PATH = "20260416-Test square diagonal.xlsx"
+PATH = "20260421-Test Pentagon.xlsx"
 
 if __name__ == "__main__":
     main(PATH)
