@@ -631,6 +631,64 @@ def assign_outer_square_ports(
             _, pt = min(candidates, key=lambda x: x[0])
             ports[edge_id] = pt
 
+        ##### DEBUG PRINT #############
+        if edge_id == "e122":  # or whatever bad edge you pick
+            he = edge["primal_halfedge"]
+            opp_he = (he[1], he[0])
+
+            face_he = master_embedding["halfedge_to_face"][he]
+            face_opp = master_embedding["halfedge_to_face"][opp_he]
+
+            p_border_dbg = p_border
+            p_he_face = (
+                np.array(node_xy.get(face_he, (None, None)), dtype=float)
+                if face_he in node_xy
+                else None
+            )
+            p_opp_face = (
+                np.array(node_xy.get(face_opp, (None, None)), dtype=float)
+                if face_opp in node_xy
+                else None
+            )
+
+            print("\n--- DEBUG EDGE ---")
+            print("edge_id:", edge_id)
+            print("primal_edge:", edge["primal_edge"])
+            print("primal_halfedge:", he)
+            print("halfedge_sign:", edge.get("halfedge_sign"))
+
+            print("face(he):", face_he)
+            print("face(opp_he):", face_opp)
+            print("outer_face_id:", outer_face_id)
+
+            print("border_id:", border_id)
+            print("p_border:", p_border_dbg)
+
+            if p_he_face is not None:
+                print("p_face_he:", p_he_face)
+            if p_opp_face is not None:
+                print("p_face_opp:", p_opp_face)
+
+            print("outward:", outward)
+
+            # Also show both candidate normals
+            a, b = edge["primal_edge"]
+            pa = np.array(primal_pos[a], dtype=float)
+            pb = np.array(primal_pos[b], dtype=float)
+            edge_unit = (pb - pa) / np.linalg.norm(pb - pa)
+            n1 = np.array([-edge_unit[1], edge_unit[0]])
+            n2 = -n1
+
+            print("n1:", n1)
+            print("n2:", n2)
+
+            if p_opp_face is not None:
+                v = p_border_dbg - p_opp_face
+                print("dot(v, n1):", np.dot(v, n1))
+                print("dot(v, n2):", np.dot(v, n2))
+
+            #### END OF DEBUG PRINT #############
+
     return ports
 
 
@@ -1890,8 +1948,19 @@ def main(filename, weights):
     face_lookup = {face["id"]: face for face in master_embedding["faces"]}
     outer_face_nodes = list(dict.fromkeys(face_lookup[outer_face_id]["boundary_nodes"]))
 
-    print("OUTER FACE ID:", outer_face_id)
-    print("OUTER FACE NODES:", outer_face_nodes)
+    face = next(f for f in master_embedding["faces"] if f["id"] == outer_face_id)
+    print("INITIAL OUTER FACE ID:", outer_face_id)
+    print("OUTER FACE BOUNDARY NODES:", face["boundary_nodes"])
+    print("OUTER FACE HALF EDGES:")
+    for he in face["half_edges"]:
+        opp = (he[1], he[0])
+        print(
+            he,
+            "face(he) =",
+            master_embedding["halfedge_to_face"].get(he),
+            "face(opp) =",
+            master_embedding["halfedge_to_face"].get(opp),
+        )
 
     if weights is None:
         weights = {
@@ -1919,8 +1988,13 @@ def main(filename, weights):
         seed=42,
     )
 
+    print(
+        "OUTER FACE ID AFTER REFINEMENT:",
+        detect_outer_face_id(master_embedding, primal_pos),
+    )
+
     visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
-    print("Visual data:", visual_data)
+    # print("Visual data:", visual_data)
 
     base_path = Path(filename)
     stem = base_path.stem
@@ -2109,7 +2183,7 @@ VIS_STYLE = {
 # VIS_STYLE above is the style dict for the visualisation - tweak as desired, but it should be mostly fine as is for different matrices
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
-PATH = "20260421-Test pentagon.xlsx"
+PATH = "20260421-Zone 1-Bank-Mon-reduced-nodanglers.xlsx"
 
 WEIGHTS = {
     "node_spread": 0,  # Rewards spreading out nodes
