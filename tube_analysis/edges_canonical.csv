@@ -1,0 +1,304 @@
+edge_id,station_a,station_b,lines,n_lines
+Acton Town__Chiswick Park,Acton Town,Chiswick Park,District-Main,1
+Acton Town__Ealing Common,Acton Town,Ealing Common,District-Main;Piccadilly-Uxbridge,2
+Acton Town__South Ealing,Acton Town,South Ealing,Piccadilly-Main,1
+Acton Town__Turnham Green,Acton Town,Turnham Green,Piccadilly-Main,1
+Aldgate__Liverpool Street,Aldgate,Liverpool Street,Circle-Main;Metropolitan-Main,2
+Aldgate__Tower Hill,Aldgate,Tower Hill,Circle-Main,1
+Aldgate East__Liverpool Street,Aldgate East,Liverpool Street,Hammersmith & City,1
+Aldgate East__Tower Hill,Aldgate East,Tower Hill,District-Main,1
+Aldgate East__Whitechapel,Aldgate East,Whitechapel,District-Main;Hammersmith & City,2
+Alperton__Park Royal,Alperton,Park Royal,Piccadilly-Uxbridge,1
+Alperton__Sudbury Town,Alperton,Sudbury Town,Piccadilly-Uxbridge,1
+Amersham__Chalfont & Latimer,Amersham,Chalfont & Latimer,Metropolitan-Main,1
+Angel__King’s Cross St. Pancras,Angel,King’s Cross St. Pancras,Northern-Main,1
+Angel__Old Street,Angel,Old Street,Northern-Main,1
+Archway__Highgate,Archway,Highgate,Northern-High Barnet,1
+Archway__Tufnell Park,Archway,Tufnell Park,Northern-High Barnet,1
+Arnos Grove__Bounds Green,Arnos Grove,Bounds Green,Piccadilly-Main,1
+Arnos Grove__Southgate,Arnos Grove,Southgate,Piccadilly-Main,1
+Arsenal__Finsbury Park,Arsenal,Finsbury Park,Piccadilly-Main,1
+Arsenal__Holloway Road,Arsenal,Holloway Road,Piccadilly-Main,1
+Baker Street__Bond Street,Baker Street,Bond Street,Jubilee,1
+Baker Street__Edgware Road,Baker Street,Edgware Road,Circle-Main;Hammersmith & City,2
+Baker Street__Finchley Road,Baker Street,Finchley Road,Metropolitan-Main,1
+Baker Street__Great Portland Street,Baker Street,Great Portland Street,Circle-Main;Hammersmith & City;Metropolitan-Main,3
+Baker Street__Marylebone,Baker Street,Marylebone,Bakerloo,1
+Baker Street__Regent’s Park,Baker Street,Regent’s Park,Bakerloo,1
+Baker Street__St. John’s Wood,Baker Street,St. John’s Wood,Jubilee,1
+Balham__Clapham South,Balham,Clapham South,Northern-Main,1
+Balham__Tooting Bec,Balham,Tooting Bec,Northern-Main,1
+Bank-Monument__Cannon Street,Bank-Monument,Cannon Street,Circle-Main;District-Main,2
+Bank-Monument__Liverpool Street,Bank-Monument,Liverpool Street,Central-Main,1
+Bank-Monument__London Bridge,Bank-Monument,London Bridge,Northern-Main,1
+Bank-Monument__Moorgate,Bank-Monument,Moorgate,Northern-Main,1
+Bank-Monument__St. Paul’s,Bank-Monument,St. Paul’s,Central-Main,1
+Bank-Monument__Tower Hill,Bank-Monument,Tower Hill,Circle-Main;District-Main,2
+Bank-Monument__Waterloo,Bank-Monument,Waterloo,Waterloo & City,1
+Barbican__Farringdon,Barbican,Farringdon,Circle-Main;Hammersmith & City;Metropolitan-Main,3
+Barbican__Moorgate,Barbican,Moorgate,Circle-Main;Hammersmith & City;Metropolitan-Main,3
+Barking__East Ham,Barking,East Ham,District-Main;Hammersmith & City,2
+Barking__Upney,Barking,Upney,District-Main,1
+Barkingside__Fairlop,Barkingside,Fairlop,Central-Hainault Loop;Central-Main,2
+Barkingside__Newbury Park,Barkingside,Newbury Park,Central-Hainault Loop;Central-Main,2
+Barons Court__Earl's Court,Barons Court,Earl's Court,Piccadilly-Main,1
+Barons Court__Hammersmith,Barons Court,Hammersmith,District-Main;Piccadilly-Main,2
+Barons Court__West Kensington,Barons Court,West Kensington,District-Main,1
+Battersea Power Station__Nine Elms,Battersea Power Station,Nine Elms,Northern-Battersea Power Station,1
+Bayswater__Notting Hill Gate,Bayswater,Notting Hill Gate,Circle-Main;District-Edgware Road,2
+Bayswater__Paddington,Bayswater,Paddington,Circle-Main;District-Edgware Road,2
+Becontree__Dagenham Heathway,Becontree,Dagenham Heathway,District-Main,1
+Becontree__Upney,Becontree,Upney,District-Main,1
+Belsize Park__Chalk Farm,Belsize Park,Chalk Farm,Northern-Main,1
+Belsize Park__Hampstead,Belsize Park,Hampstead,Northern-Main,1
+Bermondsey__Canada Water,Bermondsey,Canada Water,Jubilee,1
+Bermondsey__London Bridge,Bermondsey,London Bridge,Jubilee,1
+Bethnal Green__Liverpool Street,Bethnal Green,Liverpool Street,Central-Main,1
+Bethnal Green__Mile End,Bethnal Green,Mile End,Central-Main,1
+Blackfriars__Mansion House,Blackfriars,Mansion House,Circle-Main;District-Main,2
+Blackfriars__Temple,Blackfriars,Temple,Circle-Main;District-Main,2
+Blackhorse Road__Tottenham Hale,Blackhorse Road,Tottenham Hale,Victoria,1
+Blackhorse Road__Walthamstow Central,Blackhorse Road,Walthamstow Central,Victoria,1
+Bond Street__Green Park,Bond Street,Green Park,Jubilee,1
+Bond Street__Marble Arch,Bond Street,Marble Arch,Central-Main,1
+Bond Street__Oxford Circus,Bond Street,Oxford Circus,Central-Main,1
+Borough__Elephant & Castle,Borough,Elephant & Castle,Northern-Main,1
+Borough__London Bridge,Borough,London Bridge,Northern-Main,1
+Boston Manor__Northfields,Boston Manor,Northfields,Piccadilly-Main,1
+Boston Manor__Osterley,Boston Manor,Osterley,Piccadilly-Main,1
+Bounds Green__Wood Green,Bounds Green,Wood Green,Piccadilly-Main,1
+Bow Road__Bromley-by-Bow,Bow Road,Bromley-by-Bow,District-Main;Hammersmith & City,2
+Bow Road__Mile End,Bow Road,Mile End,District-Main;Hammersmith & City,2
+Brent Cross__Golders Green,Brent Cross,Golders Green,Northern-Main,1
+Brent Cross__Hendon Central,Brent Cross,Hendon Central,Northern-Main,1
+Brixton__Stockwell,Brixton,Stockwell,Victoria,1
+Bromley-by-Bow__West Ham,Bromley-by-Bow,West Ham,District-Main;Hammersmith & City,2
+Buckhurst Hill__Loughton,Buckhurst Hill,Loughton,Central-Epping;Central-Main,2
+Buckhurst Hill__Roding Valley,Buckhurst Hill,Roding Valley,Central-Main,1
+Buckhurst Hill__Woodford,Buckhurst Hill,Woodford,Central-Epping,1
+Burnt Oak__Colindale,Burnt Oak,Colindale,Northern-Main,1
+Burnt Oak__Edgware,Burnt Oak,Edgware,Northern-Main,1
+Caledonian Road__Holloway Road,Caledonian Road,Holloway Road,Piccadilly-Main,1
+Caledonian Road__King’s Cross St. Pancras,Caledonian Road,King’s Cross St. Pancras,Piccadilly-Main,1
+Camden Town__Chalk Farm,Camden Town,Chalk Farm,Northern-Main,1
+Camden Town__Kentish Town,Camden Town,Kentish Town,Northern-High Barnet,1
+Camden Town__Mornington Crescent,Camden Town,Mornington Crescent,Northern-Charing Cross;Northern-Main,2
+Canada Water__Canary Wharf,Canada Water,Canary Wharf,Jubilee,1
+Canary Wharf__North Greenwich,Canary Wharf,North Greenwich,Jubilee,1
+Canning Town__North Greenwich,Canning Town,North Greenwich,Jubilee,1
+Canning Town__West Ham,Canning Town,West Ham,Jubilee,1
+Cannon Street__Mansion House,Cannon Street,Mansion House,Circle-Main;District-Main,2
+Canons Park__Queensbury,Canons Park,Queensbury,Jubilee,1
+Canons Park__Stanmore,Canons Park,Stanmore,Jubilee,1
+Chalfont & Latimer__Chesham,Chalfont & Latimer,Chesham,Metropolitan-Chesham,1
+Chalfont & Latimer__Chorleywood,Chalfont & Latimer,Chorleywood,Metropolitan-Main,1
+Chancery Lane__Holborn,Chancery Lane,Holborn,Central-Main,1
+Chancery Lane__St. Paul’s,Chancery Lane,St. Paul’s,Central-Main,1
+Charing Cross__Embankment,Charing Cross,Embankment,Bakerloo;Northern-Charing Cross,2
+Charing Cross__Leicester Square,Charing Cross,Leicester Square,Northern-Charing Cross,1
+Charing Cross__Piccadilly Circus,Charing Cross,Piccadilly Circus,Bakerloo,1
+Chigwell__Grange Hill,Chigwell,Grange Hill,Central-Hainault Loop;Central-Main,2
+Chigwell__Roding Valley,Chigwell,Roding Valley,Central-Hainault Loop;Central-Main,2
+Chiswick Park__Turnham Green,Chiswick Park,Turnham Green,District-Main,1
+Chorleywood__Rickmansworth,Chorleywood,Rickmansworth,Metropolitan-Main,1
+Clapham Common__Clapham North,Clapham Common,Clapham North,Northern-Main,1
+Clapham Common__Clapham South,Clapham Common,Clapham South,Northern-Main,1
+Clapham North__Stockwell,Clapham North,Stockwell,Northern-Main,1
+Cockfosters__Oakwood,Cockfosters,Oakwood,Piccadilly-Main,1
+Colindale__Hendon Central,Colindale,Hendon Central,Northern-Main,1
+Colliers Wood__South Wimbledon,Colliers Wood,South Wimbledon,Northern-Main,1
+Colliers Wood__Tooting Broadway,Colliers Wood,Tooting Broadway,Northern-Main,1
+Covent Garden__Holborn,Covent Garden,Holborn,Piccadilly-Main,1
+Covent Garden__Leicester Square,Covent Garden,Leicester Square,Piccadilly-Main,1
+Croxley__Moor Park,Croxley,Moor Park,Metropolitan-Watford,1
+Croxley__Watford,Croxley,Watford,Metropolitan-Watford,1
+Dagenham East__Dagenham Heathway,Dagenham East,Dagenham Heathway,District-Main,1
+Dagenham East__Elm Park,Dagenham East,Elm Park,District-Main,1
+Debden__Loughton,Debden,Loughton,Central-Epping;Central-Main,2
+Debden__Theydon Bois,Debden,Theydon Bois,Central-Epping;Central-Main,2
+Dollis Hill__Neasden,Dollis Hill,Neasden,Jubilee,1
+Dollis Hill__Willesden Green,Dollis Hill,Willesden Green,Jubilee,1
+Ealing Broadway__Ealing Common,Ealing Broadway,Ealing Common,District-Main,1
+Ealing Broadway__West Acton,Ealing Broadway,West Acton,Central-Main,1
+Ealing Common__North Ealing,Ealing Common,North Ealing,Piccadilly-Uxbridge,1
+Earl's Court__Gloucester Road,Earl's Court,Gloucester Road,District-Main;Piccadilly-Main,2
+Earl's Court__High Street Kensington,Earl's Court,High Street Kensington,District-Edgware Road,1
+Earl's Court__Kensington (Olympia),Earl's Court,Kensington (Olympia),District-Kensington,1
+Earl's Court__West Brompton,Earl's Court,West Brompton,District-Wimbledon,1
+Earl's Court__West Kensington,Earl's Court,West Kensington,District-Main,1
+East Acton__North Acton,East Acton,North Acton,Central-Main,1
+East Acton__White City,East Acton,White City,Central-Main,1
+East Finchley__Finchley Central,East Finchley,Finchley Central,Northern-High Barnet,1
+East Finchley__Highgate,East Finchley,Highgate,Northern-High Barnet,1
+East Ham__Upton Park,East Ham,Upton Park,District-Main;Hammersmith & City,2
+East Putney__Putney Bridge,East Putney,Putney Bridge,District-Wimbledon,1
+East Putney__Southfields,East Putney,Southfields,District-Wimbledon,1
+Eastcote__Rayners Lane,Eastcote,Rayners Lane,Metropolitan-Uxbridge;Piccadilly-Uxbridge,2
+Eastcote__Ruislip Manor,Eastcote,Ruislip Manor,Metropolitan-Uxbridge;Piccadilly-Uxbridge,2
+Edgware Road__Marylebone,Edgware Road,Marylebone,Bakerloo,1
+Edgware Road__Paddington,Edgware Road,Paddington,Bakerloo;Circle-Hammersmith;Circle-Main;District-Edgware Road;Hammersmith & City,5
+Elephant & Castle__Kennington,Elephant & Castle,Kennington,Northern-Main,1
+Elephant & Castle__Lambeth North,Elephant & Castle,Lambeth North,Bakerloo,1
+Elm Park__Hornchurch,Elm Park,Hornchurch,District-Main,1
+Embankment__Temple,Embankment,Temple,Circle-Main;District-Main,2
+Embankment__Waterloo,Embankment,Waterloo,Bakerloo;Northern-Charing Cross,2
+Embankment__Westminster,Embankment,Westminster,Circle-Main;District-Main,2
+Epping__Theydon Bois,Epping,Theydon Bois,Central-Epping;Central-Main,2
+Euston__King’s Cross St. Pancras,Euston,King’s Cross St. Pancras,Northern-Main;Victoria,2
+Euston__Mornington Crescent,Euston,Mornington Crescent,Northern-Charing Cross;Northern-Main,2
+Euston__Warren Street,Euston,Warren Street,Northern-Charing Cross;Victoria,2
+Euston Square__Great Portland Street,Euston Square,Great Portland Street,Circle-Main;Hammersmith & City;Metropolitan-Main,3
+Euston Square__King’s Cross St. Pancras,Euston Square,King’s Cross St. Pancras,Circle-Main;Hammersmith & City;Metropolitan-Main,3
+Fairlop__Hainault,Fairlop,Hainault,Central-Hainault Loop;Central-Main,2
+Farringdon__King’s Cross St. Pancras,Farringdon,King’s Cross St. Pancras,Circle-Main;Hammersmith & City;Metropolitan-Main,3
+Finchley Central__Mill Hill East,Finchley Central,Mill Hill East,Northern-Mill Hill East,1
+Finchley Central__West Finchley,Finchley Central,West Finchley,Northern-High Barnet,1
+Finchley Road__Swiss Cottage,Finchley Road,Swiss Cottage,Jubilee,1
+Finchley Road__Wembley Park,Finchley Road,Wembley Park,Metropolitan-Main,1
+Finchley Road__West Hampstead,Finchley Road,West Hampstead,Jubilee,1
+Finsbury Park__Highbury & Islington,Finsbury Park,Highbury & Islington,Victoria,1
+Finsbury Park__Manor House,Finsbury Park,Manor House,Piccadilly-Main,1
+Finsbury Park__Seven Sisters,Finsbury Park,Seven Sisters,Victoria,1
+Fulham Broadway__Parsons Green,Fulham Broadway,Parsons Green,District-Wimbledon,1
+Fulham Broadway__West Brompton,Fulham Broadway,West Brompton,District-Wimbledon,1
+Gants Hill__Newbury Park,Gants Hill,Newbury Park,Central-Hainault Loop;Central-Main,2
+Gants Hill__Redbridge,Gants Hill,Redbridge,Central-Hainault Loop;Central-Main,2
+Gloucester Road__High Street Kensington,Gloucester Road,High Street Kensington,Circle-Main,1
+Gloucester Road__South Kensington,Gloucester Road,South Kensington,Circle-Main;District-Main;Piccadilly-Main,3
+Golders Green__Hampstead,Golders Green,Hampstead,Northern-Main,1
+Goldhawk Road__Hammersmith,Goldhawk Road,Hammersmith,Circle-Hammersmith;Hammersmith & City,2
+Goldhawk Road__Shepherd’s Bush Market,Goldhawk Road,Shepherd’s Bush Market,Circle-Hammersmith;Hammersmith & City,2
+Goodge Street__Tottenham Court Road,Goodge Street,Tottenham Court Road,Northern-Charing Cross,1
+Goodge Street__Warren Street,Goodge Street,Warren Street,Northern-Charing Cross,1
+Grange Hill__Hainault,Grange Hill,Hainault,Central-Hainault Loop;Central-Main,2
+Green Park__Hyde Park Corner,Green Park,Hyde Park Corner,Piccadilly-Main,1
+Green Park__Oxford Circus,Green Park,Oxford Circus,Victoria,1
+Green Park__Piccadilly Circus,Green Park,Piccadilly Circus,Piccadilly-Main,1
+Green Park__Victoria,Green Park,Victoria,Victoria,1
+Green Park__Westminster,Green Park,Westminster,Jubilee,1
+Gunnersbury__Kew Gardens,Gunnersbury,Kew Gardens,District-Richmond,1
+Gunnersbury__Turnham Green,Gunnersbury,Turnham Green,District-Richmond,1
+Hammersmith__Ravenscourt Park,Hammersmith,Ravenscourt Park,District-Main,1
+Hammersmith__Turnham Green,Hammersmith,Turnham Green,Piccadilly-Main,1
+Harlesden__Stonebridge Park,Harlesden,Stonebridge Park,Bakerloo,1
+Harlesden__Willesden Junction,Harlesden,Willesden Junction,Bakerloo,1
+Harrow & Wealdstone__Kenton,Harrow & Wealdstone,Kenton,Bakerloo,1
+Harrow-on-the-Hill__North Harrow,Harrow-on-the-Hill,North Harrow,Metropolitan-Main,1
+Harrow-on-the-Hill__Northwick Park,Harrow-on-the-Hill,Northwick Park,Metropolitan-Main,1
+Harrow-on-the-Hill__West Harrow,Harrow-on-the-Hill,West Harrow,Metropolitan-Uxbridge,1
+Hatton Cross__Heathrow Terminals 2 & 3,Hatton Cross,Heathrow Terminals 2 & 3,Piccadilly-Main,1
+Hatton Cross__Hounslow West,Hatton Cross,Hounslow West,Piccadilly-Main,1
+Heathrow Terminal 4__Heathrow Terminals 2 & 3,Heathrow Terminal 4,Heathrow Terminals 2 & 3,Piccadilly-Heathrow,1
+Heathrow Terminal 5__Heathrow Terminals 2 & 3,Heathrow Terminal 5,Heathrow Terminals 2 & 3,Piccadilly-Main,1
+High Barnet__Totteridge & Whetstone,High Barnet,Totteridge & Whetstone,Northern-High Barnet,1
+High Street Kensington__Notting Hill Gate,High Street Kensington,Notting Hill Gate,Circle-Main;District-Edgware Road,2
+Highbury & Islington__King’s Cross St. Pancras,Highbury & Islington,King’s Cross St. Pancras,Victoria,1
+Hillingdon__Ickenham,Hillingdon,Ickenham,Metropolitan-Uxbridge;Piccadilly-Uxbridge,2
+Hillingdon__Uxbridge,Hillingdon,Uxbridge,Metropolitan-Uxbridge;Piccadilly-Uxbridge,2
+Holborn__Russell Square,Holborn,Russell Square,Piccadilly-Main,1
+Holborn__Tottenham Court Road,Holborn,Tottenham Court Road,Central-Main,1
+Holland Park__Notting Hill Gate,Holland Park,Notting Hill Gate,Central-Main,1
+Holland Park__Shepherd’s Bush,Holland Park,Shepherd’s Bush,Central-Main,1
+Hornchurch__Upminster Bridge,Hornchurch,Upminster Bridge,District-Main,1
+Hounslow Central__Hounslow East,Hounslow Central,Hounslow East,Piccadilly-Main,1
+Hounslow Central__Hounslow West,Hounslow Central,Hounslow West,Piccadilly-Main,1
+Hounslow East__Osterley,Hounslow East,Osterley,Piccadilly-Main,1
+Hyde Park Corner__Knightsbridge,Hyde Park Corner,Knightsbridge,Piccadilly-Main,1
+Ickenham__Ruislip,Ickenham,Ruislip,Metropolitan-Uxbridge;Piccadilly-Uxbridge,2
+Kennington__Nine Elms,Kennington,Nine Elms,Northern-Battersea Power Station,1
+Kennington__Oval,Kennington,Oval,Northern-Main,1
+Kennington__Waterloo,Kennington,Waterloo,Northern-Charing Cross,1
+Kensal Green__Queen’s Park,Kensal Green,Queen’s Park,Bakerloo,1
+Kensal Green__Willesden Junction,Kensal Green,Willesden Junction,Bakerloo,1
+Kentish Town__Tufnell Park,Kentish Town,Tufnell Park,Northern-High Barnet,1
+Kenton__South Kenton,Kenton,South Kenton,Bakerloo,1
+Kew Gardens__Richmond,Kew Gardens,Richmond,District-Richmond,1
+Kilburn__West Hampstead,Kilburn,West Hampstead,Jubilee,1
+Kilburn__Willesden Green,Kilburn,Willesden Green,Jubilee,1
+Kilburn Park__Maida Vale,Kilburn Park,Maida Vale,Bakerloo,1
+Kilburn Park__Queen’s Park,Kilburn Park,Queen’s Park,Bakerloo,1
+Kingsbury__Queensbury,Kingsbury,Queensbury,Jubilee,1
+Kingsbury__Wembley Park,Kingsbury,Wembley Park,Jubilee,1
+King’s Cross St. Pancras__Russell Square,King’s Cross St. Pancras,Russell Square,Piccadilly-Main,1
+Knightsbridge__South Kensington,Knightsbridge,South Kensington,Piccadilly-Main,1
+Ladbroke Grove__Latimer Road,Ladbroke Grove,Latimer Road,Circle-Hammersmith;Hammersmith & City,2
+Ladbroke Grove__Westbourne Park,Ladbroke Grove,Westbourne Park,Circle-Hammersmith;Hammersmith & City,2
+Lambeth North__Waterloo,Lambeth North,Waterloo,Bakerloo,1
+Lancaster Gate__Marble Arch,Lancaster Gate,Marble Arch,Central-Main,1
+Lancaster Gate__Queensway,Lancaster Gate,Queensway,Central-Main,1
+Latimer Road__Wood Lane,Latimer Road,Wood Lane,Circle-Hammersmith;Hammersmith & City,2
+Leicester Square__Piccadilly Circus,Leicester Square,Piccadilly Circus,Piccadilly-Main,1
+Leicester Square__Tottenham Court Road,Leicester Square,Tottenham Court Road,Northern-Charing Cross,1
+Leyton__Leytonstone,Leyton,Leytonstone,Central-Main,1
+Leyton__Stratford,Leyton,Stratford,Central-Main,1
+Leytonstone__Snaresbrook,Leytonstone,Snaresbrook,Central-Hainault Loop,1
+Leytonstone__Wanstead,Leytonstone,Wanstead,Central-Hainault Loop;Central-Main,2
+Liverpool Street__Moorgate,Liverpool Street,Moorgate,Circle-Main;Hammersmith & City;Metropolitan-Main,3
+London Bridge__Southwark,London Bridge,Southwark,Jubilee,1
+Maida Vale__Warwick Avenue,Maida Vale,Warwick Avenue,Bakerloo,1
+Manor House__Turnpike Lane,Manor House,Turnpike Lane,Piccadilly-Main,1
+Mile End__Stepney Green,Mile End,Stepney Green,District-Main;Hammersmith & City,2
+Mile End__Stratford,Mile End,Stratford,Central-Main,1
+Moor Park__Northwood,Moor Park,Northwood,Metropolitan-Main,1
+Moor Park__Rickmansworth,Moor Park,Rickmansworth,Metropolitan-Main,1
+Moorgate__Old Street,Moorgate,Old Street,Northern-Main,1
+Morden__South Wimbledon,Morden,South Wimbledon,Northern-Main,1
+Neasden__Wembley Park,Neasden,Wembley Park,Jubilee,1
+North Acton__West Acton,North Acton,West Acton,Central-Main,1
+North Acton__West Ruislip,North Acton,West Ruislip,Central-West Ruislip,1
+North Ealing__Park Royal,North Ealing,Park Royal,Piccadilly-Uxbridge,1
+North Harrow__Pinner,North Harrow,Pinner,Metropolitan-Main,1
+North Wembley__South Kenton,North Wembley,South Kenton,Bakerloo,1
+North Wembley__Wembley Central,North Wembley,Wembley Central,Bakerloo,1
+Northfields__South Ealing,Northfields,South Ealing,Piccadilly-Main,1
+Northwick Park__Preston Road,Northwick Park,Preston Road,Metropolitan-Main,1
+Northwood__Northwood Hills,Northwood,Northwood Hills,Metropolitan-Main,1
+Northwood Hills__Pinner,Northwood Hills,Pinner,Metropolitan-Main,1
+Notting Hill Gate__Queensway,Notting Hill Gate,Queensway,Central-Main,1
+Oakwood__Southgate,Oakwood,Southgate,Piccadilly-Main,1
+Oval__Stockwell,Oval,Stockwell,Northern-Main,1
+Oxford Circus__Piccadilly Circus,Oxford Circus,Piccadilly Circus,Bakerloo,1
+Oxford Circus__Regent’s Park,Oxford Circus,Regent’s Park,Bakerloo,1
+Oxford Circus__Tottenham Court Road,Oxford Circus,Tottenham Court Road,Central-Main,1
+Oxford Circus__Warren Street,Oxford Circus,Warren Street,Victoria,1
+Paddington__Royal Oak,Paddington,Royal Oak,Circle-Hammersmith;Hammersmith & City,2
+Paddington__Warwick Avenue,Paddington,Warwick Avenue,Bakerloo,1
+Parsons Green__Putney Bridge,Parsons Green,Putney Bridge,District-Wimbledon,1
+Pimlico__Vauxhall,Pimlico,Vauxhall,Victoria,1
+Pimlico__Victoria,Pimlico,Victoria,Victoria,1
+Plaistow__Upton Park,Plaistow,Upton Park,District-Main;Hammersmith & City,2
+Plaistow__West Ham,Plaistow,West Ham,District-Main;Hammersmith & City,2
+Preston Road__Wembley Park,Preston Road,Wembley Park,Metropolitan-Main,1
+Ravenscourt Park__Stamford Brook,Ravenscourt Park,Stamford Brook,District-Main,1
+Rayners Lane__South Harrow,Rayners Lane,South Harrow,Piccadilly-Uxbridge,1
+Rayners Lane__West Harrow,Rayners Lane,West Harrow,Metropolitan-Uxbridge,1
+Redbridge__Wanstead,Redbridge,Wanstead,Central-Hainault Loop;Central-Main,2
+Roding Valley__Woodford,Roding Valley,Woodford,Central-Hainault Loop,1
+Royal Oak__Westbourne Park,Royal Oak,Westbourne Park,Circle-Hammersmith;Hammersmith & City,2
+Ruislip__Ruislip Manor,Ruislip,Ruislip Manor,Metropolitan-Uxbridge;Piccadilly-Uxbridge,2
+Seven Sisters__Tottenham Hale,Seven Sisters,Tottenham Hale,Victoria,1
+Shepherd’s Bush__White City,Shepherd’s Bush,White City,Central-Main,1
+Shepherd’s Bush Market__Wood Lane,Shepherd’s Bush Market,Wood Lane,Circle-Hammersmith;Hammersmith & City,2
+Sloane Square__South Kensington,Sloane Square,South Kensington,Circle-Main;District-Main,2
+Sloane Square__Victoria,Sloane Square,Victoria,Circle-Main;District-Main,2
+Snaresbrook__South Woodford,Snaresbrook,South Woodford,Central-Hainault Loop,1
+South Harrow__Sudbury Hill,South Harrow,Sudbury Hill,Piccadilly-Uxbridge,1
+South Woodford__Woodford,South Woodford,Woodford,Central-Hainault Loop,1
+Southfields__Wimbledon Park,Southfields,Wimbledon Park,District-Wimbledon,1
+Southwark__Waterloo,Southwark,Waterloo,Jubilee,1
+St. James's Park__Victoria,St. James's Park,Victoria,Circle-Main;District-Main,2
+St. James's Park__Westminster,St. James's Park,Westminster,Circle-Main;District-Main,2
+St. John’s Wood__Swiss Cottage,St. John’s Wood,Swiss Cottage,Jubilee,1
+Stamford Brook__Turnham Green,Stamford Brook,Turnham Green,District-Main,1
+Stepney Green__Whitechapel,Stepney Green,Whitechapel,District-Main;Hammersmith & City,2
+Stockwell__Vauxhall,Stockwell,Vauxhall,Victoria,1
+Stonebridge Park__Wembley Central,Stonebridge Park,Wembley Central,Bakerloo,1
+Stratford__West Ham,Stratford,West Ham,Jubilee,1
+Sudbury Hill__Sudbury Town,Sudbury Hill,Sudbury Town,Piccadilly-Uxbridge,1
+Tooting Bec__Tooting Broadway,Tooting Bec,Tooting Broadway,Northern-Main,1
+Totteridge & Whetstone__Woodside Park,Totteridge & Whetstone,Woodside Park,Northern-High Barnet,1
+Turnpike Lane__Wood Green,Turnpike Lane,Wood Green,Piccadilly-Main,1
+Upminster__Upminster Bridge,Upminster,Upminster Bridge,District-Main,1
+Waterloo__Westminster,Waterloo,Westminster,Jubilee,1
+West Finchley__Woodside Park,West Finchley,Woodside Park,Northern-High Barnet,1
+Wimbledon__Wimbledon Park,Wimbledon,Wimbledon Park,District-Wimbledon,1

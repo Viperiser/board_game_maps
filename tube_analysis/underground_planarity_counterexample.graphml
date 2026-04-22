@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph edgedefault="undirected">
+    <node id="Acton Town" />
+    <node id="Ealing Common" />
+    <node id="Turnham Green" />
+    <node id="Alperton" />
+    <node id="Park Royal" />
+    <node id="Sudbury Town" />
+    <node id="Baker Street" />
+    <node id="Marylebone" />
+    <node id="Regent’s Park" />
+    <node id="St. John’s Wood" />
+    <node id="Barons Court" />
+    <node id="Hammersmith" />
+    <node id="West Kensington" />
+    <node id="Bayswater" />
+    <node id="Notting Hill Gate" />
+    <node id="Paddington" />
+    <node id="Ealing Broadway" />
+    <node id="West Acton" />
+    <node id="North Ealing" />
+    <node id="Earl's Court" />
+    <node id="High Street Kensington" />
+    <node id="East Acton" />
+    <node id="North Acton" />
+    <node id="White City" />
+    <node id="Edgware Road" />
+    <node id="Finchley Road" />
+    <node id="Swiss Cottage" />
+    <node id="Wembley Park" />
+    <node id="Gloucester Road" />
+    <node id="South Kensington" />
+    <node id="Goldhawk Road" />
+    <node id="Shepherd’s Bush Market" />
+    <node id="Green Park" />
+    <node id="Piccadilly Circus" />
+    <node id="Westminster" />
+    <node id="Harrow-on-the-Hill" />
+    <node id="Northwick Park" />
+    <node id="West Harrow" />
+    <node id="Holland Park" />
+    <node id="Shepherd’s Bush" />
+    <node id="Ladbroke Grove" />
+    <node id="Latimer Road" />
+    <node id="Westbourne Park" />
+    <node id="Wood Lane" />
+    <node id="Preston Road" />
+    <node id="Oxford Circus" />
+    <node id="Royal Oak" />
+    <node id="Rayners Lane" />
+    <node id="South Harrow" />
+    <node id="Sloane Square" />
+    <node id="Victoria" />
+    <node id="Sudbury Hill" />
+    <node id="St. James's Park" />
+    <edge source="Acton Town" target="Ealing Common" />
+    <edge source="Acton Town" target="Turnham Green" />
+    <edge source="Ealing Common" target="Ealing Broadway" />
+    <edge source="Ealing Common" target="North Ealing" />
+    <edge source="Turnham Green" target="Hammersmith" />
+    <edge source="Alperton" target="Park Royal" />
+    <edge source="Alperton" target="Sudbury Town" />
+    <edge source="Park Royal" target="North Ealing" />
+    <edge source="Sudbury Town" target="Sudbury Hill" />
+    <edge source="Baker Street" target="Marylebone" />
+    <edge source="Baker Street" target="Regent’s Park" />
+    <edge source="Baker Street" target="St. John’s Wood" />
+    <edge source="Marylebone" target="Edgware Road" />
+    <edge source="Regent’s Park" target="Oxford Circus" />
+    <edge source="St. John’s Wood" target="Swiss Cottage" />
+    <edge source="Barons Court" target="Hammersmith" />
+    <edge source="Barons Court" target="West Kensington" />
+    <edge source="Hammersmith" target="Goldhawk Road" />
+    <edge source="West Kensington" target="Earl's Court" />
+    <edge source="Bayswater" target="Notting Hill Gate" />
+    <edge source="Bayswater" target="Paddington" />
+    <edge source="Notting Hill Gate" target="High Street Kensington" />
+    <edge source="Notting Hill Gate" target="Holland Park" />
+    <edge source="Paddington" target="Edgware Road" />
+    <edge source="Paddington" target="Royal Oak" />
+    <edge source="Ealing Broadway" target="West Acton" />
+    <edge source="West Acton" target="North Acton" />
+    <edge source="Earl's Court" target="High Street Kensington" />
+    <edge source="High Street Kensington" target="Gloucester Road" />
+    <edge source="East Acton" target="North Acton" />
+    <edge source="East Acton" target="White City" />
+    <edge source="White City" target="Shepherd’s Bush" />
+    <edge source="Finchley Road" target="Swiss Cottage" />
+    <edge source="Finchley Road" target="Wembley Park" />
+    <edge source="Wembley Park" target="Preston Road" />
+    <edge source="Gloucester Road" target="South Kensington" />
+    <edge source="South Kensington" target="Sloane Square" />
+    <edge source="Goldhawk Road" target="Shepherd’s Bush Market" />
+    <edge source="Shepherd’s Bush Market" target="Wood Lane" />
+    <edge source="Green Park" target="Piccadilly Circus" />
+    <edge source="Green Park" target="Westminster" />
+    <edge source="Piccadilly Circus" target="Oxford Circus" />
+    <edge source="Westminster" target="St. James's Park" />
+    <edge source="Harrow-on-the-Hill" target="Northwick Park" />
+    <edge source="Harrow-on-the-Hill" target="West Harrow" />
+    <edge source="Northwick Park" target="Preston Road" />
+    <edge source="West Harrow" target="Rayners Lane" />
+    <edge source="Holland Park" target="Shepherd’s Bush" />
+    <edge source="Ladbroke Grove" target="Latimer Road" />
+    <edge source="Ladbroke Grove" target="Westbourne Park" />
+    <edge source="Latimer Road" target="Wood Lane" />
+    <edge source="Westbourne Park" target="Royal Oak" />
+    <edge source="Rayners Lane" target="South Harrow" />
+    <edge source="South Harrow" target="Sudbury Hill" />
+    <edge source="Sloane Square" target="Victoria" />
+    <edge source="Victoria" target="St. James's Park" />
+  </graph>
+</graphml>

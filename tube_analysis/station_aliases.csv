@@ -1,0 +1,416 @@
+uid,line,position,raw_name,canonical_name
+e001,Bakerloo,1,Harrow & Wealdstone,Harrow & Wealdstone
+e002,Bakerloo,2,Kenton,Kenton
+e003,Bakerloo,3,South Kenton,South Kenton
+e004,Bakerloo,4,North Wembley,North Wembley
+e005,Bakerloo,5,Wembley Central,Wembley Central
+e006,Bakerloo,6,Stonebridge Park,Stonebridge Park
+e007,Bakerloo,7,Harlesden,Harlesden
+e008,Bakerloo,8,Willesden Junction,Willesden Junction
+e009,Bakerloo,9,Kensal Green,Kensal Green
+e010,Bakerloo,10,Queen’s Park,Queen’s Park
+e011,Bakerloo,11,Kilburn Park,Kilburn Park
+e012,Bakerloo,12,Maida Vale,Maida Vale
+e013,Bakerloo,13,Warwick Avenue,Warwick Avenue
+e014,Bakerloo,14,Paddington,Paddington
+e015,Bakerloo,15,Edgware Road,Edgware Road
+e016,Bakerloo,16,Marylebone,Marylebone
+e017,Bakerloo,17,Baker Street,Baker Street
+e018,Bakerloo,18,Regent’s Park,Regent’s Park
+e019,Bakerloo,19,Oxford Circus,Oxford Circus
+e020,Bakerloo,20,Piccadilly Circus,Piccadilly Circus
+e021,Bakerloo,21,Charing Cross,Charing Cross
+e022,Bakerloo,22,Embankment,Embankment
+e023,Bakerloo,23,Waterloo,Waterloo
+e024,Bakerloo,24,Lambeth North,Lambeth North
+e025,Bakerloo,25,Elephant & Castle,Elephant & Castle
+e026,Central-Epping,1,Woodford,Woodford
+e027,Central-Epping,2,Buckhurst Hill,Buckhurst Hill
+e028,Central-Epping,3,Loughton,Loughton
+e029,Central-Epping,4,Debden,Debden
+e030,Central-Epping,5,Theydon Bois,Theydon Bois
+e031,Central-Epping,6,Epping,Epping
+e032,Central-Hainault Loop,1,Leytonstone,Leytonstone
+e033,Central-Hainault Loop,2,Wanstead,Wanstead
+e034,Central-Hainault Loop,3,Redbridge,Redbridge
+e035,Central-Hainault Loop,4,Gants Hill,Gants Hill
+e036,Central-Hainault Loop,5,Newbury Park,Newbury Park
+e037,Central-Hainault Loop,6,Barkingside,Barkingside
+e038,Central-Hainault Loop,7,Fairlop,Fairlop
+e039,Central-Hainault Loop,8,Hainault,Hainault
+e040,Central-Hainault Loop,9,Grange Hill,Grange Hill
+e041,Central-Hainault Loop,10,Chigwell,Chigwell
+e042,Central-Hainault Loop,11,Roding Valley,Roding Valley
+e043,Central-Hainault Loop,12,Woodford,Woodford
+e044,Central-Hainault Loop,13,South Woodford,South Woodford
+e045,Central-Hainault Loop,14,Snaresbrook,Snaresbrook
+e046,Central-Hainault Loop,15,Leytonstone,Leytonstone
+e047,Central-Main,1,Ealing Broadway,Ealing Broadway
+e048,Central-Main,2,West Acton,West Acton
+e049,Central-Main,3,North Acton,North Acton
+e050,Central-Main,4,East Acton,East Acton
+e051,Central-Main,5,White City,White City
+e052,Central-Main,6,Shepherd’s Bush,Shepherd’s Bush
+e053,Central-Main,7,Holland Park,Holland Park
+e054,Central-Main,8,Notting Hill Gate,Notting Hill Gate
+e055,Central-Main,9,Queensway,Queensway
+e056,Central-Main,10,Lancaster Gate,Lancaster Gate
+e057,Central-Main,11,Marble Arch,Marble Arch
+e058,Central-Main,12,Bond Street,Bond Street
+e059,Central-Main,13,Oxford Circus,Oxford Circus
+e060,Central-Main,14,Tottenham Court Road,Tottenham Court Road
+e061,Central-Main,15,Holborn,Holborn
+e062,Central-Main,16,Chancery Lane,Chancery Lane
+e063,Central-Main,17,St. Paul’s,St. Paul’s
+e064,Central-Main,18,Bank,Bank-Monument
+e065,Central-Main,19,Liverpool Street,Liverpool Street
+e066,Central-Main,20,Bethnal Green,Bethnal Green
+e067,Central-Main,21,Mile End,Mile End
+e068,Central-Main,22,Stratford,Stratford
+e069,Central-Main,23,Leyton,Leyton
+e070,Central-Main,24,Leytonstone,Leytonstone
+e071,Central-Main,25,Wanstead,Wanstead
+e072,Central-Main,26,Redbridge,Redbridge
+e073,Central-Main,27,Gants Hill,Gants Hill
+e074,Central-Main,28,Newbury Park,Newbury Park
+e075,Central-Main,29,Barkingside,Barkingside
+e076,Central-Main,30,Fairlop,Fairlop
+e077,Central-Main,31,Hainault,Hainault
+e078,Central-Main,32,Grange Hill,Grange Hill
+e079,Central-Main,33,Chigwell,Chigwell
+e080,Central-Main,34,Roding Valley,Roding Valley
+e081,Central-Main,35,Buckhurst Hill,Buckhurst Hill
+e082,Central-Main,36,Loughton,Loughton
+e083,Central-Main,37,Debden,Debden
+e084,Central-Main,38,Theydon Bois,Theydon Bois
+e085,Central-Main,39,Epping,Epping
+e086,Central-West Ruislip,1,North Acton,North Acton
+e087,Central-West Ruislip,2,West Ruislip,West Ruislip
+e088,Circle-Hammersmith,1,Edgware Road,Edgware Road
+e089,Circle-Hammersmith,2,Paddington,Paddington
+e090,Circle-Hammersmith,3,Royal Oak,Royal Oak
+e091,Circle-Hammersmith,4,Westbourne Park,Westbourne Park
+e092,Circle-Hammersmith,5,Ladbroke Grove,Ladbroke Grove
+e093,Circle-Hammersmith,6,Latimer Road,Latimer Road
+e094,Circle-Hammersmith,7,Wood Lane,Wood Lane
+e095,Circle-Hammersmith,8,Shepherd’s Bush Market,Shepherd’s Bush Market
+e096,Circle-Hammersmith,9,Goldhawk Road,Goldhawk Road
+e097,Circle-Hammersmith,10,Hammersmith,Hammersmith
+e098,Circle-Main,1,Edgware Road,Edgware Road
+e099,Circle-Main,2,Paddington,Paddington
+e100,Circle-Main,3,Bayswater,Bayswater
+e101,Circle-Main,4,Notting Hill Gate,Notting Hill Gate
+e102,Circle-Main,5,High Street Kensington,High Street Kensington
+e103,Circle-Main,6,Gloucester Road,Gloucester Road
+e104,Circle-Main,7,South Kensington,South Kensington
+e105,Circle-Main,8,Sloane Square,Sloane Square
+e106,Circle-Main,9,Victoria,Victoria
+e107,Circle-Main,10,St. James's Park,St. James's Park
+e108,Circle-Main,11,Westminster,Westminster
+e109,Circle-Main,12,Embankment,Embankment
+e110,Circle-Main,13,Temple,Temple
+e111,Circle-Main,14,Blackfriars,Blackfriars
+e112,Circle-Main,15,Mansion House,Mansion House
+e113,Circle-Main,16,Cannon Street,Cannon Street
+e114,Circle-Main,17,Monument,Bank-Monument
+e115,Circle-Main,18,Tower Hill,Tower Hill
+e116,Circle-Main,19,Aldgate,Aldgate
+e117,Circle-Main,20,Liverpool Street,Liverpool Street
+e118,Circle-Main,21,Moorgate,Moorgate
+e119,Circle-Main,22,Barbican,Barbican
+e120,Circle-Main,23,Farringdon,Farringdon
+e121,Circle-Main,24,King’s Cross St. Pancras,King’s Cross St. Pancras
+e122,Circle-Main,25,Euston Square,Euston Square
+e123,Circle-Main,26,Great Portland Street,Great Portland Street
+e124,Circle-Main,27,Baker Street,Baker Street
+e125,Circle-Main,28,Edgware Road,Edgware Road
+e126,District-Edgware Road,1,Earl's Court,Earl's Court
+e127,District-Edgware Road,2,High Street Kensington,High Street Kensington
+e128,District-Edgware Road,3,Notting Hill Gate,Notting Hill Gate
+e129,District-Edgware Road,4,Bayswater,Bayswater
+e130,District-Edgware Road,5,Paddington,Paddington
+e131,District-Edgware Road,6,Edgware Road,Edgware Road
+e132,District-Kensington,1,Earl's Court,Earl's Court
+e133,District-Kensington,2,Kensington (Olympia),Kensington (Olympia)
+e134,District-Main,1,Ealing Broadway,Ealing Broadway
+e135,District-Main,2,Ealing Common,Ealing Common
+e136,District-Main,3,Acton Town,Acton Town
+e137,District-Main,4,Chiswick Park,Chiswick Park
+e138,District-Main,5,Turnham Green,Turnham Green
+e139,District-Main,6,Stamford Brook,Stamford Brook
+e140,District-Main,7,Ravenscourt Park,Ravenscourt Park
+e141,District-Main,8,Hammersmith,Hammersmith
+e142,District-Main,9,Barons Court,Barons Court
+e143,District-Main,10,West Kensington,West Kensington
+e144,District-Main,11,Earl's Court,Earl's Court
+e145,District-Main,12,Gloucester Road,Gloucester Road
+e146,District-Main,13,South Kensington,South Kensington
+e147,District-Main,14,Sloane Square,Sloane Square
+e148,District-Main,15,Victoria,Victoria
+e149,District-Main,16,St. James's Park,St. James's Park
+e150,District-Main,17,Westminster,Westminster
+e151,District-Main,18,Embankment,Embankment
+e152,District-Main,19,Temple,Temple
+e153,District-Main,20,Blackfriars,Blackfriars
+e154,District-Main,21,Mansion House,Mansion House
+e155,District-Main,22,Cannon Street,Cannon Street
+e156,District-Main,23,Monument,Bank-Monument
+e157,District-Main,24,Tower Hill,Tower Hill
+e158,District-Main,25,Aldgate East,Aldgate East
+e159,District-Main,26,Whitechapel,Whitechapel
+e160,District-Main,27,Stepney Green,Stepney Green
+e161,District-Main,28,Mile End,Mile End
+e162,District-Main,29,Bow Road,Bow Road
+e163,District-Main,30,Bromley-by-Bow,Bromley-by-Bow
+e164,District-Main,31,West Ham,West Ham
+e165,District-Main,32,Plaistow,Plaistow
+e166,District-Main,33,Upton Park,Upton Park
+e167,District-Main,34,East Ham,East Ham
+e168,District-Main,35,Barking,Barking
+e169,District-Main,36,Upney,Upney
+e170,District-Main,37,Becontree,Becontree
+e171,District-Main,38,Dagenham Heathway,Dagenham Heathway
+e172,District-Main,39,Dagenham East,Dagenham East
+e173,District-Main,40,Elm Park,Elm Park
+e174,District-Main,41,Hornchurch,Hornchurch
+e175,District-Main,42,Upminster Bridge,Upminster Bridge
+e176,District-Main,43,Upminster,Upminster
+e177,District-Richmond,1,Turnham Green,Turnham Green
+e178,District-Richmond,2,Gunnersbury,Gunnersbury
+e179,District-Richmond,3,Kew Gardens,Kew Gardens
+e180,District-Richmond,4,Richmond,Richmond
+e181,District-Wimbledon,1,Earl's Court,Earl's Court
+e182,District-Wimbledon,2,West Brompton,West Brompton
+e183,District-Wimbledon,3,Fulham Broadway,Fulham Broadway
+e184,District-Wimbledon,4,Parsons Green,Parsons Green
+e185,District-Wimbledon,5,Putney Bridge,Putney Bridge
+e186,District-Wimbledon,6,East Putney,East Putney
+e187,District-Wimbledon,7,Southfields,Southfields
+e188,District-Wimbledon,8,Wimbledon Park,Wimbledon Park
+e189,District-Wimbledon,9,Wimbledon,Wimbledon
+e190,Hammersmith & City,1,Hammersmith,Hammersmith
+e191,Hammersmith & City,2,Goldhawk Road,Goldhawk Road
+e192,Hammersmith & City,3,Shepherd’s Bush Market,Shepherd’s Bush Market
+e193,Hammersmith & City,4,Wood Lane,Wood Lane
+e194,Hammersmith & City,5,Latimer Road,Latimer Road
+e195,Hammersmith & City,6,Ladbroke Grove,Ladbroke Grove
+e196,Hammersmith & City,7,Westbourne Park,Westbourne Park
+e197,Hammersmith & City,8,Royal Oak,Royal Oak
+e198,Hammersmith & City,9,Paddington,Paddington
+e199,Hammersmith & City,10,Edgware Road,Edgware Road
+e200,Hammersmith & City,11,Baker Street,Baker Street
+e201,Hammersmith & City,12,Great Portland Street,Great Portland Street
+e202,Hammersmith & City,13,Euston Square,Euston Square
+e203,Hammersmith & City,14,King’s Cross St. Pancras,King’s Cross St. Pancras
+e204,Hammersmith & City,15,Farringdon,Farringdon
+e205,Hammersmith & City,16,Barbican,Barbican
+e206,Hammersmith & City,17,Moorgate,Moorgate
+e207,Hammersmith & City,18,Liverpool Street,Liverpool Street
+e208,Hammersmith & City,19,Aldgate East,Aldgate East
+e209,Hammersmith & City,20,Whitechapel,Whitechapel
+e210,Hammersmith & City,21,Stepney Green,Stepney Green
+e211,Hammersmith & City,22,Mile End,Mile End
+e212,Hammersmith & City,23,Bow Road,Bow Road
+e213,Hammersmith & City,24,Bromley-by-Bow,Bromley-by-Bow
+e214,Hammersmith & City,25,West Ham,West Ham
+e215,Hammersmith & City,26,Plaistow,Plaistow
+e216,Hammersmith & City,27,Upton Park,Upton Park
+e217,Hammersmith & City,28,East Ham,East Ham
+e218,Hammersmith & City,29,Barking,Barking
+e219,Jubilee,1,Stanmore,Stanmore
+e220,Jubilee,2,Canons Park,Canons Park
+e221,Jubilee,3,Queensbury,Queensbury
+e222,Jubilee,4,Kingsbury,Kingsbury
+e223,Jubilee,5,Wembley Park,Wembley Park
+e224,Jubilee,6,Neasden,Neasden
+e225,Jubilee,7,Dollis Hill,Dollis Hill
+e226,Jubilee,8,Willesden Green,Willesden Green
+e227,Jubilee,9,Kilburn,Kilburn
+e228,Jubilee,10,West Hampstead,West Hampstead
+e229,Jubilee,11,Finchley Road,Finchley Road
+e230,Jubilee,12,Swiss Cottage,Swiss Cottage
+e231,Jubilee,13,St. John’s Wood,St. John’s Wood
+e232,Jubilee,14,Baker Street,Baker Street
+e233,Jubilee,15,Bond Street,Bond Street
+e234,Jubilee,16,Green Park,Green Park
+e235,Jubilee,17,Westminster,Westminster
+e236,Jubilee,18,Waterloo,Waterloo
+e237,Jubilee,19,Southwark,Southwark
+e238,Jubilee,20,London Bridge,London Bridge
+e239,Jubilee,21,Bermondsey,Bermondsey
+e240,Jubilee,22,Canada Water,Canada Water
+e241,Jubilee,23,Canary Wharf,Canary Wharf
+e242,Jubilee,24,North Greenwich,North Greenwich
+e243,Jubilee,25,Canning Town,Canning Town
+e244,Jubilee,26,West Ham,West Ham
+e245,Jubilee,27,Stratford,Stratford
+e246,Metropolitan-Chesham,1,Chalfont & Latimer,Chalfont & Latimer
+e247,Metropolitan-Chesham,2,Chesham,Chesham
+e248,Metropolitan-Main,1,Aldgate,Aldgate
+e249,Metropolitan-Main,2,Liverpool Street,Liverpool Street
+e250,Metropolitan-Main,3,Moorgate,Moorgate
+e251,Metropolitan-Main,4,Barbican,Barbican
+e252,Metropolitan-Main,5,Farringdon,Farringdon
+e253,Metropolitan-Main,6,King’s Cross St. Pancras,King’s Cross St. Pancras
+e254,Metropolitan-Main,7,Euston Square,Euston Square
+e255,Metropolitan-Main,8,Great Portland Street,Great Portland Street
+e256,Metropolitan-Main,9,Baker Street,Baker Street
+e257,Metropolitan-Main,10,Finchley Road,Finchley Road
+e258,Metropolitan-Main,11,Wembley Park,Wembley Park
+e259,Metropolitan-Main,12,Preston Road,Preston Road
+e260,Metropolitan-Main,13,Northwick Park,Northwick Park
+e261,Metropolitan-Main,14,Harrow-on-the-Hill,Harrow-on-the-Hill
+e262,Metropolitan-Main,15,North Harrow,North Harrow
+e263,Metropolitan-Main,16,Pinner,Pinner
+e264,Metropolitan-Main,17,Northwood Hills,Northwood Hills
+e265,Metropolitan-Main,18,Northwood,Northwood
+e266,Metropolitan-Main,19,Moor Park,Moor Park
+e267,Metropolitan-Main,20,Rickmansworth,Rickmansworth
+e268,Metropolitan-Main,21,Chorleywood,Chorleywood
+e269,Metropolitan-Main,22,Chalfont & Latimer,Chalfont & Latimer
+e270,Metropolitan-Main,23,Amersham,Amersham
+e271,Metropolitan-Uxbridge,1,Harrow-on-the-Hill,Harrow-on-the-Hill
+e272,Metropolitan-Uxbridge,2,West Harrow,West Harrow
+e273,Metropolitan-Uxbridge,3,Rayners Lane,Rayners Lane
+e274,Metropolitan-Uxbridge,4,Eastcote,Eastcote
+e275,Metropolitan-Uxbridge,5,Ruislip Manor,Ruislip Manor
+e276,Metropolitan-Uxbridge,6,Ruislip,Ruislip
+e277,Metropolitan-Uxbridge,7,Ickenham,Ickenham
+e278,Metropolitan-Uxbridge,8,Hillingdon,Hillingdon
+e279,Metropolitan-Uxbridge,9,Uxbridge,Uxbridge
+e280,Metropolitan-Watford,1,Moor Park,Moor Park
+e281,Metropolitan-Watford,2,Croxley,Croxley
+e282,Metropolitan-Watford,3,Watford,Watford
+e283,Northern-Battersea Power Station,1,Kennington,Kennington
+e284,Northern-Battersea Power Station,2,Nine Elms,Nine Elms
+e285,Northern-Battersea Power Station,3,Battersea Power Station,Battersea Power Station
+e411,Northern-Charing Cross,1,Camden Town,Camden Town
+e412,Northern-Charing Cross,2,Mornington Crescent,Mornington Crescent
+e413,Northern-Charing Cross,3,Euston,Euston
+e414,Northern-Charing Cross,4,Warren Street,Warren Street
+e415,Northern-Charing Cross,5,Goodge Street,Goodge Street
+e416,Northern-Charing Cross,6,Tottenham Court Road,Tottenham Court Road
+e417,Northern-Charing Cross,7,Leicester Square,Leicester Square
+e418,Northern-Charing Cross,8,Charing Cross,Charing Cross
+e419,Northern-Charing Cross,9,Embankment,Embankment
+e420,Northern-Charing Cross,10,Waterloo,Waterloo
+e421,Northern-Charing Cross,11,Kennington,Kennington
+e292,Northern-High Barnet,1,Camden Town,Camden Town
+e293,Northern-High Barnet,2,Kentish Town,Kentish Town
+e294,Northern-High Barnet,3,Tufnell Park,Tufnell Park
+e295,Northern-High Barnet,4,Archway,Archway
+e296,Northern-High Barnet,5,Highgate,Highgate
+e297,Northern-High Barnet,6,East Finchley,East Finchley
+e298,Northern-High Barnet,7,Finchley Central,Finchley Central
+e299,Northern-High Barnet,8,West Finchley,West Finchley
+e300,Northern-High Barnet,9,Woodside Park,Woodside Park
+e301,Northern-High Barnet,10,Totteridge & Whetstone,Totteridge & Whetstone
+e302,Northern-High Barnet,11,High Barnet,High Barnet
+e303,Northern-Main,1,Edgware,Edgware
+e304,Northern-Main,2,Burnt Oak,Burnt Oak
+e305,Northern-Main,3,Colindale,Colindale
+e306,Northern-Main,4,Hendon Central,Hendon Central
+e307,Northern-Main,5,Brent Cross,Brent Cross
+e308,Northern-Main,6,Golders Green,Golders Green
+e309,Northern-Main,7,Hampstead,Hampstead
+e310,Northern-Main,8,Belsize Park,Belsize Park
+e311,Northern-Main,9,Chalk Farm,Chalk Farm
+e312,Northern-Main,10,Camden Town,Camden Town
+e313,Northern-Main,11,Mornington Crescent,Mornington Crescent
+e314,Northern-Main,12,Euston,Euston
+e315,Northern-Main,13,King’s Cross St. Pancras,King’s Cross St. Pancras
+e316,Northern-Main,14,Angel,Angel
+e317,Northern-Main,15,Old Street,Old Street
+e318,Northern-Main,16,Moorgate,Moorgate
+e319,Northern-Main,17,Bank,Bank-Monument
+e320,Northern-Main,18,London Bridge,London Bridge
+e321,Northern-Main,19,Borough,Borough
+e322,Northern-Main,20,Elephant & Castle,Elephant & Castle
+e323,Northern-Main,21,Kennington,Kennington
+e324,Northern-Main,22,Oval,Oval
+e325,Northern-Main,23,Stockwell,Stockwell
+e326,Northern-Main,24,Clapham North,Clapham North
+e327,Northern-Main,25,Clapham Common,Clapham Common
+e328,Northern-Main,26,Clapham South,Clapham South
+e329,Northern-Main,27,Balham,Balham
+e330,Northern-Main,28,Tooting Bec,Tooting Bec
+e331,Northern-Main,29,Tooting Broadway,Tooting Broadway
+e332,Northern-Main,30,Colliers Wood,Colliers Wood
+e333,Northern-Main,31,South Wimbledon,South Wimbledon
+e334,Northern-Main,32,Morden,Morden
+e335,Northern-Mill Hill East,1,Finchley Central,Finchley Central
+e336,Northern-Mill Hill East,2,Mill Hill East,Mill Hill East
+e337,Piccadilly-Heathrow,1,Heathrow Terminals 2 & 3,Heathrow Terminals 2 & 3
+e338,Piccadilly-Heathrow,2,Heathrow Terminal 4,Heathrow Terminal 4
+e339,Piccadilly-Heathrow,3,Heathrow Terminals 2 & 3,Heathrow Terminals 2 & 3
+e340,Piccadilly-Main,1,Cockfosters,Cockfosters
+e341,Piccadilly-Main,2,Oakwood,Oakwood
+e342,Piccadilly-Main,3,Southgate,Southgate
+e343,Piccadilly-Main,4,Arnos Grove,Arnos Grove
+e344,Piccadilly-Main,5,Bounds Green,Bounds Green
+e345,Piccadilly-Main,6,Wood Green,Wood Green
+e346,Piccadilly-Main,7,Turnpike Lane,Turnpike Lane
+e347,Piccadilly-Main,8,Manor House,Manor House
+e348,Piccadilly-Main,9,Finsbury Park,Finsbury Park
+e349,Piccadilly-Main,10,Arsenal,Arsenal
+e350,Piccadilly-Main,11,Holloway Road,Holloway Road
+e351,Piccadilly-Main,12,Caledonian Road,Caledonian Road
+e352,Piccadilly-Main,13,King’s Cross St. Pancras,King’s Cross St. Pancras
+e353,Piccadilly-Main,14,Russell Square,Russell Square
+e354,Piccadilly-Main,15,Holborn,Holborn
+e355,Piccadilly-Main,16,Covent Garden,Covent Garden
+e356,Piccadilly-Main,17,Leicester Square,Leicester Square
+e357,Piccadilly-Main,18,Piccadilly Circus,Piccadilly Circus
+e358,Piccadilly-Main,19,Green Park,Green Park
+e359,Piccadilly-Main,20,Hyde Park Corner,Hyde Park Corner
+e360,Piccadilly-Main,21,Knightsbridge,Knightsbridge
+e361,Piccadilly-Main,22,South Kensington,South Kensington
+e362,Piccadilly-Main,23,Gloucester Road,Gloucester Road
+e363,Piccadilly-Main,24,Earl's Court,Earl's Court
+e364,Piccadilly-Main,25,Barons Court,Barons Court
+e365,Piccadilly-Main,26,Hammersmith,Hammersmith
+e366,Piccadilly-Main,27,Turnham Green,Turnham Green
+e367,Piccadilly-Main,28,Acton Town,Acton Town
+e368,Piccadilly-Main,29,South Ealing,South Ealing
+e369,Piccadilly-Main,30,Northfields,Northfields
+e370,Piccadilly-Main,31,Boston Manor,Boston Manor
+e371,Piccadilly-Main,32,Osterley,Osterley
+e372,Piccadilly-Main,33,Hounslow East,Hounslow East
+e373,Piccadilly-Main,34,Hounslow Central,Hounslow Central
+e374,Piccadilly-Main,35,Hounslow West,Hounslow West
+e375,Piccadilly-Main,36,Hatton Cross,Hatton Cross
+e376,Piccadilly-Main,37,Heathrow Terminals 2 & 3,Heathrow Terminals 2 & 3
+e377,Piccadilly-Main,38,Heathrow Terminal 5,Heathrow Terminal 5
+e378,Piccadilly-Uxbridge,1,Acton Town,Acton Town
+e379,Piccadilly-Uxbridge,2,Ealing Common,Ealing Common
+e380,Piccadilly-Uxbridge,3,North Ealing,North Ealing
+e381,Piccadilly-Uxbridge,4,Park Royal,Park Royal
+e382,Piccadilly-Uxbridge,5,Alperton,Alperton
+e383,Piccadilly-Uxbridge,6,Sudbury Town,Sudbury Town
+e384,Piccadilly-Uxbridge,7,Sudbury Hill,Sudbury Hill
+e385,Piccadilly-Uxbridge,8,South Harrow,South Harrow
+e386,Piccadilly-Uxbridge,9,Rayners Lane,Rayners Lane
+e387,Piccadilly-Uxbridge,10,Eastcote,Eastcote
+e388,Piccadilly-Uxbridge,11,Ruislip Manor,Ruislip Manor
+e389,Piccadilly-Uxbridge,12,Ruislip,Ruislip
+e390,Piccadilly-Uxbridge,13,Ickenham,Ickenham
+e391,Piccadilly-Uxbridge,14,Hillingdon,Hillingdon
+e392,Piccadilly-Uxbridge,15,Uxbridge,Uxbridge
+e393,Victoria,1,Brixton,Brixton
+e394,Victoria,2,Stockwell,Stockwell
+e395,Victoria,3,Vauxhall,Vauxhall
+e396,Victoria,4,Pimlico,Pimlico
+e397,Victoria,5,Victoria,Victoria
+e398,Victoria,6,Green Park,Green Park
+e399,Victoria,7,Oxford Circus,Oxford Circus
+e400,Victoria,8,Warren Street,Warren Street
+e401,Victoria,9,Euston,Euston
+e402,Victoria,10,King’s Cross St. Pancras,King’s Cross St. Pancras
+e403,Victoria,11,Highbury & Islington,Highbury & Islington
+e404,Victoria,12,Finsbury Park,Finsbury Park
+e405,Victoria,13,Seven Sisters,Seven Sisters
+e406,Victoria,14,Tottenham Hale,Tottenham Hale
+e407,Victoria,15,Blackhorse Road,Blackhorse Road
+e408,Victoria,16,Walthamstow Central,Walthamstow Central
+e409,Waterloo & City,1,Waterloo,Waterloo
+e410,Waterloo & City,2,Bank,Bank-Monument

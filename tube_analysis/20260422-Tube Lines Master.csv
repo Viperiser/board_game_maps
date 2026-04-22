@@ -284,12 +284,6 @@ e282,3,Watford,Metropolitan-Watford
 e283,1,Kennington,Northern-Battersea Power Station
 e284,2,Nine Elms,Northern-Battersea Power Station
 e285,3,Battersea Power Station,Northern-Battersea Power Station
-e286,1,Camden Town,Northern-Charing Cross
-e287,2,Leicester Square,Northern-Charing Cross
-e288,3,Charing Cross,Northern-Charing Cross
-e289,4,Embankment,Northern-Charing Cross
-e290,5,Waterloo,Northern-Charing Cross
-e291,6,Kennington,Northern-Charing Cross
 e292,1,Camden Town,Northern-High Barnet
 e293,2,Kentish Town,Northern-High Barnet
 e294,3,Tufnell Park,Northern-High Barnet
@@ -409,3 +403,14 @@ e407,15,Blackhorse Road,Victoria
 e408,16,Walthamstow Central,Victoria
 e409,1,Waterloo,Waterloo & City
 e410,2,Bank,Waterloo & City
+e411,1,Camden Town,Northern-Charing Cross
+e412,2,Mornington Crescent,Northern-Charing Cross
+e413,3,Euston,Northern-Charing Cross
+e414,4,Warren Street,Northern-Charing Cross
+e415,5,Goodge Street,Northern-Charing Cross
+e416,6,Tottenham Court Road,Northern-Charing Cross
+e417,7,Leicester Square,Northern-Charing Cross
+e418,8,Charing Cross,Northern-Charing Cross
+e419,9,Embankment,Northern-Charing Cross
+e420,10,Waterloo,Northern-Charing Cross
+e421,11,Kennington,Northern-Charing Cross

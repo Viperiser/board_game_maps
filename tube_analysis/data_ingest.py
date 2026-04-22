@@ -8,6 +8,7 @@ from difflib import SequenceMatcher
 from itertools import combinations
 from typing import Iterable, Optional
 
+from pathlib import Path
 import pandas as pd
 import networkx as nx
 
@@ -577,9 +578,137 @@ def build_underground_graph_from_csv(
     )
 
 
+def export_canonical_graph_tables(
+    G: nx.Graph,
+    edges_df: pd.DataFrame,
+    stations_df: pd.DataFrame,
+    output_dir: str | Path,
+    stations_filename: str = "stations_canonical.csv",
+    edges_filename: str = "edges_canonical.csv",
+    aliases_filename: str = "station_aliases.csv",
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """
+    Export canonical station and edge tables.
+
+    Outputs
+    -------
+    stations_canonical.csv
+        One row per canonical station node.
+
+    edges_canonical.csv
+        One row per unique adjacency.
+
+    station_aliases.csv
+        One row per original source row, showing how raw station names map
+        to canonical station names.
+    """
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # ----------------------------
+    # Canonical station table
+    # ----------------------------
+    station_rows = []
+    for node, data in G.nodes(data=True):
+        original_names = tuple(sorted(data.get("original_names", (node,))))
+        lines = tuple(sorted(data.get("lines", ())))
+
+        station_rows.append(
+            {
+                "station_id": node,
+                "display_name": node,
+                "original_names": "|".join(original_names),
+                "n_original_names": len(original_names),
+                "lines": ";".join(lines),
+                "n_lines": len(lines),
+            }
+        )
+
+    stations_canonical_df = (
+        pd.DataFrame(station_rows).sort_values("station_id").reset_index(drop=True)
+    )
+
+    # ----------------------------
+    # Canonical edge table
+    # ----------------------------
+    edge_rows = []
+    for u, v, data in G.edges(data=True):
+        a, b = sorted((u, v))
+        lines = tuple(sorted(data.get("lines", ())))
+
+        edge_rows.append(
+            {
+                "edge_id": f"{a}__{b}",
+                "station_a": a,
+                "station_b": b,
+                "lines": ";".join(lines),
+                "n_lines": len(lines),
+            }
+        )
+
+    edges_canonical_df = (
+        pd.DataFrame(edge_rows)
+        .sort_values(["station_a", "station_b"])
+        .reset_index(drop=True)
+    )
+
+    # ----------------------------
+    # Raw-to-canonical alias table
+    # ----------------------------
+    alias_cols = [
+        c
+        for c in ["uid", "line", "position", "name", "canonical_name"]
+        if c in stations_df.columns
+    ]
+    aliases_df = (
+        stations_df[alias_cols]
+        .rename(columns={"name": "raw_name"})
+        .sort_values(["line", "position", "raw_name"])
+        .reset_index(drop=True)
+    )
+
+    # ----------------------------
+    # Write files
+    # ----------------------------
+    stations_canonical_df.to_csv(output_dir / stations_filename, index=False)
+    edges_canonical_df.to_csv(output_dir / edges_filename, index=False)
+    aliases_df.to_csv(output_dir / aliases_filename, index=False)
+
+    return stations_canonical_df, edges_canonical_df, aliases_df
+
+
+def export_graphml(G: nx.Graph, filepath: str | Path) -> None:
+    """
+    Export the graph to GraphML.
+
+    GraphML does not like tuples/sets, so convert those attributes to strings.
+    """
+    H = nx.Graph()
+
+    for node, data in G.nodes(data=True):
+        clean_data = {}
+        for k, v in data.items():
+            if isinstance(v, (tuple, list, set)):
+                clean_data[k] = ";".join(map(str, v))
+            else:
+                clean_data[k] = v
+        H.add_node(node, **clean_data)
+
+    for u, v, data in G.edges(data=True):
+        clean_data = {}
+        for k, v2 in data.items():
+            if isinstance(v2, (tuple, list, set)):
+                clean_data[k] = ";".join(map(str, v2))
+            else:
+                clean_data[k] = v2
+        H.add_edge(u, v, **clean_data)
+
+    nx.write_graphml(H, filepath)
+
+
 #### EXECUTION ########
 
-FILE = "20260422-Tube Lines Master.csv"
+FILE = "tube_analysis/20260422-Tube Lines Master.csv"
 
 equivalent_pairs = [
     ("Bank", "Monument"),
@@ -587,6 +716,15 @@ equivalent_pairs = [
 ]
 
 G, edges_df, stations_df = build_underground_graph_from_csv(
-    "20260422-Tube Lines Master.csv",
+    FILE,
     equivalent_pairs=equivalent_pairs,
 )
+
+stations_canonical_df, edges_canonical_df, aliases_df = export_canonical_graph_tables(
+    G=G,
+    edges_df=edges_df,
+    stations_df=stations_df,
+    output_dir="canonical_output",
+)
+
+export_graphml(G, "tube_analysis/underground.graphml")

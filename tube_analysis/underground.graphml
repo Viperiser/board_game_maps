@@ -1,0 +1,3099 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d6" for="edge" attr.name="n_lines" attr.type="long" />
+  <key id="d5" for="edge" attr.name="lines_str" attr.type="string" />
+  <key id="d4" for="edge" attr.name="lines" attr.type="string" />
+  <key id="d3" for="node" attr.name="n_lines" attr.type="long" />
+  <key id="d2" for="node" attr.name="lines" attr.type="string" />
+  <key id="d1" for="node" attr.name="merged_from" attr.type="string" />
+  <key id="d0" for="node" attr.name="original_names" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="Acton Town">
+      <data key="d0">Acton Town</data>
+      <data key="d1">Acton Town</data>
+      <data key="d2">District-Main;Piccadilly-Main;Piccadilly-Uxbridge</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Aldgate">
+      <data key="d0">Aldgate</data>
+      <data key="d1">Aldgate</data>
+      <data key="d2">Circle-Main;Metropolitan-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Aldgate East">
+      <data key="d0">Aldgate East</data>
+      <data key="d1">Aldgate East</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Alperton">
+      <data key="d0">Alperton</data>
+      <data key="d1">Alperton</data>
+      <data key="d2">Piccadilly-Uxbridge</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Amersham">
+      <data key="d0">Amersham</data>
+      <data key="d1">Amersham</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Angel">
+      <data key="d0">Angel</data>
+      <data key="d1">Angel</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Archway">
+      <data key="d0">Archway</data>
+      <data key="d1">Archway</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Arnos Grove">
+      <data key="d0">Arnos Grove</data>
+      <data key="d1">Arnos Grove</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Arsenal">
+      <data key="d0">Arsenal</data>
+      <data key="d1">Arsenal</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Baker Street">
+      <data key="d0">Baker Street</data>
+      <data key="d1">Baker Street</data>
+      <data key="d2">Bakerloo;Circle-Main;Hammersmith &amp; City;Jubilee;Metropolitan-Main</data>
+      <data key="d3">5</data>
+    </node>
+    <node id="Balham">
+      <data key="d0">Balham</data>
+      <data key="d1">Balham</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bank-Monument">
+      <data key="d0">Bank;Monument</data>
+      <data key="d1">Bank;Monument</data>
+      <data key="d2">Central-Main;Circle-Main;District-Main;Northern-Main;Waterloo &amp; City</data>
+      <data key="d3">5</data>
+    </node>
+    <node id="Barbican">
+      <data key="d0">Barbican</data>
+      <data key="d1">Barbican</data>
+      <data key="d2">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Barking">
+      <data key="d0">Barking</data>
+      <data key="d1">Barking</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Barkingside">
+      <data key="d0">Barkingside</data>
+      <data key="d1">Barkingside</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Barons Court">
+      <data key="d0">Barons Court</data>
+      <data key="d1">Barons Court</data>
+      <data key="d2">District-Main;Piccadilly-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Battersea Power Station">
+      <data key="d0">Battersea Power Station</data>
+      <data key="d1">Battersea Power Station</data>
+      <data key="d2">Northern-Battersea Power Station</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bayswater">
+      <data key="d0">Bayswater</data>
+      <data key="d1">Bayswater</data>
+      <data key="d2">Circle-Main;District-Edgware Road</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Becontree">
+      <data key="d0">Becontree</data>
+      <data key="d1">Becontree</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Belsize Park">
+      <data key="d0">Belsize Park</data>
+      <data key="d1">Belsize Park</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bermondsey">
+      <data key="d0">Bermondsey</data>
+      <data key="d1">Bermondsey</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bethnal Green">
+      <data key="d0">Bethnal Green</data>
+      <data key="d1">Bethnal Green</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Blackfriars">
+      <data key="d0">Blackfriars</data>
+      <data key="d1">Blackfriars</data>
+      <data key="d2">Circle-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Blackhorse Road">
+      <data key="d0">Blackhorse Road</data>
+      <data key="d1">Blackhorse Road</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bond Street">
+      <data key="d0">Bond Street</data>
+      <data key="d1">Bond Street</data>
+      <data key="d2">Central-Main;Jubilee</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Borough">
+      <data key="d0">Borough</data>
+      <data key="d1">Borough</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Boston Manor">
+      <data key="d0">Boston Manor</data>
+      <data key="d1">Boston Manor</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bounds Green">
+      <data key="d0">Bounds Green</data>
+      <data key="d1">Bounds Green</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bow Road">
+      <data key="d0">Bow Road</data>
+      <data key="d1">Bow Road</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Brent Cross">
+      <data key="d0">Brent Cross</data>
+      <data key="d1">Brent Cross</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Brixton">
+      <data key="d0">Brixton</data>
+      <data key="d1">Brixton</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Bromley-by-Bow">
+      <data key="d0">Bromley-by-Bow</data>
+      <data key="d1">Bromley-by-Bow</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Buckhurst Hill">
+      <data key="d0">Buckhurst Hill</data>
+      <data key="d1">Buckhurst Hill</data>
+      <data key="d2">Central-Epping;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Burnt Oak">
+      <data key="d0">Burnt Oak</data>
+      <data key="d1">Burnt Oak</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Caledonian Road">
+      <data key="d0">Caledonian Road</data>
+      <data key="d1">Caledonian Road</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Camden Town">
+      <data key="d0">Camden Town</data>
+      <data key="d1">Camden Town</data>
+      <data key="d2">Northern-Charing Cross;Northern-High Barnet;Northern-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Canada Water">
+      <data key="d0">Canada Water</data>
+      <data key="d1">Canada Water</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Canary Wharf">
+      <data key="d0">Canary Wharf</data>
+      <data key="d1">Canary Wharf</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Canning Town">
+      <data key="d0">Canning Town</data>
+      <data key="d1">Canning Town</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Cannon Street">
+      <data key="d0">Cannon Street</data>
+      <data key="d1">Cannon Street</data>
+      <data key="d2">Circle-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Canons Park">
+      <data key="d0">Canons Park</data>
+      <data key="d1">Canons Park</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Chalfont &amp; Latimer">
+      <data key="d0">Chalfont &amp; Latimer</data>
+      <data key="d1">Chalfont &amp; Latimer</data>
+      <data key="d2">Metropolitan-Chesham;Metropolitan-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Chalk Farm">
+      <data key="d0">Chalk Farm</data>
+      <data key="d1">Chalk Farm</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Chancery Lane">
+      <data key="d0">Chancery Lane</data>
+      <data key="d1">Chancery Lane</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Charing Cross">
+      <data key="d0">Charing Cross</data>
+      <data key="d1">Charing Cross</data>
+      <data key="d2">Bakerloo;Northern-Charing Cross</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Chesham">
+      <data key="d0">Chesham</data>
+      <data key="d1">Chesham</data>
+      <data key="d2">Metropolitan-Chesham</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Chigwell">
+      <data key="d0">Chigwell</data>
+      <data key="d1">Chigwell</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Chiswick Park">
+      <data key="d0">Chiswick Park</data>
+      <data key="d1">Chiswick Park</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Chorleywood">
+      <data key="d0">Chorleywood</data>
+      <data key="d1">Chorleywood</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Clapham Common">
+      <data key="d0">Clapham Common</data>
+      <data key="d1">Clapham Common</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Clapham North">
+      <data key="d0">Clapham North</data>
+      <data key="d1">Clapham North</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Clapham South">
+      <data key="d0">Clapham South</data>
+      <data key="d1">Clapham South</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Cockfosters">
+      <data key="d0">Cockfosters</data>
+      <data key="d1">Cockfosters</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Colindale">
+      <data key="d0">Colindale</data>
+      <data key="d1">Colindale</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Colliers Wood">
+      <data key="d0">Colliers Wood</data>
+      <data key="d1">Colliers Wood</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Covent Garden">
+      <data key="d0">Covent Garden</data>
+      <data key="d1">Covent Garden</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Croxley">
+      <data key="d0">Croxley</data>
+      <data key="d1">Croxley</data>
+      <data key="d2">Metropolitan-Watford</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Dagenham East">
+      <data key="d0">Dagenham East</data>
+      <data key="d1">Dagenham East</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Dagenham Heathway">
+      <data key="d0">Dagenham Heathway</data>
+      <data key="d1">Dagenham Heathway</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Debden">
+      <data key="d0">Debden</data>
+      <data key="d1">Debden</data>
+      <data key="d2">Central-Epping;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Dollis Hill">
+      <data key="d0">Dollis Hill</data>
+      <data key="d1">Dollis Hill</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Ealing Broadway">
+      <data key="d0">Ealing Broadway</data>
+      <data key="d1">Ealing Broadway</data>
+      <data key="d2">Central-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Ealing Common">
+      <data key="d0">Ealing Common</data>
+      <data key="d1">Ealing Common</data>
+      <data key="d2">District-Main;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Earl's Court">
+      <data key="d0">Earl's Court</data>
+      <data key="d1">Earl's Court</data>
+      <data key="d2">District-Edgware Road;District-Kensington;District-Main;District-Wimbledon;Piccadilly-Main</data>
+      <data key="d3">5</data>
+    </node>
+    <node id="East Acton">
+      <data key="d0">East Acton</data>
+      <data key="d1">East Acton</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="East Finchley">
+      <data key="d0">East Finchley</data>
+      <data key="d1">East Finchley</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="East Ham">
+      <data key="d0">East Ham</data>
+      <data key="d1">East Ham</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="East Putney">
+      <data key="d0">East Putney</data>
+      <data key="d1">East Putney</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Eastcote">
+      <data key="d0">Eastcote</data>
+      <data key="d1">Eastcote</data>
+      <data key="d2">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Edgware">
+      <data key="d0">Edgware</data>
+      <data key="d1">Edgware</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Edgware Road">
+      <data key="d0">Edgware Road</data>
+      <data key="d1">Edgware Road</data>
+      <data key="d2">Bakerloo;Circle-Hammersmith;Circle-Main;District-Edgware Road;Hammersmith &amp; City</data>
+      <data key="d3">5</data>
+    </node>
+    <node id="Elephant &amp; Castle">
+      <data key="d0">Elephant &amp; Castle</data>
+      <data key="d1">Elephant &amp; Castle</data>
+      <data key="d2">Bakerloo;Northern-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Elm Park">
+      <data key="d0">Elm Park</data>
+      <data key="d1">Elm Park</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Embankment">
+      <data key="d0">Embankment</data>
+      <data key="d1">Embankment</data>
+      <data key="d2">Bakerloo;Circle-Main;District-Main;Northern-Charing Cross</data>
+      <data key="d3">4</data>
+    </node>
+    <node id="Epping">
+      <data key="d0">Epping</data>
+      <data key="d1">Epping</data>
+      <data key="d2">Central-Epping;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Euston">
+      <data key="d0">Euston</data>
+      <data key="d1">Euston</data>
+      <data key="d2">Northern-Charing Cross;Northern-Main;Victoria</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Euston Square">
+      <data key="d0">Euston Square</data>
+      <data key="d1">Euston Square</data>
+      <data key="d2">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Fairlop">
+      <data key="d0">Fairlop</data>
+      <data key="d1">Fairlop</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Farringdon">
+      <data key="d0">Farringdon</data>
+      <data key="d1">Farringdon</data>
+      <data key="d2">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Finchley Central">
+      <data key="d0">Finchley Central</data>
+      <data key="d1">Finchley Central</data>
+      <data key="d2">Northern-High Barnet;Northern-Mill Hill East</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Finchley Road">
+      <data key="d0">Finchley Road</data>
+      <data key="d1">Finchley Road</data>
+      <data key="d2">Jubilee;Metropolitan-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Finsbury Park">
+      <data key="d0">Finsbury Park</data>
+      <data key="d1">Finsbury Park</data>
+      <data key="d2">Piccadilly-Main;Victoria</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Fulham Broadway">
+      <data key="d0">Fulham Broadway</data>
+      <data key="d1">Fulham Broadway</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Gants Hill">
+      <data key="d0">Gants Hill</data>
+      <data key="d1">Gants Hill</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Gloucester Road">
+      <data key="d0">Gloucester Road</data>
+      <data key="d1">Gloucester Road</data>
+      <data key="d2">Circle-Main;District-Main;Piccadilly-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Golders Green">
+      <data key="d0">Golders Green</data>
+      <data key="d1">Golders Green</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Goldhawk Road">
+      <data key="d0">Goldhawk Road</data>
+      <data key="d1">Goldhawk Road</data>
+      <data key="d2">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Goodge Street">
+      <data key="d0">Goodge Street</data>
+      <data key="d1">Goodge Street</data>
+      <data key="d2">Northern-Charing Cross</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Grange Hill">
+      <data key="d0">Grange Hill</data>
+      <data key="d1">Grange Hill</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Great Portland Street">
+      <data key="d0">Great Portland Street</data>
+      <data key="d1">Great Portland Street</data>
+      <data key="d2">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Green Park">
+      <data key="d0">Green Park</data>
+      <data key="d1">Green Park</data>
+      <data key="d2">Jubilee;Piccadilly-Main;Victoria</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Gunnersbury">
+      <data key="d0">Gunnersbury</data>
+      <data key="d1">Gunnersbury</data>
+      <data key="d2">District-Richmond</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Hainault">
+      <data key="d0">Hainault</data>
+      <data key="d1">Hainault</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Hammersmith">
+      <data key="d0">Hammersmith</data>
+      <data key="d1">Hammersmith</data>
+      <data key="d2">Circle-Hammersmith;District-Main;Hammersmith &amp; City;Piccadilly-Main</data>
+      <data key="d3">4</data>
+    </node>
+    <node id="Hampstead">
+      <data key="d0">Hampstead</data>
+      <data key="d1">Hampstead</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Harlesden">
+      <data key="d0">Harlesden</data>
+      <data key="d1">Harlesden</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Harrow &amp; Wealdstone">
+      <data key="d0">Harrow &amp; Wealdstone</data>
+      <data key="d1">Harrow &amp; Wealdstone</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Harrow-on-the-Hill">
+      <data key="d0">Harrow-on-the-Hill</data>
+      <data key="d1">Harrow-on-the-Hill</data>
+      <data key="d2">Metropolitan-Main;Metropolitan-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Hatton Cross">
+      <data key="d0">Hatton Cross</data>
+      <data key="d1">Hatton Cross</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Heathrow Terminal 4">
+      <data key="d0">Heathrow Terminal 4</data>
+      <data key="d1">Heathrow Terminal 4</data>
+      <data key="d2">Piccadilly-Heathrow</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Heathrow Terminal 5">
+      <data key="d0">Heathrow Terminal 5</data>
+      <data key="d1">Heathrow Terminal 5</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Heathrow Terminals 2 &amp; 3">
+      <data key="d0">Heathrow Terminals 2 &amp; 3</data>
+      <data key="d1">Heathrow Terminals 2 &amp; 3</data>
+      <data key="d2">Piccadilly-Heathrow;Piccadilly-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Hendon Central">
+      <data key="d0">Hendon Central</data>
+      <data key="d1">Hendon Central</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="High Barnet">
+      <data key="d0">High Barnet</data>
+      <data key="d1">High Barnet</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="High Street Kensington">
+      <data key="d0">High Street Kensington</data>
+      <data key="d1">High Street Kensington</data>
+      <data key="d2">Circle-Main;District-Edgware Road</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Highbury &amp; Islington">
+      <data key="d0">Highbury &amp; Islington</data>
+      <data key="d1">Highbury &amp; Islington</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Highgate">
+      <data key="d0">Highgate</data>
+      <data key="d1">Highgate</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Hillingdon">
+      <data key="d0">Hillingdon</data>
+      <data key="d1">Hillingdon</data>
+      <data key="d2">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Holborn">
+      <data key="d0">Holborn</data>
+      <data key="d1">Holborn</data>
+      <data key="d2">Central-Main;Piccadilly-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Holland Park">
+      <data key="d0">Holland Park</data>
+      <data key="d1">Holland Park</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Holloway Road">
+      <data key="d0">Holloway Road</data>
+      <data key="d1">Holloway Road</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Hornchurch">
+      <data key="d0">Hornchurch</data>
+      <data key="d1">Hornchurch</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Hounslow Central">
+      <data key="d0">Hounslow Central</data>
+      <data key="d1">Hounslow Central</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Hounslow East">
+      <data key="d0">Hounslow East</data>
+      <data key="d1">Hounslow East</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Hounslow West">
+      <data key="d0">Hounslow West</data>
+      <data key="d1">Hounslow West</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Hyde Park Corner">
+      <data key="d0">Hyde Park Corner</data>
+      <data key="d1">Hyde Park Corner</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Ickenham">
+      <data key="d0">Ickenham</data>
+      <data key="d1">Ickenham</data>
+      <data key="d2">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Kennington">
+      <data key="d0">Kennington</data>
+      <data key="d1">Kennington</data>
+      <data key="d2">Northern-Battersea Power Station;Northern-Charing Cross;Northern-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Kensal Green">
+      <data key="d0">Kensal Green</data>
+      <data key="d1">Kensal Green</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Kensington (Olympia)">
+      <data key="d0">Kensington (Olympia)</data>
+      <data key="d1">Kensington (Olympia)</data>
+      <data key="d2">District-Kensington</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Kentish Town">
+      <data key="d0">Kentish Town</data>
+      <data key="d1">Kentish Town</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Kenton">
+      <data key="d0">Kenton</data>
+      <data key="d1">Kenton</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Kew Gardens">
+      <data key="d0">Kew Gardens</data>
+      <data key="d1">Kew Gardens</data>
+      <data key="d2">District-Richmond</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Kilburn">
+      <data key="d0">Kilburn</data>
+      <data key="d1">Kilburn</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Kilburn Park">
+      <data key="d0">Kilburn Park</data>
+      <data key="d1">Kilburn Park</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Kingsbury">
+      <data key="d0">Kingsbury</data>
+      <data key="d1">Kingsbury</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="King’s Cross St. Pancras">
+      <data key="d0">King’s Cross St. Pancras</data>
+      <data key="d1">King’s Cross St. Pancras</data>
+      <data key="d2">Circle-Main;Hammersmith &amp; City;Metropolitan-Main;Northern-Main;Piccadilly-Main;Victoria</data>
+      <data key="d3">6</data>
+    </node>
+    <node id="Knightsbridge">
+      <data key="d0">Knightsbridge</data>
+      <data key="d1">Knightsbridge</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Ladbroke Grove">
+      <data key="d0">Ladbroke Grove</data>
+      <data key="d1">Ladbroke Grove</data>
+      <data key="d2">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Lambeth North">
+      <data key="d0">Lambeth North</data>
+      <data key="d1">Lambeth North</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Lancaster Gate">
+      <data key="d0">Lancaster Gate</data>
+      <data key="d1">Lancaster Gate</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Latimer Road">
+      <data key="d0">Latimer Road</data>
+      <data key="d1">Latimer Road</data>
+      <data key="d2">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Leicester Square">
+      <data key="d0">Leicester Square</data>
+      <data key="d1">Leicester Square</data>
+      <data key="d2">Northern-Charing Cross;Piccadilly-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Leyton">
+      <data key="d0">Leyton</data>
+      <data key="d1">Leyton</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Leytonstone">
+      <data key="d0">Leytonstone</data>
+      <data key="d1">Leytonstone</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Liverpool Street">
+      <data key="d0">Liverpool Street</data>
+      <data key="d1">Liverpool Street</data>
+      <data key="d2">Central-Main;Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d3">4</data>
+    </node>
+    <node id="London Bridge">
+      <data key="d0">London Bridge</data>
+      <data key="d1">London Bridge</data>
+      <data key="d2">Jubilee;Northern-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Loughton">
+      <data key="d0">Loughton</data>
+      <data key="d1">Loughton</data>
+      <data key="d2">Central-Epping;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Maida Vale">
+      <data key="d0">Maida Vale</data>
+      <data key="d1">Maida Vale</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Manor House">
+      <data key="d0">Manor House</data>
+      <data key="d1">Manor House</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Mansion House">
+      <data key="d0">Mansion House</data>
+      <data key="d1">Mansion House</data>
+      <data key="d2">Circle-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Marble Arch">
+      <data key="d0">Marble Arch</data>
+      <data key="d1">Marble Arch</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Marylebone">
+      <data key="d0">Marylebone</data>
+      <data key="d1">Marylebone</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Mile End">
+      <data key="d0">Mile End</data>
+      <data key="d1">Mile End</data>
+      <data key="d2">Central-Main;District-Main;Hammersmith &amp; City</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Mill Hill East">
+      <data key="d0">Mill Hill East</data>
+      <data key="d1">Mill Hill East</data>
+      <data key="d2">Northern-Mill Hill East</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Moor Park">
+      <data key="d0">Moor Park</data>
+      <data key="d1">Moor Park</data>
+      <data key="d2">Metropolitan-Main;Metropolitan-Watford</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Moorgate">
+      <data key="d0">Moorgate</data>
+      <data key="d1">Moorgate</data>
+      <data key="d2">Circle-Main;Hammersmith &amp; City;Metropolitan-Main;Northern-Main</data>
+      <data key="d3">4</data>
+    </node>
+    <node id="Morden">
+      <data key="d0">Morden</data>
+      <data key="d1">Morden</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Mornington Crescent">
+      <data key="d0">Mornington Crescent</data>
+      <data key="d1">Mornington Crescent</data>
+      <data key="d2">Northern-Charing Cross;Northern-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Neasden">
+      <data key="d0">Neasden</data>
+      <data key="d1">Neasden</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Newbury Park">
+      <data key="d0">Newbury Park</data>
+      <data key="d1">Newbury Park</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Nine Elms">
+      <data key="d0">Nine Elms</data>
+      <data key="d1">Nine Elms</data>
+      <data key="d2">Northern-Battersea Power Station</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="North Acton">
+      <data key="d0">North Acton</data>
+      <data key="d1">North Acton</data>
+      <data key="d2">Central-Main;Central-West Ruislip</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="North Ealing">
+      <data key="d0">North Ealing</data>
+      <data key="d1">North Ealing</data>
+      <data key="d2">Piccadilly-Uxbridge</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="North Greenwich">
+      <data key="d0">North Greenwich</data>
+      <data key="d1">North Greenwich</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="North Harrow">
+      <data key="d0">North Harrow</data>
+      <data key="d1">North Harrow</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="North Wembley">
+      <data key="d0">North Wembley</data>
+      <data key="d1">North Wembley</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Northfields">
+      <data key="d0">Northfields</data>
+      <data key="d1">Northfields</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Northwick Park">
+      <data key="d0">Northwick Park</data>
+      <data key="d1">Northwick Park</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Northwood">
+      <data key="d0">Northwood</data>
+      <data key="d1">Northwood</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Northwood Hills">
+      <data key="d0">Northwood Hills</data>
+      <data key="d1">Northwood Hills</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Notting Hill Gate">
+      <data key="d0">Notting Hill Gate</data>
+      <data key="d1">Notting Hill Gate</data>
+      <data key="d2">Central-Main;Circle-Main;District-Edgware Road</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Oakwood">
+      <data key="d0">Oakwood</data>
+      <data key="d1">Oakwood</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Old Street">
+      <data key="d0">Old Street</data>
+      <data key="d1">Old Street</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Osterley">
+      <data key="d0">Osterley</data>
+      <data key="d1">Osterley</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Oval">
+      <data key="d0">Oval</data>
+      <data key="d1">Oval</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Oxford Circus">
+      <data key="d0">Oxford Circus</data>
+      <data key="d1">Oxford Circus</data>
+      <data key="d2">Bakerloo;Central-Main;Victoria</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Paddington">
+      <data key="d0">Paddington</data>
+      <data key="d1">Paddington</data>
+      <data key="d2">Bakerloo;Circle-Hammersmith;Circle-Main;District-Edgware Road;Hammersmith &amp; City</data>
+      <data key="d3">5</data>
+    </node>
+    <node id="Park Royal">
+      <data key="d0">Park Royal</data>
+      <data key="d1">Park Royal</data>
+      <data key="d2">Piccadilly-Uxbridge</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Parsons Green">
+      <data key="d0">Parsons Green</data>
+      <data key="d1">Parsons Green</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Piccadilly Circus">
+      <data key="d0">Piccadilly Circus</data>
+      <data key="d1">Piccadilly Circus</data>
+      <data key="d2">Bakerloo;Piccadilly-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Pimlico">
+      <data key="d0">Pimlico</data>
+      <data key="d1">Pimlico</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Pinner">
+      <data key="d0">Pinner</data>
+      <data key="d1">Pinner</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Plaistow">
+      <data key="d0">Plaistow</data>
+      <data key="d1">Plaistow</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Preston Road">
+      <data key="d0">Preston Road</data>
+      <data key="d1">Preston Road</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Putney Bridge">
+      <data key="d0">Putney Bridge</data>
+      <data key="d1">Putney Bridge</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Queensbury">
+      <data key="d0">Queensbury</data>
+      <data key="d1">Queensbury</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Queensway">
+      <data key="d0">Queensway</data>
+      <data key="d1">Queensway</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Queen’s Park">
+      <data key="d0">Queen’s Park</data>
+      <data key="d1">Queen’s Park</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Ravenscourt Park">
+      <data key="d0">Ravenscourt Park</data>
+      <data key="d1">Ravenscourt Park</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Rayners Lane">
+      <data key="d0">Rayners Lane</data>
+      <data key="d1">Rayners Lane</data>
+      <data key="d2">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Redbridge">
+      <data key="d0">Redbridge</data>
+      <data key="d1">Redbridge</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Regent’s Park">
+      <data key="d0">Regent’s Park</data>
+      <data key="d1">Regent’s Park</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Richmond">
+      <data key="d0">Richmond</data>
+      <data key="d1">Richmond</data>
+      <data key="d2">District-Richmond</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Rickmansworth">
+      <data key="d0">Rickmansworth</data>
+      <data key="d1">Rickmansworth</data>
+      <data key="d2">Metropolitan-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Roding Valley">
+      <data key="d0">Roding Valley</data>
+      <data key="d1">Roding Valley</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Royal Oak">
+      <data key="d0">Royal Oak</data>
+      <data key="d1">Royal Oak</data>
+      <data key="d2">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Ruislip">
+      <data key="d0">Ruislip</data>
+      <data key="d1">Ruislip</data>
+      <data key="d2">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Ruislip Manor">
+      <data key="d0">Ruislip Manor</data>
+      <data key="d1">Ruislip Manor</data>
+      <data key="d2">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Russell Square">
+      <data key="d0">Russell Square</data>
+      <data key="d1">Russell Square</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Seven Sisters">
+      <data key="d0">Seven Sisters</data>
+      <data key="d1">Seven Sisters</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Shepherd’s Bush">
+      <data key="d0">Shepherd’s Bush</data>
+      <data key="d1">Shepherd’s Bush</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Shepherd’s Bush Market">
+      <data key="d0">Shepherd’s Bush Market</data>
+      <data key="d1">Shepherd’s Bush Market</data>
+      <data key="d2">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Sloane Square">
+      <data key="d0">Sloane Square</data>
+      <data key="d1">Sloane Square</data>
+      <data key="d2">Circle-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Snaresbrook">
+      <data key="d0">Snaresbrook</data>
+      <data key="d1">Snaresbrook</data>
+      <data key="d2">Central-Hainault Loop</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="South Ealing">
+      <data key="d0">South Ealing</data>
+      <data key="d1">South Ealing</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="South Harrow">
+      <data key="d0">South Harrow</data>
+      <data key="d1">South Harrow</data>
+      <data key="d2">Piccadilly-Uxbridge</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="South Kensington">
+      <data key="d0">South Kensington</data>
+      <data key="d1">South Kensington</data>
+      <data key="d2">Circle-Main;District-Main;Piccadilly-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="South Kenton">
+      <data key="d0">South Kenton</data>
+      <data key="d1">South Kenton</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="South Wimbledon">
+      <data key="d0">South Wimbledon</data>
+      <data key="d1">South Wimbledon</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="South Woodford">
+      <data key="d0">South Woodford</data>
+      <data key="d1">South Woodford</data>
+      <data key="d2">Central-Hainault Loop</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Southfields">
+      <data key="d0">Southfields</data>
+      <data key="d1">Southfields</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Southgate">
+      <data key="d0">Southgate</data>
+      <data key="d1">Southgate</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Southwark">
+      <data key="d0">Southwark</data>
+      <data key="d1">Southwark</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="St. James's Park">
+      <data key="d0">St. James's Park</data>
+      <data key="d1">St. James's Park</data>
+      <data key="d2">Circle-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="St. John’s Wood">
+      <data key="d0">St. John’s Wood</data>
+      <data key="d1">St. John’s Wood</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="St. Paul’s">
+      <data key="d0">St. Paul’s</data>
+      <data key="d1">St. Paul’s</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Stamford Brook">
+      <data key="d0">Stamford Brook</data>
+      <data key="d1">Stamford Brook</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Stanmore">
+      <data key="d0">Stanmore</data>
+      <data key="d1">Stanmore</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Stepney Green">
+      <data key="d0">Stepney Green</data>
+      <data key="d1">Stepney Green</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Stockwell">
+      <data key="d0">Stockwell</data>
+      <data key="d1">Stockwell</data>
+      <data key="d2">Northern-Main;Victoria</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Stonebridge Park">
+      <data key="d0">Stonebridge Park</data>
+      <data key="d1">Stonebridge Park</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Stratford">
+      <data key="d0">Stratford</data>
+      <data key="d1">Stratford</data>
+      <data key="d2">Central-Main;Jubilee</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Sudbury Hill">
+      <data key="d0">Sudbury Hill</data>
+      <data key="d1">Sudbury Hill</data>
+      <data key="d2">Piccadilly-Uxbridge</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Sudbury Town">
+      <data key="d0">Sudbury Town</data>
+      <data key="d1">Sudbury Town</data>
+      <data key="d2">Piccadilly-Uxbridge</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Swiss Cottage">
+      <data key="d0">Swiss Cottage</data>
+      <data key="d1">Swiss Cottage</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Temple">
+      <data key="d0">Temple</data>
+      <data key="d1">Temple</data>
+      <data key="d2">Circle-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Theydon Bois">
+      <data key="d0">Theydon Bois</data>
+      <data key="d1">Theydon Bois</data>
+      <data key="d2">Central-Epping;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Tooting Bec">
+      <data key="d0">Tooting Bec</data>
+      <data key="d1">Tooting Bec</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Tooting Broadway">
+      <data key="d0">Tooting Broadway</data>
+      <data key="d1">Tooting Broadway</data>
+      <data key="d2">Northern-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Tottenham Court Road">
+      <data key="d0">Tottenham Court Road</data>
+      <data key="d1">Tottenham Court Road</data>
+      <data key="d2">Central-Main;Northern-Charing Cross</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Tottenham Hale">
+      <data key="d0">Tottenham Hale</data>
+      <data key="d1">Tottenham Hale</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Totteridge &amp; Whetstone">
+      <data key="d0">Totteridge &amp; Whetstone</data>
+      <data key="d1">Totteridge &amp; Whetstone</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Tower Hill">
+      <data key="d0">Tower Hill</data>
+      <data key="d1">Tower Hill</data>
+      <data key="d2">Circle-Main;District-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Tufnell Park">
+      <data key="d0">Tufnell Park</data>
+      <data key="d1">Tufnell Park</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Turnham Green">
+      <data key="d0">Turnham Green</data>
+      <data key="d1">Turnham Green</data>
+      <data key="d2">District-Main;District-Richmond;Piccadilly-Main</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Turnpike Lane">
+      <data key="d0">Turnpike Lane</data>
+      <data key="d1">Turnpike Lane</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Upminster">
+      <data key="d0">Upminster</data>
+      <data key="d1">Upminster</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Upminster Bridge">
+      <data key="d0">Upminster Bridge</data>
+      <data key="d1">Upminster Bridge</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Upney">
+      <data key="d0">Upney</data>
+      <data key="d1">Upney</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Upton Park">
+      <data key="d0">Upton Park</data>
+      <data key="d1">Upton Park</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Uxbridge">
+      <data key="d0">Uxbridge</data>
+      <data key="d1">Uxbridge</data>
+      <data key="d2">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Vauxhall">
+      <data key="d0">Vauxhall</data>
+      <data key="d1">Vauxhall</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Victoria">
+      <data key="d0">Victoria</data>
+      <data key="d1">Victoria</data>
+      <data key="d2">Circle-Main;District-Main;Victoria</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="Walthamstow Central">
+      <data key="d0">Walthamstow Central</data>
+      <data key="d1">Walthamstow Central</data>
+      <data key="d2">Victoria</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Wanstead">
+      <data key="d0">Wanstead</data>
+      <data key="d1">Wanstead</data>
+      <data key="d2">Central-Hainault Loop;Central-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Warren Street">
+      <data key="d0">Warren Street</data>
+      <data key="d1">Warren Street</data>
+      <data key="d2">Northern-Charing Cross;Victoria</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Warwick Avenue">
+      <data key="d0">Warwick Avenue</data>
+      <data key="d1">Warwick Avenue</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Waterloo">
+      <data key="d0">Waterloo</data>
+      <data key="d1">Waterloo</data>
+      <data key="d2">Bakerloo;Jubilee;Northern-Charing Cross;Waterloo &amp; City</data>
+      <data key="d3">4</data>
+    </node>
+    <node id="Watford">
+      <data key="d0">Watford</data>
+      <data key="d1">Watford</data>
+      <data key="d2">Metropolitan-Watford</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Wembley Central">
+      <data key="d0">Wembley Central</data>
+      <data key="d1">Wembley Central</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Wembley Park">
+      <data key="d0">Wembley Park</data>
+      <data key="d1">Wembley Park</data>
+      <data key="d2">Jubilee;Metropolitan-Main</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="West Acton">
+      <data key="d0">West Acton</data>
+      <data key="d1">West Acton</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="West Brompton">
+      <data key="d0">West Brompton</data>
+      <data key="d1">West Brompton</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="West Finchley">
+      <data key="d0">West Finchley</data>
+      <data key="d1">West Finchley</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="West Ham">
+      <data key="d0">West Ham</data>
+      <data key="d1">West Ham</data>
+      <data key="d2">District-Main;Hammersmith &amp; City;Jubilee</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="West Hampstead">
+      <data key="d0">West Hampstead</data>
+      <data key="d1">West Hampstead</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="West Harrow">
+      <data key="d0">West Harrow</data>
+      <data key="d1">West Harrow</data>
+      <data key="d2">Metropolitan-Uxbridge</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="West Kensington">
+      <data key="d0">West Kensington</data>
+      <data key="d1">West Kensington</data>
+      <data key="d2">District-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="West Ruislip">
+      <data key="d0">West Ruislip</data>
+      <data key="d1">West Ruislip</data>
+      <data key="d2">Central-West Ruislip</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Westbourne Park">
+      <data key="d0">Westbourne Park</data>
+      <data key="d1">Westbourne Park</data>
+      <data key="d2">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Westminster">
+      <data key="d0">Westminster</data>
+      <data key="d1">Westminster</data>
+      <data key="d2">Circle-Main;District-Main;Jubilee</data>
+      <data key="d3">3</data>
+    </node>
+    <node id="White City">
+      <data key="d0">White City</data>
+      <data key="d1">White City</data>
+      <data key="d2">Central-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Whitechapel">
+      <data key="d0">Whitechapel</data>
+      <data key="d1">Whitechapel</data>
+      <data key="d2">District-Main;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Willesden Green">
+      <data key="d0">Willesden Green</data>
+      <data key="d1">Willesden Green</data>
+      <data key="d2">Jubilee</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Willesden Junction">
+      <data key="d0">Willesden Junction</data>
+      <data key="d1">Willesden Junction</data>
+      <data key="d2">Bakerloo</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Wimbledon">
+      <data key="d0">Wimbledon</data>
+      <data key="d1">Wimbledon</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Wimbledon Park">
+      <data key="d0">Wimbledon Park</data>
+      <data key="d1">Wimbledon Park</data>
+      <data key="d2">District-Wimbledon</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Wood Green">
+      <data key="d0">Wood Green</data>
+      <data key="d1">Wood Green</data>
+      <data key="d2">Piccadilly-Main</data>
+      <data key="d3">1</data>
+    </node>
+    <node id="Wood Lane">
+      <data key="d0">Wood Lane</data>
+      <data key="d1">Wood Lane</data>
+      <data key="d2">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Woodford">
+      <data key="d0">Woodford</data>
+      <data key="d1">Woodford</data>
+      <data key="d2">Central-Epping;Central-Hainault Loop</data>
+      <data key="d3">2</data>
+    </node>
+    <node id="Woodside Park">
+      <data key="d0">Woodside Park</data>
+      <data key="d1">Woodside Park</data>
+      <data key="d2">Northern-High Barnet</data>
+      <data key="d3">1</data>
+    </node>
+    <edge source="Acton Town" target="Chiswick Park">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Acton Town" target="Ealing Common">
+      <data key="d4">District-Main;Piccadilly-Uxbridge</data>
+      <data key="d5">District-Main;Piccadilly-Uxbridge</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Acton Town" target="South Ealing">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Acton Town" target="Turnham Green">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Aldgate" target="Liverpool Street">
+      <data key="d4">Circle-Main;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Metropolitan-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Aldgate" target="Tower Hill">
+      <data key="d4">Circle-Main</data>
+      <data key="d5">Circle-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Aldgate East" target="Liverpool Street">
+      <data key="d4">Hammersmith &amp; City</data>
+      <data key="d5">Hammersmith &amp; City</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Aldgate East" target="Tower Hill">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Aldgate East" target="Whitechapel">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Alperton" target="Park Royal">
+      <data key="d4">Piccadilly-Uxbridge</data>
+      <data key="d5">Piccadilly-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Alperton" target="Sudbury Town">
+      <data key="d4">Piccadilly-Uxbridge</data>
+      <data key="d5">Piccadilly-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Amersham" target="Chalfont &amp; Latimer">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Angel" target="King’s Cross St. Pancras">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Angel" target="Old Street">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Archway" target="Highgate">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Archway" target="Tufnell Park">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Arnos Grove" target="Bounds Green">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Arnos Grove" target="Southgate">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Arsenal" target="Finsbury Park">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Arsenal" target="Holloway Road">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Baker Street" target="Bond Street">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Baker Street" target="Edgware Road">
+      <data key="d4">Circle-Main;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Baker Street" target="Finchley Road">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Baker Street" target="Great Portland Street">
+      <data key="d4">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="Baker Street" target="Marylebone">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Baker Street" target="Regent’s Park">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Baker Street" target="St. John’s Wood">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Balham" target="Clapham South">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Balham" target="Tooting Bec">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bank-Monument" target="Cannon Street">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Bank-Monument" target="Liverpool Street">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bank-Monument" target="London Bridge">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bank-Monument" target="Moorgate">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bank-Monument" target="St. Paul’s">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bank-Monument" target="Tower Hill">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Bank-Monument" target="Waterloo">
+      <data key="d4">Waterloo &amp; City</data>
+      <data key="d5">Waterloo &amp; City</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Barbican" target="Farringdon">
+      <data key="d4">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="Barbican" target="Moorgate">
+      <data key="d4">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="Barking" target="East Ham">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Barking" target="Upney">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Barkingside" target="Fairlop">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Barkingside" target="Newbury Park">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Barons Court" target="Earl's Court">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Barons Court" target="Hammersmith">
+      <data key="d4">District-Main;Piccadilly-Main</data>
+      <data key="d5">District-Main;Piccadilly-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Barons Court" target="West Kensington">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Battersea Power Station" target="Nine Elms">
+      <data key="d4">Northern-Battersea Power Station</data>
+      <data key="d5">Northern-Battersea Power Station</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bayswater" target="Notting Hill Gate">
+      <data key="d4">Circle-Main;District-Edgware Road</data>
+      <data key="d5">Circle-Main;District-Edgware Road</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Bayswater" target="Paddington">
+      <data key="d4">Circle-Main;District-Edgware Road</data>
+      <data key="d5">Circle-Main;District-Edgware Road</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Becontree" target="Dagenham Heathway">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Becontree" target="Upney">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Belsize Park" target="Chalk Farm">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Belsize Park" target="Hampstead">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bermondsey" target="Canada Water">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bermondsey" target="London Bridge">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bethnal Green" target="Liverpool Street">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bethnal Green" target="Mile End">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Blackfriars" target="Mansion House">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Blackfriars" target="Temple">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Blackhorse Road" target="Tottenham Hale">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Blackhorse Road" target="Walthamstow Central">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bond Street" target="Green Park">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bond Street" target="Marble Arch">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bond Street" target="Oxford Circus">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Borough" target="Elephant &amp; Castle">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Borough" target="London Bridge">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Boston Manor" target="Northfields">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Boston Manor" target="Osterley">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bounds Green" target="Wood Green">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bow Road" target="Bromley-by-Bow">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Bow Road" target="Mile End">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Brent Cross" target="Golders Green">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Brent Cross" target="Hendon Central">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Brixton" target="Stockwell">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Bromley-by-Bow" target="West Ham">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Buckhurst Hill" target="Loughton">
+      <data key="d4">Central-Epping;Central-Main</data>
+      <data key="d5">Central-Epping;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Buckhurst Hill" target="Roding Valley">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Buckhurst Hill" target="Woodford">
+      <data key="d4">Central-Epping</data>
+      <data key="d5">Central-Epping</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Burnt Oak" target="Colindale">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Burnt Oak" target="Edgware">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Caledonian Road" target="Holloway Road">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Caledonian Road" target="King’s Cross St. Pancras">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Camden Town" target="Chalk Farm">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Camden Town" target="Kentish Town">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Camden Town" target="Mornington Crescent">
+      <data key="d4">Northern-Charing Cross;Northern-Main</data>
+      <data key="d5">Northern-Charing Cross;Northern-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Canada Water" target="Canary Wharf">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Canary Wharf" target="North Greenwich">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Canning Town" target="North Greenwich">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Canning Town" target="West Ham">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Cannon Street" target="Mansion House">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Canons Park" target="Queensbury">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Canons Park" target="Stanmore">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Chalfont &amp; Latimer" target="Chesham">
+      <data key="d4">Metropolitan-Chesham</data>
+      <data key="d5">Metropolitan-Chesham</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Chalfont &amp; Latimer" target="Chorleywood">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Chancery Lane" target="Holborn">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Chancery Lane" target="St. Paul’s">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Charing Cross" target="Embankment">
+      <data key="d4">Bakerloo;Northern-Charing Cross</data>
+      <data key="d5">Bakerloo;Northern-Charing Cross</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Charing Cross" target="Leicester Square">
+      <data key="d4">Northern-Charing Cross</data>
+      <data key="d5">Northern-Charing Cross</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Charing Cross" target="Piccadilly Circus">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Chigwell" target="Grange Hill">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Chigwell" target="Roding Valley">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Chiswick Park" target="Turnham Green">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Chorleywood" target="Rickmansworth">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Clapham Common" target="Clapham North">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Clapham Common" target="Clapham South">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Clapham North" target="Stockwell">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Cockfosters" target="Oakwood">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Colindale" target="Hendon Central">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Colliers Wood" target="South Wimbledon">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Colliers Wood" target="Tooting Broadway">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Covent Garden" target="Holborn">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Covent Garden" target="Leicester Square">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Croxley" target="Moor Park">
+      <data key="d4">Metropolitan-Watford</data>
+      <data key="d5">Metropolitan-Watford</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Croxley" target="Watford">
+      <data key="d4">Metropolitan-Watford</data>
+      <data key="d5">Metropolitan-Watford</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Dagenham East" target="Dagenham Heathway">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Dagenham East" target="Elm Park">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Debden" target="Loughton">
+      <data key="d4">Central-Epping;Central-Main</data>
+      <data key="d5">Central-Epping;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Debden" target="Theydon Bois">
+      <data key="d4">Central-Epping;Central-Main</data>
+      <data key="d5">Central-Epping;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Dollis Hill" target="Neasden">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Dollis Hill" target="Willesden Green">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Ealing Broadway" target="Ealing Common">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Ealing Broadway" target="West Acton">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Ealing Common" target="North Ealing">
+      <data key="d4">Piccadilly-Uxbridge</data>
+      <data key="d5">Piccadilly-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Earl's Court" target="Gloucester Road">
+      <data key="d4">District-Main;Piccadilly-Main</data>
+      <data key="d5">District-Main;Piccadilly-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Earl's Court" target="High Street Kensington">
+      <data key="d4">District-Edgware Road</data>
+      <data key="d5">District-Edgware Road</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Earl's Court" target="Kensington (Olympia)">
+      <data key="d4">District-Kensington</data>
+      <data key="d5">District-Kensington</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Earl's Court" target="West Brompton">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Earl's Court" target="West Kensington">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="East Acton" target="North Acton">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="East Acton" target="White City">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="East Finchley" target="Finchley Central">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="East Finchley" target="Highgate">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="East Ham" target="Upton Park">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="East Putney" target="Putney Bridge">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="East Putney" target="Southfields">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Eastcote" target="Rayners Lane">
+      <data key="d4">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Eastcote" target="Ruislip Manor">
+      <data key="d4">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Edgware Road" target="Marylebone">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Edgware Road" target="Paddington">
+      <data key="d4">Bakerloo;Circle-Hammersmith;Circle-Main;District-Edgware Road;Hammersmith &amp; City</data>
+      <data key="d5">Bakerloo;Circle-Hammersmith;Circle-Main;District-Edgware Road;Hammersmith &amp; City</data>
+      <data key="d6">5</data>
+    </edge>
+    <edge source="Elephant &amp; Castle" target="Kennington">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Elephant &amp; Castle" target="Lambeth North">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Elm Park" target="Hornchurch">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Embankment" target="Temple">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Embankment" target="Waterloo">
+      <data key="d4">Bakerloo;Northern-Charing Cross</data>
+      <data key="d5">Bakerloo;Northern-Charing Cross</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Embankment" target="Westminster">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Epping" target="Theydon Bois">
+      <data key="d4">Central-Epping;Central-Main</data>
+      <data key="d5">Central-Epping;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Euston" target="King’s Cross St. Pancras">
+      <data key="d4">Northern-Main;Victoria</data>
+      <data key="d5">Northern-Main;Victoria</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Euston" target="Mornington Crescent">
+      <data key="d4">Northern-Charing Cross;Northern-Main</data>
+      <data key="d5">Northern-Charing Cross;Northern-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Euston" target="Warren Street">
+      <data key="d4">Northern-Charing Cross;Victoria</data>
+      <data key="d5">Northern-Charing Cross;Victoria</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Euston Square" target="Great Portland Street">
+      <data key="d4">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="Euston Square" target="King’s Cross St. Pancras">
+      <data key="d4">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="Fairlop" target="Hainault">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Farringdon" target="King’s Cross St. Pancras">
+      <data key="d4">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="Finchley Central" target="Mill Hill East">
+      <data key="d4">Northern-Mill Hill East</data>
+      <data key="d5">Northern-Mill Hill East</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Finchley Central" target="West Finchley">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Finchley Road" target="Swiss Cottage">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Finchley Road" target="Wembley Park">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Finchley Road" target="West Hampstead">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Finsbury Park" target="Highbury &amp; Islington">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Finsbury Park" target="Manor House">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Finsbury Park" target="Seven Sisters">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Fulham Broadway" target="Parsons Green">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Fulham Broadway" target="West Brompton">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Gants Hill" target="Newbury Park">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Gants Hill" target="Redbridge">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Gloucester Road" target="High Street Kensington">
+      <data key="d4">Circle-Main</data>
+      <data key="d5">Circle-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Gloucester Road" target="South Kensington">
+      <data key="d4">Circle-Main;District-Main;Piccadilly-Main</data>
+      <data key="d5">Circle-Main;District-Main;Piccadilly-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="Golders Green" target="Hampstead">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Goldhawk Road" target="Hammersmith">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Goldhawk Road" target="Shepherd’s Bush Market">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Goodge Street" target="Tottenham Court Road">
+      <data key="d4">Northern-Charing Cross</data>
+      <data key="d5">Northern-Charing Cross</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Goodge Street" target="Warren Street">
+      <data key="d4">Northern-Charing Cross</data>
+      <data key="d5">Northern-Charing Cross</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Grange Hill" target="Hainault">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Green Park" target="Hyde Park Corner">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Green Park" target="Oxford Circus">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Green Park" target="Piccadilly Circus">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Green Park" target="Victoria">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Green Park" target="Westminster">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Gunnersbury" target="Kew Gardens">
+      <data key="d4">District-Richmond</data>
+      <data key="d5">District-Richmond</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Gunnersbury" target="Turnham Green">
+      <data key="d4">District-Richmond</data>
+      <data key="d5">District-Richmond</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hammersmith" target="Ravenscourt Park">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hammersmith" target="Turnham Green">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Harlesden" target="Stonebridge Park">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Harlesden" target="Willesden Junction">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Harrow &amp; Wealdstone" target="Kenton">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Harrow-on-the-Hill" target="North Harrow">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Harrow-on-the-Hill" target="Northwick Park">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Harrow-on-the-Hill" target="West Harrow">
+      <data key="d4">Metropolitan-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hatton Cross" target="Heathrow Terminals 2 &amp; 3">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hatton Cross" target="Hounslow West">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Heathrow Terminal 4" target="Heathrow Terminals 2 &amp; 3">
+      <data key="d4">Piccadilly-Heathrow</data>
+      <data key="d5">Piccadilly-Heathrow</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Heathrow Terminal 5" target="Heathrow Terminals 2 &amp; 3">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="High Barnet" target="Totteridge &amp; Whetstone">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="High Street Kensington" target="Notting Hill Gate">
+      <data key="d4">Circle-Main;District-Edgware Road</data>
+      <data key="d5">Circle-Main;District-Edgware Road</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Highbury &amp; Islington" target="King’s Cross St. Pancras">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hillingdon" target="Ickenham">
+      <data key="d4">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Hillingdon" target="Uxbridge">
+      <data key="d4">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Holborn" target="Russell Square">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Holborn" target="Tottenham Court Road">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Holland Park" target="Notting Hill Gate">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Holland Park" target="Shepherd’s Bush">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hornchurch" target="Upminster Bridge">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hounslow Central" target="Hounslow East">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hounslow Central" target="Hounslow West">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hounslow East" target="Osterley">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Hyde Park Corner" target="Knightsbridge">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Ickenham" target="Ruislip">
+      <data key="d4">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Kennington" target="Nine Elms">
+      <data key="d4">Northern-Battersea Power Station</data>
+      <data key="d5">Northern-Battersea Power Station</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kennington" target="Oval">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kennington" target="Waterloo">
+      <data key="d4">Northern-Charing Cross</data>
+      <data key="d5">Northern-Charing Cross</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kensal Green" target="Queen’s Park">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kensal Green" target="Willesden Junction">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kentish Town" target="Tufnell Park">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kenton" target="South Kenton">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kew Gardens" target="Richmond">
+      <data key="d4">District-Richmond</data>
+      <data key="d5">District-Richmond</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kilburn" target="West Hampstead">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kilburn" target="Willesden Green">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kilburn Park" target="Maida Vale">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kilburn Park" target="Queen’s Park">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kingsbury" target="Queensbury">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Kingsbury" target="Wembley Park">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="King’s Cross St. Pancras" target="Russell Square">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Knightsbridge" target="South Kensington">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Ladbroke Grove" target="Latimer Road">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Ladbroke Grove" target="Westbourne Park">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Lambeth North" target="Waterloo">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Lancaster Gate" target="Marble Arch">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Lancaster Gate" target="Queensway">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Latimer Road" target="Wood Lane">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Leicester Square" target="Piccadilly Circus">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Leicester Square" target="Tottenham Court Road">
+      <data key="d4">Northern-Charing Cross</data>
+      <data key="d5">Northern-Charing Cross</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Leyton" target="Leytonstone">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Leyton" target="Stratford">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Leytonstone" target="Snaresbrook">
+      <data key="d4">Central-Hainault Loop</data>
+      <data key="d5">Central-Hainault Loop</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Leytonstone" target="Wanstead">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Liverpool Street" target="Moorgate">
+      <data key="d4">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d5">Circle-Main;Hammersmith &amp; City;Metropolitan-Main</data>
+      <data key="d6">3</data>
+    </edge>
+    <edge source="London Bridge" target="Southwark">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Maida Vale" target="Warwick Avenue">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Manor House" target="Turnpike Lane">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Mile End" target="Stepney Green">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Mile End" target="Stratford">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Moor Park" target="Northwood">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Moor Park" target="Rickmansworth">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Moorgate" target="Old Street">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Morden" target="South Wimbledon">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Neasden" target="Wembley Park">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="North Acton" target="West Acton">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="North Acton" target="West Ruislip">
+      <data key="d4">Central-West Ruislip</data>
+      <data key="d5">Central-West Ruislip</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="North Ealing" target="Park Royal">
+      <data key="d4">Piccadilly-Uxbridge</data>
+      <data key="d5">Piccadilly-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="North Harrow" target="Pinner">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="North Wembley" target="South Kenton">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="North Wembley" target="Wembley Central">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Northfields" target="South Ealing">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Northwick Park" target="Preston Road">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Northwood" target="Northwood Hills">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Northwood Hills" target="Pinner">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Notting Hill Gate" target="Queensway">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Oakwood" target="Southgate">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Oval" target="Stockwell">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Oxford Circus" target="Piccadilly Circus">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Oxford Circus" target="Regent’s Park">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Oxford Circus" target="Tottenham Court Road">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Oxford Circus" target="Warren Street">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Paddington" target="Royal Oak">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Paddington" target="Warwick Avenue">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Parsons Green" target="Putney Bridge">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Pimlico" target="Vauxhall">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Pimlico" target="Victoria">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Plaistow" target="Upton Park">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Plaistow" target="West Ham">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Preston Road" target="Wembley Park">
+      <data key="d4">Metropolitan-Main</data>
+      <data key="d5">Metropolitan-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Ravenscourt Park" target="Stamford Brook">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Rayners Lane" target="South Harrow">
+      <data key="d4">Piccadilly-Uxbridge</data>
+      <data key="d5">Piccadilly-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Rayners Lane" target="West Harrow">
+      <data key="d4">Metropolitan-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Redbridge" target="Wanstead">
+      <data key="d4">Central-Hainault Loop;Central-Main</data>
+      <data key="d5">Central-Hainault Loop;Central-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Roding Valley" target="Woodford">
+      <data key="d4">Central-Hainault Loop</data>
+      <data key="d5">Central-Hainault Loop</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Royal Oak" target="Westbourne Park">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Ruislip" target="Ruislip Manor">
+      <data key="d4">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d5">Metropolitan-Uxbridge;Piccadilly-Uxbridge</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Seven Sisters" target="Tottenham Hale">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Shepherd’s Bush" target="White City">
+      <data key="d4">Central-Main</data>
+      <data key="d5">Central-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Shepherd’s Bush Market" target="Wood Lane">
+      <data key="d4">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d5">Circle-Hammersmith;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Sloane Square" target="South Kensington">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Sloane Square" target="Victoria">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Snaresbrook" target="South Woodford">
+      <data key="d4">Central-Hainault Loop</data>
+      <data key="d5">Central-Hainault Loop</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="South Harrow" target="Sudbury Hill">
+      <data key="d4">Piccadilly-Uxbridge</data>
+      <data key="d5">Piccadilly-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="South Woodford" target="Woodford">
+      <data key="d4">Central-Hainault Loop</data>
+      <data key="d5">Central-Hainault Loop</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Southfields" target="Wimbledon Park">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Southwark" target="Waterloo">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="St. James's Park" target="Victoria">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="St. James's Park" target="Westminster">
+      <data key="d4">Circle-Main;District-Main</data>
+      <data key="d5">Circle-Main;District-Main</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="St. John’s Wood" target="Swiss Cottage">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Stamford Brook" target="Turnham Green">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Stepney Green" target="Whitechapel">
+      <data key="d4">District-Main;Hammersmith &amp; City</data>
+      <data key="d5">District-Main;Hammersmith &amp; City</data>
+      <data key="d6">2</data>
+    </edge>
+    <edge source="Stockwell" target="Vauxhall">
+      <data key="d4">Victoria</data>
+      <data key="d5">Victoria</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Stonebridge Park" target="Wembley Central">
+      <data key="d4">Bakerloo</data>
+      <data key="d5">Bakerloo</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Stratford" target="West Ham">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Sudbury Hill" target="Sudbury Town">
+      <data key="d4">Piccadilly-Uxbridge</data>
+      <data key="d5">Piccadilly-Uxbridge</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Tooting Bec" target="Tooting Broadway">
+      <data key="d4">Northern-Main</data>
+      <data key="d5">Northern-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Totteridge &amp; Whetstone" target="Woodside Park">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Turnpike Lane" target="Wood Green">
+      <data key="d4">Piccadilly-Main</data>
+      <data key="d5">Piccadilly-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Upminster" target="Upminster Bridge">
+      <data key="d4">District-Main</data>
+      <data key="d5">District-Main</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Waterloo" target="Westminster">
+      <data key="d4">Jubilee</data>
+      <data key="d5">Jubilee</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="West Finchley" target="Woodside Park">
+      <data key="d4">Northern-High Barnet</data>
+      <data key="d5">Northern-High Barnet</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="Wimbledon" target="Wimbledon Park">
+      <data key="d4">District-Wimbledon</data>
+      <data key="d5">District-Wimbledon</data>
+      <data key="d6">1</data>
+    </edge>
+  </graph>
+</graphml>
