@@ -427,6 +427,139 @@ def build_underground_graph(
 
 
 # ----------------------------
+# Graph inspection tools
+# ----------------------------
+
+
+def print_all_edges(G: nx.Graph, sort_by: str = "stations") -> None:
+    """
+    Print every edge and its line metadata.
+
+    sort_by:
+        - "stations": alphabetical by node names
+        - "n_lines": descending number of lines, then alphabetical
+    """
+    rows = []
+    for u, v, data in G.edges(data=True):
+        rows.append(
+            {
+                "station_a": u,
+                "station_b": v,
+                "lines": data.get("lines", ()),
+                "lines_str": data.get("lines_str", ""),
+                "n_lines": data.get("n_lines", 0),
+            }
+        )
+
+    df = pd.DataFrame(rows)
+
+    if df.empty:
+        print("[Graph has no edges]")
+        return
+
+    if sort_by == "n_lines":
+        df = df.sort_values(
+            ["n_lines", "station_a", "station_b"],
+            ascending=[False, True, True],
+        )
+    else:
+        df = df.sort_values(["station_a", "station_b"])
+
+    for _, row in df.iterrows():
+        print(f"{row['station_a']}  <->  {row['station_b']}   " f"[{row['lines_str']}]")
+
+
+def edge_table(G: nx.Graph) -> pd.DataFrame:
+    """
+    Return the graph edges as a tidy DataFrame.
+    """
+    rows = []
+    for u, v, data in G.edges(data=True):
+        rows.append(
+            {
+                "station_a": u,
+                "station_b": v,
+                "lines": data.get("lines", ()),
+                "lines_str": data.get("lines_str", ""),
+                "n_lines": data.get("n_lines", 0),
+            }
+        )
+
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+
+    return df.sort_values(["station_a", "station_b"]).reset_index(drop=True)
+
+
+def print_edges_for_station(G: nx.Graph, station: str) -> None:
+    """
+    Print all edges incident to one station.
+    """
+    if station not in G:
+        print(f"[Station not found: {station}]")
+        return
+
+    neighbours = sorted(G.neighbors(station))
+    if not neighbours:
+        print(f"[Station has no neighbours: {station}]")
+        return
+
+    print(f"\nEdges incident to {station}:")
+    for nbr in neighbours:
+        data = G.get_edge_data(station, nbr, default={})
+        print(f"  {station}  <->  {nbr}   " f"[{data.get('lines_str', '')}]")
+
+
+def print_edges_for_line(G: nx.Graph, line_name: str) -> None:
+    """
+    Print all edges that include a given line in their metadata.
+    """
+    matches = []
+    for u, v, data in G.edges(data=True):
+        lines = set(data.get("lines", ()))
+        if line_name in lines:
+            matches.append((u, v, data.get("lines_str", "")))
+
+    if not matches:
+        print(f"[No edges found for line: {line_name}]")
+        return
+
+    matches.sort()
+    print(f"\nEdges on line: {line_name}")
+    for u, v, lines_str in matches:
+        print(f"  {u}  <->  {v}   [{lines_str}]")
+
+
+def print_subgraph_neighbourhood(G: nx.Graph, stations: list[str]) -> None:
+    """
+    Print all edges touching any station in the supplied list.
+    Useful for checking a local patch of the graph.
+    """
+    seen = set()
+
+    for station in stations:
+        if station not in G:
+            print(f"[Station not found: {station}]")
+            continue
+
+        for nbr in G.neighbors(station):
+            edge = tuple(sorted((station, nbr)))
+            if edge in seen:
+                continue
+            seen.add(edge)
+
+    if not seen:
+        print("[No matching local edges found]")
+        return
+
+    print("\nLocal edge neighbourhood:")
+    for u, v in sorted(seen):
+        data = G.get_edge_data(u, v, default={})
+        print(f"  {u}  <->  {v}   [{data.get('lines_str', '')}]")
+
+
+# ----------------------------
 # Convenience wrapper for CSV
 # ----------------------------
 
@@ -457,13 +590,3 @@ G, edges_df, stations_df = build_underground_graph_from_csv(
     "20260422-Tube Lines Master.csv",
     equivalent_pairs=equivalent_pairs,
 )
-
-print(G.number_of_nodes())
-print(G.number_of_edges())
-
-print(G.edges["Bank-Monument", "Liverpool Street"])
-
-df = pd.read_csv(FILE)
-
-matches_df = find_near_matches(df["name"], threshold=0.80)
-print(matches_df)
