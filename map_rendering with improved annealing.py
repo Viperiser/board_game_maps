@@ -65,6 +65,58 @@ def detect_outer_face_id(master_embedding, primal_pos):
     return best_face_id
 
 
+def cyclic_orders_match(expected, actual):
+    """
+    Return True if actual is a cyclic rotation of expected.
+    """
+    if len(expected) != len(actual):
+        return False
+    if not expected:
+        return True
+
+    n = len(expected)
+    for shift in range(n):
+        if all(expected[i] == actual[(i + shift) % n] for i in range(n)):
+            return True
+    return False
+
+
+def geometric_neighbor_order(node, G, pos):
+    """
+    Return neighbours of node in clockwise geometric order.
+    """
+    x0, y0 = pos[node]
+    nbrs = list(G.neighbors(node))
+
+    def angle(nbr):
+        x, y = pos[nbr]
+        return math.atan2(y - y0, x - x0)
+
+    # atan2 gives CCW from -pi to pi; reverse for CW
+    return sorted(nbrs, key=angle, reverse=True)
+
+
+def embedding_is_preserved_locally(node, G, primal_embedding, pos):
+    """
+    Check that the cyclic neighbour order around node matches the
+    combinatorial embedding, up to rotation.
+    """
+    expected = list(primal_embedding.neighbors_cw_order(node))
+    actual = geometric_neighbor_order(node, G, pos)
+    return cyclic_orders_match(expected, actual)
+
+
+def move_preserves_embedding(node, G, primal_embedding, pos):
+    """
+    Check moved node and its neighbours.
+    """
+    to_check = {node, *G.neighbors(node)}
+    for v in to_check:
+        if not embedding_is_preserved_locally(v, G, primal_embedding, pos):
+            return False
+    return True
+
+
 def point_in_polygon(point, polygon):
     """
     Ray-casting point-in-polygon test.
@@ -1396,7 +1448,13 @@ def refine_primal_layout(
         dy = rng.uniform(-step, step)
         pos[node] = old_xy + np.array([dx, dy], dtype=float)
 
+        # Reject if the move creates a crossing
         if layout_has_crossing(G, pos):
+            pos[node] = old_xy
+            continue
+
+        # Reject if the move changes the embedding
+        if not move_preserves_embedding(node, G, primal_embedding, pos):
             pos[node] = old_xy
             continue
 
@@ -2186,11 +2244,11 @@ VIS_STYLE = {
 PATH = "20260421-Zone 1-Bank-Mon-reduced-nodanglers.xlsx"
 
 WEIGHTS = {
-    "node_spread": 0.5,  # Rewards spreading out nodes
+    "node_spread": 0.1,  # Rewards spreading out nodes
     "edge_uniformity": 0.1,  # Rewards edges of similar length
     "face_area": 0.0,  # Rewards faces having similar area
-    "angle_penalty": 0.1,  # Rewards angles that are nicely spread around their nodes
-    "outer_roundness": 2.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
+    "angle_penalty": 0.0,  # Rewards angles that are nicely spread around their nodes
+    "outer_roundness": 3.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
     "outer_concavity": 100.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
 
