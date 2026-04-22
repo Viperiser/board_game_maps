@@ -45,47 +45,6 @@ e043,12,Woodford,Central-Hainault Loop
 e044,13,South Woodford,Central-Hainault Loop
 e045,14,Snaresbrook,Central-Hainault Loop
 e046,15,Leytonstone,Central-Hainault Loop
-e047,1,Ealing Broadway,Central-Main
-e048,2,West Acton,Central-Main
-e049,3,North Acton,Central-Main
-e050,4,East Acton,Central-Main
-e051,5,White City,Central-Main
-e052,6,Shepherd’s Bush,Central-Main
-e053,7,Holland Park,Central-Main
-e054,8,Notting Hill Gate,Central-Main
-e055,9,Queensway,Central-Main
-e056,10,Lancaster Gate,Central-Main
-e057,11,Marble Arch,Central-Main
-e058,12,Bond Street,Central-Main
-e059,13,Oxford Circus,Central-Main
-e060,14,Tottenham Court Road,Central-Main
-e061,15,Holborn,Central-Main
-e062,16,Chancery Lane,Central-Main
-e063,17,St. Paul’s,Central-Main
-e064,18,Bank,Central-Main
-e065,19,Liverpool Street,Central-Main
-e066,20,Bethnal Green,Central-Main
-e067,21,Mile End,Central-Main
-e068,22,Stratford,Central-Main
-e069,23,Leyton,Central-Main
-e070,24,Leytonstone,Central-Main
-e071,25,Wanstead,Central-Main
-e072,26,Redbridge,Central-Main
-e073,27,Gants Hill,Central-Main
-e074,28,Newbury Park,Central-Main
-e075,29,Barkingside,Central-Main
-e076,30,Fairlop,Central-Main
-e077,31,Hainault,Central-Main
-e078,32,Grange Hill,Central-Main
-e079,33,Chigwell,Central-Main
-e080,34,Roding Valley,Central-Main
-e081,35,Buckhurst Hill,Central-Main
-e082,36,Loughton,Central-Main
-e083,37,Debden,Central-Main
-e084,38,Theydon Bois,Central-Main
-e085,39,Epping,Central-Main
-e086,1,North Acton,Central-West Ruislip
-e087,2,West Ruislip,Central-West Ruislip
 e088,1,Edgware Road,Circle-Hammersmith
 e089,2,Paddington,Circle-Hammersmith
 e090,3,Royal Oak,Circle-Hammersmith
@@ -414,3 +373,57 @@ e418,8,Charing Cross,Northern-Charing Cross
 e419,9,Embankment,Northern-Charing Cross
 e420,10,Waterloo,Northern-Charing Cross
 e421,11,Kennington,Northern-Charing Cross
+e422,1,North Acton,Central-West Ruislip
+e423,2,Hanger Lane,Central-West Ruislip
+e424,3,Perivale,Central-West Ruislip
+e425,4,Greenford,Central-West Ruislip
+e426,5,Northolt,Central-West Ruislip
+e427,6,South Ruislip,Central-West Ruislip
+e428,7,Ruislip Gardens,Central-West Ruislip
+e429,8,West Ruislip,Central-West Ruislip
+e430,1,Woodford,Central-Epping
+e431,2,Buckhurst Hill,Central-Epping
+e432,3,Loughton,Central-Epping
+e433,4,Debden,Central-Epping
+e434,5,Theydon Bois,Central-Epping
+e435,6,Epping,Central-Epping
+e436,1,Ealing Broadway,Central-Main
+e437,2,West Acton,Central-Main
+e438,3,North Acton,Central-Main
+e439,4,East Acton,Central-Main
+e440,5,White City,Central-Main
+e441,6,Shepherd’s Bush,Central-Main
+e442,7,Holland Park,Central-Main
+e443,8,Notting Hill Gate,Central-Main
+e444,9,Queensway,Central-Main
+e445,10,Lancaster Gate,Central-Main
+e446,11,Marble Arch,Central-Main
+e447,12,Bond Street,Central-Main
+e448,13,Oxford Circus,Central-Main
+e449,14,Tottenham Court Road,Central-Main
+e450,15,Holborn,Central-Main
+e451,16,Chancery Lane,Central-Main
+e452,17,St. Paul’s,Central-Main
+e453,18,Bank,Central-Main
+e454,19,Liverpool Street,Central-Main
+e455,20,Bethnal Green,Central-Main
+e456,21,Mile End,Central-Main
+e457,22,Stratford,Central-Main
+e458,23,Leyton,Central-Main
+e459,24,Leytonstone,Central-Main
+e460,25,Wanstead,Central-Main
+e461,26,Redbridge,Central-Main
+e462,27,Gants Hill,Central-Main
+e463,28,Newbury Park,Central-Main
+e464,29,Barkingside,Central-Main
+e465,30,Fairlop,Central-Main
+e466,31,Hainault,Central-Main
+e467,32,Grange Hill,Central-Main
+e468,33,Chigwell,Central-Main
+e469,34,Roding Valley,Central-Main
+e470,35,Woodford,Central-Main
+e471,36,Buckhurst Hill,Central-Main
+e472,37,Loughton,Central-Main
+e473,38,Debden,Central-Main
+e474,39,Theydon Bois,Central-Main
+e475,40,Epping,Central-Main
