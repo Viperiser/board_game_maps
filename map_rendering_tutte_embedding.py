@@ -2254,7 +2254,7 @@ def main(filename, weights, refine=True, use_tutte=True):
             plt.close(fig)
 
 
-SCALE_PARAM = 0.4
+SCALE_PARAM = 0.8
 
 VIS_STYLE = {
     # ------------------------------------------------------------
@@ -2348,21 +2348,21 @@ VIS_STYLE = {
 # VIS_STYLE above is the style dict for the visualisation - tweak as desired, but it should be mostly fine as is for different matrices
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
-PATH = "20260426-Hammer of the Scots.xlsx"
+PATH = "20260423-Low Variance.xlsx"
 
 
 USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
 # Tutte will only work if there are no 'bridges' / danglers in the outer face
 # Otherwise outer face nodes get repeated and it breaks
 
-REFINE = True  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
+REFINE = False  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
 
 WEIGHTS = {
-    "node_spread": 0,  # Rewards spreading out nodes
+    "node_spread": 0.6,  # Rewards spreading out nodes
     "edge_uniformity": 0,  # Rewards edges of similar length
     "face_area": 0.0,  # Rewards faces having similar area
-    "angle_penalty": 1.0,  # Rewards angles that are nicely spread around their nodes
-    "outer_roundness": 0.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
+    "angle_penalty": 0.0,  # Rewards angles that are nicely spread around their nodes
+    "outer_roundness": 1,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
     "outer_concavity": 100.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
 
