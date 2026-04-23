@@ -65,6 +65,137 @@ def detect_outer_face_id(master_embedding, primal_pos):
     return best_face_id
 
 
+def cyclic_orders_match(expected, actual):
+    """
+    Return True if actual is a cyclic rotation of expected.
+    """
+    if len(expected) != len(actual):
+        return False
+    if not expected:
+        return True
+
+    n = len(expected)
+    for shift in range(n):
+        if all(expected[i] == actual[(i + shift) % n] for i in range(n)):
+            return True
+    return False
+
+
+def geometric_neighbor_order(node, G, pos):
+    """
+    Return neighbours of node in clockwise geometric order.
+    """
+    x0, y0 = pos[node]
+    nbrs = list(G.neighbors(node))
+
+    def angle(nbr):
+        x, y = pos[nbr]
+        return math.atan2(y - y0, x - x0)
+
+    # atan2 gives CCW from -pi to pi; reverse for CW
+    return sorted(nbrs, key=angle, reverse=True)
+
+
+def embedding_is_preserved_locally(node, G, primal_embedding, pos):
+    """
+    Check that the cyclic neighbour order around node matches the
+    combinatorial embedding, up to rotation.
+    """
+    expected = list(primal_embedding.neighbors_cw_order(node))
+    actual = geometric_neighbor_order(node, G, pos)
+    return cyclic_orders_match(expected, actual)
+
+
+def move_preserves_embedding(node, G, primal_embedding, pos):
+    """
+    Check moved node and its neighbours.
+    """
+    to_check = {node, *G.neighbors(node)}
+    for v in to_check:
+        if not embedding_is_preserved_locally(v, G, primal_embedding, pos):
+            return False
+    return True
+
+
+def tutte_embedding_from_outer_face(G, outer_face_nodes, radius=1.0):
+    """
+    Compute a Tutte-style barycentric embedding of planar graph G.
+
+    Parameters
+    ----------
+    G : nx.Graph
+        The primal graph.
+    outer_face_nodes : list
+        Outer-face nodes in cyclic order.
+    radius : float
+        Radius of the circle on which to place the outer-face nodes.
+
+    Returns
+    -------
+    pos : dict
+        Mapping node -> np.array([x, y], dtype=float)
+    """
+    outer = list(outer_face_nodes)
+
+    if len(outer) != len(set(outer)):
+        raise ValueError("outer_face_nodes contains duplicates")
+
+    missing = [v for v in outer if v not in G]
+    if missing:
+        raise ValueError(f"outer_face_nodes not all in G: {missing}")
+
+    pos = {}
+
+    # Place boundary nodes equally spaced on a circle
+    n_outer = len(outer)
+    for i, v in enumerate(outer):
+        theta = 2 * math.pi * i / n_outer
+        pos[v] = np.array(
+            [radius * math.cos(theta), radius * math.sin(theta)],
+            dtype=float,
+        )
+
+    interior = [v for v in G.nodes() if v not in pos]
+    if not interior:
+        return pos
+
+    index = {v: i for i, v in enumerate(interior)}
+    n_int = len(interior)
+
+    A = np.zeros((n_int, n_int), dtype=float)
+    bx = np.zeros(n_int, dtype=float)
+    by = np.zeros(n_int, dtype=float)
+
+    for v in interior:
+        i = index[v]
+        nbrs = list(G.neighbors(v))
+        deg = len(nbrs)
+
+        if deg == 0:
+            raise ValueError(f"Interior node {v!r} has degree 0")
+
+        A[i, i] = 1.0
+
+        for u in nbrs:
+            w = 1.0 / deg
+
+            if u in index:
+                j = index[u]
+                A[i, j] -= w
+            else:
+                bx[i] += w * pos[u][0]
+                by[i] += w * pos[u][1]
+
+    x = np.linalg.solve(A, bx)
+    y = np.linalg.solve(A, by)
+
+    for v in interior:
+        i = index[v]
+        pos[v] = np.array([x[i], y[i]], dtype=float)
+
+    return pos
+
+
 def point_in_polygon(point, polygon):
     """
     Ray-casting point-in-polygon test.
@@ -1396,7 +1527,13 @@ def refine_primal_layout(
         dy = rng.uniform(-step, step)
         pos[node] = old_xy + np.array([dx, dy], dtype=float)
 
+        # Reject if the move creates a crossing
         if layout_has_crossing(G, pos):
+            pos[node] = old_xy
+            continue
+
+        # Reject if the move changes the embedding
+        if not move_preserves_embedding(node, G, primal_embedding, pos):
             pos[node] = old_xy
             continue
 
@@ -1917,14 +2054,14 @@ def draw_visual_data(visual_data, style=None):
     return fig, ax
 
 
-def main(filename, weights):
+def main(filename, weights, refine=True, use_tutte=True):
     labels, matrix = read_adjacency_matrix_from_excel(filename)
     print("Labels:", labels)
     print("Matrix:\n", matrix)
 
     G = graph_from_adjacency_matrix(labels, matrix)
 
-    is_planar, primal_embedding = get_planar_embedding(G, n_trials=10, seed=42)
+    is_planar, primal_embedding = get_planar_embedding(G, n_trials=30, seed=42)
     if not is_planar:
         raise ValueError(f"Graph from {filename!r} is not planar")
 
@@ -1934,21 +2071,22 @@ def main(filename, weights):
 
     master_embedding = build_master_embedding(primal_embedding)
 
-    primal_pos = nx.combinatorial_embedding_to_pos(
+    # Temporary layout only for identifying the outer face
+    primal_pos_tmp = nx.combinatorial_embedding_to_pos(
         primal_embedding,
         fully_triangulate=False,
     )
 
-    print("INITIAL POS:")
-    for k in sorted(primal_pos, key=str):
-        print(k, tuple(round(x, 6) for x in primal_pos[k]))
+    print("TEMP INITIAL POS:")
+    for k in sorted(primal_pos_tmp, key=str):
+        print(k, tuple(round(x, 6) for x in primal_pos_tmp[k]))
 
-    outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+    outer_face_id = detect_outer_face_id(master_embedding, primal_pos_tmp)
 
     face_lookup = {face["id"]: face for face in master_embedding["faces"]}
-    outer_face_nodes = list(dict.fromkeys(face_lookup[outer_face_id]["boundary_nodes"]))
+    outer_face_nodes = list(face_lookup[outer_face_id]["boundary_nodes"])
 
-    face = next(f for f in master_embedding["faces"] if f["id"] == outer_face_id)
+    face = face_lookup[outer_face_id]
     print("INITIAL OUTER FACE ID:", outer_face_id)
     print("OUTER FACE BOUNDARY NODES:", face["boundary_nodes"])
     print("OUTER FACE HALF EDGES:")
@@ -1962,6 +2100,21 @@ def main(filename, weights):
             master_embedding["halfedge_to_face"].get(opp),
         )
 
+    if use_tutte:
+        primal_pos = tutte_embedding_from_outer_face(
+            G,
+            outer_face_nodes,
+            radius=1.0,
+        )
+        print("USING TUTTE INITIAL POS")
+    else:
+        primal_pos = primal_pos_tmp
+        print("USING COMBINATORIAL EMBEDDING INITIAL POS")
+
+    print("INITIAL POS:")
+    for k in sorted(primal_pos, key=str):
+        print(k, tuple(round(x, 6) for x in primal_pos[k]))
+
     if weights is None:
         weights = {
             "node_spread": 0.1,
@@ -1974,19 +2127,20 @@ def main(filename, weights):
 
     print("WEIGHTS IN MAIN:", weights)
 
-    primal_pos = refine_primal_layout(
-        G,
-        primal_embedding,
-        primal_pos,
-        iterations=4000,
-        step_scale=0.04,
-        temperature_start=0.02,
-        temperature_end=0.0005,
-        fixed_nodes=None,
-        weights=weights,
-        outer_face_nodes=outer_face_nodes,
-        seed=42,
-    )
+    if refine:
+        primal_pos = refine_primal_layout(
+            G,
+            primal_embedding,
+            primal_pos,
+            iterations=4000,
+            step_scale=0.04,
+            temperature_start=0.02,
+            temperature_end=0.0005,
+            fixed_nodes=None,
+            weights=weights,
+            outer_face_nodes=outer_face_nodes,
+            seed=42,
+        )
 
     print(
         "OUTER FACE ID AFTER REFINEMENT:",
@@ -2068,6 +2222,17 @@ def main(filename, weights):
             },
             False,
         ),
+        (
+            "fig8",
+            {
+                "draw_primal_edges": False,
+                "draw_dual_edges": True,
+                "border_node_size": 0,
+                "region_node_size": 0,
+                "region_label_offset_y": 0,
+            },
+            False,
+        ),
     ]
 
     for suffix, layer_style, show_figure in figure_specs:
@@ -2089,7 +2254,7 @@ def main(filename, weights):
             plt.close(fig)
 
 
-SCALE_PARAM = 0.2
+SCALE_PARAM = 0.4
 
 VIS_STYLE = {
     # ------------------------------------------------------------
@@ -2097,7 +2262,7 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     "border_t": 0.5,
     "face_centroid_shrink": 0.88,
-    "region_label_offset_y": 1.5 * SCALE_PARAM,
+    "region_label_offset_y": 0.2 * SCALE_PARAM,
     "show_node_labels": True,
     "show_face_labels": False,
     "outer_curve_base": 0.00,
@@ -2154,7 +2319,7 @@ VIS_STYLE = {
     # Label styling
     # ------------------------------------------------------------
     "font_family": "Open Sans",
-    "font_size": 16 * SCALE_PARAM,
+    "font_size": 20 * SCALE_PARAM,
     "label_fontweight": "bold",
     "label_color": "#3A3A3A",
     "label_alpha": 0.85,
@@ -2183,16 +2348,23 @@ VIS_STYLE = {
 # VIS_STYLE above is the style dict for the visualisation - tweak as desired, but it should be mostly fine as is for different matrices
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
-PATH = "20260421-Zone 1-Bank-Mon-reduced-nodanglers.xlsx"
+PATH = "20260426-Hammer of the Scots.xlsx"
+
+
+USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
+# Tutte will only work if there are no 'bridges' / danglers in the outer face
+# Otherwise outer face nodes get repeated and it breaks
+
+REFINE = True  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
 
 WEIGHTS = {
-    "node_spread": 0.5,  # Rewards spreading out nodes
-    "edge_uniformity": 0.1,  # Rewards edges of similar length
+    "node_spread": 0,  # Rewards spreading out nodes
+    "edge_uniformity": 0,  # Rewards edges of similar length
     "face_area": 0.0,  # Rewards faces having similar area
-    "angle_penalty": 0.1,  # Rewards angles that are nicely spread around their nodes
-    "outer_roundness": 2.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
+    "angle_penalty": 1.0,  # Rewards angles that are nicely spread around their nodes
+    "outer_roundness": 0.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
     "outer_concavity": 100.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
 
 if __name__ == "__main__":
-    main(PATH, WEIGHTS)
+    main(PATH, WEIGHTS, REFINE, USE_TUTTE)
