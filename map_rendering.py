@@ -53,6 +53,32 @@ def _embedding_faces(embedding):
     return faces
 
 
+def visual_data_bounds(visual_data, padding=0.5):
+    pts = []
+
+    for node in visual_data["nodes"]:
+        pts.append(node["xy"])
+
+    for edge in visual_data["edge_paths"]:
+        pts.extend(edge["points"])
+
+    outer_outline = visual_data.get("outer_outline")
+    if outer_outline is not None:
+        pts.extend(p["xy"] for p in outer_outline["points"])
+
+    pts = np.asarray(pts, dtype=float)
+
+    min_x, min_y = pts.min(axis=0)
+    max_x, max_y = pts.max(axis=0)
+
+    return (
+        min_x - padding,
+        max_x + padding,
+        min_y - padding,
+        max_y + padding,
+    )
+
+
 def unit_vector(v, fallback=(1.0, 0.0)):
     v = np.asarray(v, dtype=float)
     norm = np.linalg.norm(v)
@@ -61,6 +87,52 @@ def unit_vector(v, fallback=(1.0, 0.0)):
         return np.asarray(fallback, dtype=float)
 
     return v / norm
+
+
+def reverse_mpl_path(path):
+    """
+    Reverse a closed cubic matplotlib path so it behaves as a hole
+    inside a compound path.
+    """
+    polys = path.to_polygons()
+    if not polys:
+        return path
+
+    pts = polys[0][::-1]
+
+    verts = list(map(tuple, pts))
+    codes = [MplPath.MOVETO] + [MplPath.LINETO] * (len(verts) - 2) + [MplPath.CLOSEPOLY]
+
+    return MplPath(verts, codes)
+
+
+def make_outer_fill_path(outline_path, visual_data, style):
+    xmin, xmax, ymin, ymax = visual_data_bounds(
+        visual_data,
+        padding=style["outer_fill_margin"],
+    )
+
+    rect_verts = [
+        (xmin, ymin),
+        (xmax, ymin),
+        (xmax, ymax),
+        (xmin, ymax),
+        (xmin, ymin),
+    ]
+
+    rect_codes = [
+        MplPath.MOVETO,
+        MplPath.LINETO,
+        MplPath.LINETO,
+        MplPath.LINETO,
+        MplPath.CLOSEPOLY,
+    ]
+
+    rect_path = MplPath(rect_verts, rect_codes)
+
+    outline_path = reverse_mpl_path(outline_path)
+
+    return MplPath.make_compound_path(rect_path, outline_path)
 
 
 def build_outer_outline(master_embedding, outer_face_id, primal_pos, style):
@@ -159,6 +231,53 @@ def build_outer_outline(master_embedding, outer_face_id, primal_pos, style):
         "points": points,
         "halfedge_to_port": halfedge_to_port,
     }
+
+
+def outer_outline_to_cubic_path(outer_outline, style):
+    """
+    Convert outer_outline guidepoints into a closed cubic Bezier Path.
+
+    This should match the outline drawing logic exactly.
+    """
+    outline_points = outer_outline["points"]
+    pts = [np.asarray(p["xy"], dtype=float) for p in outline_points]
+
+    if len(pts) < 3:
+        return None
+
+    curve_strength = style["outer_outline_curve_strength"]
+
+    verts = []
+    codes = []
+
+    for i in range(len(pts)):
+        p0 = pts[i]
+        p3 = pts[(i + 1) % len(pts)]
+
+        p_prev = pts[i - 1]
+        p_next = pts[(i + 2) % len(pts)]
+
+        tangent0 = unit_vector(p3 - p_prev)
+        tangent1 = unit_vector(p_next - p0)
+
+        dist = np.linalg.norm(p3 - p0)
+
+        p1 = p0 + curve_strength * dist * tangent0
+        p2 = p3 - curve_strength * dist * tangent1
+
+        if i == 0:
+            verts.append(tuple(p0))
+            codes.append(MplPath.MOVETO)
+
+        verts.extend([tuple(p1), tuple(p2), tuple(p3)])
+        codes.extend([MplPath.CURVE4, MplPath.CURVE4, MplPath.CURVE4])
+
+    # The final cubic segment already returns to the first point.
+    # Add CLOSEPOLY as a separate dummy command.
+    verts.append(tuple(pts[0]))
+    codes.append(MplPath.CLOSEPOLY)
+
+    return MplPath(verts, codes)
 
 
 def outer_halfedge_normal(he, primal_pos, outer_orientation):
@@ -1168,6 +1287,9 @@ def apply_dynamic_visual_scale(style, n_nodes):
     # This is still in data units, but now data units are normalised.
     style["region_label_offset_y"] = style["base_region_label_offset_y"] * scale
 
+    style["lake_radius"] = style["base_lake_radius"] * scale
+    style["lake_wobble"] = style["base_lake_wobble"] * scale
+
     return style
 
 
@@ -1224,6 +1346,40 @@ def read_adjacency_matrix_from_excel(
         )
 
     return row_labels, matrix
+
+
+def make_lake_path(cx, cy, radius, wobble, n_points, seed):
+    """
+    Make a smooth irregular closed lake patch in data units.
+    """
+    rng = random.Random(seed)
+
+    phase1 = rng.uniform(0, 2 * math.pi)
+    phase2 = rng.uniform(0, 2 * math.pi)
+
+    verts = []
+    codes = []
+
+    for i in range(n_points):
+        theta = 2 * math.pi * i / n_points
+
+        shape_noise = 0.65 * math.sin(2 * theta + phase1) + 0.35 * math.sin(
+            3 * theta + phase2
+        )
+
+        r = radius * (1.0 + wobble * shape_noise)
+
+        x = cx + r * math.cos(theta)
+        y = cy + r * math.sin(theta)
+
+        verts.append((x, y))
+        codes.append(MplPath.LINETO)
+
+    verts.append(verts[0])
+    codes.append(MplPath.CLOSEPOLY)
+    codes[0] = MplPath.MOVETO
+
+    return MplPath(verts, codes)
 
 
 def graph_from_adjacency_matrix(labels, matrix):
@@ -2010,6 +2166,56 @@ def draw_visual_data(visual_data, style=None):
         ax.add_patch(patch)
 
     # ------------------------------------------------------------
+    # 1b. Draw lakes at high-degree dual face nodes
+    # ------------------------------------------------------------
+    if style.get("add_lakes", False):
+        face_degree = {}
+
+        for edge in visual_data["edge_paths"]:
+            if edge["type"] != "dual":
+                continue
+
+            if edge["u"] in face_degree:
+                face_degree[edge["u"]] += 1
+            else:
+                face_degree[edge["u"]] = 1
+
+            if edge["v"] in face_degree:
+                face_degree[edge["v"]] += 1
+            else:
+                face_degree[edge["v"]] = 1
+
+        for node in visual_data["nodes"]:
+            if node["type"] != "face":
+                continue
+
+            degree = face_degree.get(node["id"], 0)
+
+            if degree <= style["lake_degree_threshold"]:
+                continue
+
+            x, y = node["xy"]
+
+            lake_path = make_lake_path(
+                x,
+                y,
+                radius=style["lake_radius"],
+                wobble=style["lake_wobble"],
+                n_points=style["lake_n_points"],
+                seed=hash(str(node["id"])) & 0xFFFFFFFF,
+            )
+
+            patch = PathPatch(
+                lake_path,
+                facecolor=to_rgba(style["outer_fill_color"], style["lake_alpha"]),
+                edgecolor=to_rgba(style["dual_edge_color"], style["edge_alpha"]),
+                lw=style["edge_width"],
+                joinstyle=style["edge_joinstyle"],
+                zorder=style["lake_zorder"],
+            )
+            ax.add_patch(patch)
+
+    # ------------------------------------------------------------
     # 2. Draw nodes by type
     # ------------------------------------------------------------
     node_groups = {
@@ -2133,45 +2339,34 @@ def draw_visual_data(visual_data, style=None):
     outer_outline = visual_data.get("outer_outline")
 
     if outer_outline is not None:
-        outline_points = outer_outline["points"]
-        pts = [np.asarray(p["xy"], dtype=float) for p in outline_points]
+        outline_path = outer_outline_to_cubic_path(outer_outline, style)
 
-        if len(pts) >= 2:
-            curve_strength = style["outer_outline_curve_strength"]
+        fill_path = make_outer_fill_path(outline_path, visual_data, style)
 
-            for i in range(len(pts)):
-                p0 = pts[i]
-                p3 = pts[(i + 1) % len(pts)]
+        fill_patch = PathPatch(
+            fill_path,
+            facecolor=style["outer_fill_color"],
+            edgecolor="none",
+            alpha=style["outer_fill_alpha"],
+            zorder=style["outer_fill_zorder"],
+        )
 
-                p_prev = pts[i - 1]
-                p_next = pts[(i + 2) % len(pts)]
+        ax.add_patch(fill_patch)
 
-                tangent0 = unit_vector(p3 - p_prev)
-                tangent1 = unit_vector(p_next - p0)
+        if outline_path is not None:
+            patch = PathPatch(
+                outline_path,
+                facecolor="none",
+                edgecolor=style["dual_edge_color"],
+                lw=style["edge_width"],
+                alpha=style["edge_alpha"],
+                capstyle=style["edge_capstyle"],
+                joinstyle=style["edge_joinstyle"],
+                zorder=2,
+            )
+            ax.add_patch(patch)
 
-                dist = np.linalg.norm(p3 - p0)
-
-                p1 = p0 + curve_strength * dist * tangent0
-                p2 = p3 - curve_strength * dist * tangent1
-
-                path = MplPath(
-                    [tuple(p0), tuple(p1), tuple(p2), tuple(p3)],
-                    [MplPath.MOVETO, MplPath.CURVE4, MplPath.CURVE4, MplPath.CURVE4],
-                )
-
-                patch = PathPatch(
-                    path,
-                    facecolor="none",
-                    edgecolor=style["dual_edge_color"],
-                    lw=style["edge_width"],
-                    alpha=style["edge_alpha"],
-                    capstyle=style["edge_capstyle"],
-                    joinstyle=style["edge_joinstyle"],
-                    zorder=2,
-                )
-                ax.add_patch(patch)
-
-        port_pts = [p["xy"] for p in outline_points if p["type"] == "port"]
+        port_pts = [p["xy"] for p in outer_outline["points"] if p["type"] == "port"]
 
         if port_pts:
             ax.scatter(
@@ -2190,6 +2385,14 @@ def draw_visual_data(visual_data, style=None):
 
     if not style["axis_visible"]:
         ax.axis("off")
+
+    xmin, xmax, ymin, ymax = visual_data_bounds(
+        visual_data,
+        padding=style["canvas_padding"],
+    )
+
+    ax.set_xlim(xmin, xmax)
+    ax.set_ylim(ymin, ymax)
 
     if style["tight_layout"]:
         plt.tight_layout()
@@ -2361,6 +2564,7 @@ def main(filename, weights, refine=True, use_tutte=True):
                 "border_node_size": 0,
                 "face_node_size": 0,
                 "region_label_offset_y": 0,
+                "label_va": "center",
             },
             False,
         ),
@@ -2382,6 +2586,20 @@ def main(filename, weights, refine=True, use_tutte=True):
                 "border_node_size": 0,
                 "region_node_size": 0,
                 "region_label_offset_y": 0,
+                "label_va": "center",
+            },
+            False,
+        ),
+        (
+            "fig9",
+            {
+                "draw_primal_edges": False,
+                "draw_dual_edges": True,
+                "border_node_size": 0,
+                "face_node_size": 0,
+                "region_label_offset_y": 0,
+                "label_va": "center",
+                "add_lakes": True,
             },
             False,
         ),
@@ -2413,12 +2631,12 @@ VIS_STYLE = {
     "target_layout_span": 10.0,
     "reference_node_count": 10,
     "visual_scale_min": 0.35,
-    "visual_scale_max": 1.25,
+    "visual_scale_max": 1.0,
     "base_region_label_offset_y": 0.3,
     "base_region_node_size": 250,
     "base_border_node_size": 120,
     "base_face_node_size": 250,
-    "base_font_size": 12,
+    "base_font_size": 10,
     "base_edge_width": 2,
     # ------------------------------------------------------------
     # Geometry / construction parameters
@@ -2442,6 +2660,7 @@ VIS_STYLE = {
     "outer_tangent_strength": 0.05,
     "outer_square_margin": 0.1,
     "outer_square_side": None,  # optional fixed size; None = derive from primal bbox
+    "canvas_padding": 0.75,
     # ------------------------------------------------------------
     # Visibility
     # ------------------------------------------------------------
@@ -2498,11 +2717,28 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     # Outline style
     # ------------------------------------------------------------
-    "outer_outline_edge_offset": 0.6,
-    "outer_outline_node_offset": 0.6,
+    "outer_outline_edge_offset": 1.0,
+    "outer_outline_node_offset": 1.0,
     "outer_outline_curve_strength": 0.35,
-    # CONTROL - REMOVE LATER
-    "draw_outer_outline_debug": True,
+    # ------------------------------------------------------------
+    # Outer Fill
+    # ------------------------------------------------------------
+    "outer_fill_color": "#DCEFF6",
+    "outer_fill_alpha": 1.0,
+    "outer_fill_margin": 1.0,
+    "outer_fill_zorder": 0,
+    # ------------------------------------------------------------
+    # Lakes
+    # ------------------------------------------------------------
+    "add_lakes": False,
+    "lake_degree_threshold": 3,
+    "base_lake_radius": 0.7,
+    "base_lake_wobble": 0.25,
+    "lake_radius": None,
+    "lake_wobble": None,
+    "lake_n_points": 40,
+    "lake_alpha": 1.0,
+    "lake_zorder": 2.5,
 }
 
 
@@ -2512,18 +2748,19 @@ VIS_STYLE = {
 # VIS_STYLE above is the style dict for the visualisation - tweak as desired, but it should be mostly fine as is for different matrices
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
+
 # Run configuration
-PATH = "raw_data/20260421-Test pentagon.xlsx"
-USE_TUTTE = False  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
+PATH = "raw_data/20260423-Low Variance.xlsx"
+USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
 # Tutte will only work if there are no 'bridges' / danglers in the outer face
 # Otherwise outer face nodes get repeated and it breaks
-REFINE = True  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
+REFINE = False  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
 WEIGHTS = {
     "node_spread": 1,  # Rewards spreading out nodes
     "edge_uniformity": 0,  # Rewards edges of similar length
     "face_area": 0.0,  # Rewards faces having similar area
-    "angle_penalty": 1,  # Rewards angles that are nicely spread around their nodes
-    "outer_roundness": 0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
+    "angle_penalty": 0,  # Rewards angles that are nicely spread around their nodes
+    "outer_roundness": 0.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
     "outer_concavity": 100.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
 
