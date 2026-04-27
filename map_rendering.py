@@ -972,6 +972,53 @@ def _generate_orderings(G, n_trials, seed):
     return orderings[:n_trials]
 
 
+def normalise_positions(pos, target_span):
+    """
+    Rescale positions so the largest layout dimension equals target_span.
+
+    Returns a new dict. Does not mutate input.
+    """
+    pts = np.array(list(pos.values()), dtype=float)
+
+    min_xy = pts.min(axis=0)
+    max_xy = pts.max(axis=0)
+
+    centre = 0.5 * (min_xy + max_xy)
+    span_xy = max_xy - min_xy
+    span = max(span_xy[0], span_xy[1], 1e-12)
+
+    scale = target_span / span
+
+    return {
+        node: tuple((np.asarray(xy, dtype=float) - centre) * scale)
+        for node, xy in pos.items()
+    }
+
+
+def apply_dynamic_visual_scale(style, n_nodes):
+    """
+    Fill derived visual-size entries from base values and node count.
+    """
+    style = dict(style)
+
+    reference = style["reference_node_count"]
+    scale = math.sqrt(reference / max(n_nodes, 1))
+
+    scale = max(style["visual_scale_min"], min(style["visual_scale_max"], scale))
+
+    style["region_node_size"] = style["base_region_node_size"] * scale**2
+    style["border_node_size"] = style["base_border_node_size"] * scale**2
+    style["face_node_size"] = style["base_face_node_size"] * scale**2
+
+    style["font_size"] = style["base_font_size"] * scale
+    style["edge_width"] = style["base_edge_width"] * scale
+
+    # This is still in data units, but now data units are normalised.
+    style["region_label_offset_y"] = style["base_region_label_offset_y"] * scale
+
+    return style
+
+
 # ======================================================================
 # Main functions
 # ======================================================================
@@ -2051,6 +2098,16 @@ def main(filename, weights, refine=True, use_tutte=True):
         choose_outer_face_id(master_embedding),
     )
 
+    primal_pos = normalise_positions(
+        primal_pos,
+        target_span=VIS_STYLE["target_layout_span"],
+    )
+
+    style = apply_dynamic_visual_scale(
+        VIS_STYLE,
+        n_nodes=G.number_of_nodes(),
+    )
+
     visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
 
     base_path = Path(filename)
@@ -2142,13 +2199,13 @@ def main(filename, weights, refine=True, use_tutte=True):
         fig, ax = draw_visual_data(
             visual_data,
             style={
-                **VIS_STYLE,
+                **style,
                 **layer_style,
             },
         )
 
         output_path = figures_dir / f"{stem}-{suffix}.png"
-        fig.savefig(output_path, dpi=VIS_STYLE["figure_dpi"], bbox_inches="tight")
+        fig.savefig(output_path, dpi=style["figure_dpi"], bbox_inches="tight")
         print(f"Saved {output_path}")
 
         if show_figure:
@@ -2157,15 +2214,26 @@ def main(filename, weights, refine=True, use_tutte=True):
             plt.close(fig)
 
 
-SCALE_PARAM = 0.8
-
 VIS_STYLE = {
+    # ------------------------------------------------------------
+    # Scaling
+    # ------------------------------------------------------------
+    "target_layout_span": 10.0,
+    "reference_node_count": 10,
+    "visual_scale_min": 0.35,
+    "visual_scale_max": 1.25,
+    "base_region_label_offset_y": 0.2,
+    "base_region_node_size": 300,
+    "base_border_node_size": 150,
+    "base_face_node_size": 300,
+    "base_font_size": 20,
+    "base_edge_width": 2,
     # ------------------------------------------------------------
     # Geometry / construction parameters
     # ------------------------------------------------------------
     "border_t": 0.5,
     "face_centroid_shrink": 0.88,
-    "region_label_offset_y": 0.2 * SCALE_PARAM,
+    "region_label_offset_y": None,
     "show_node_labels": True,
     "show_face_labels": False,
     "outer_curve_base": 0.00,
@@ -2200,7 +2268,7 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     "primal_edge_color": "#A45A6F",
     "dual_edge_color": "#4A6FA4",
-    "edge_width": 2,
+    "edge_width": None,
     "edge_alpha": 0.7,
     "edge_capstyle": "round",
     "edge_joinstyle": "round",
@@ -2213,16 +2281,16 @@ VIS_STYLE = {
     "border_node_edgecolor": "#6B665E",
     "face_node_facecolor": "#C9D6EA",
     "face_node_edgecolor": "#4A6FA4",
-    "region_node_size": 300 * SCALE_PARAM,
-    "border_node_size": 150 * SCALE_PARAM,
-    "face_node_size": 300 * SCALE_PARAM,
+    "region_node_size": None,
+    "border_node_size": None,
+    "face_node_size": None,
     "node_linewidth": None,  # None means use edge_width
     "node_zorder": 3,
     # ------------------------------------------------------------
     # Label styling
     # ------------------------------------------------------------
     "font_family": "Open Sans",
-    "font_size": 20 * SCALE_PARAM,
+    "font_size": None,
     "label_fontweight": "bold",
     "label_color": "#3A3A3A",
     "label_alpha": 0.85,
@@ -2252,7 +2320,7 @@ VIS_STYLE = {
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
 # Run configuration
-PATH = "raw_data/20260416-Test square diagonal.xlsx"
+PATH = "raw_data/20260426-Hammer of the Scots.xlsx"
 USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
 # Tutte will only work if there are no 'bridges' / danglers in the outer face
 # Otherwise outer face nodes get repeated and it breaks

@@ -79,8 +79,6 @@ def suppress_degree_two_nodes(H):
 
     return H
 
-    return H
-
 
 def diagnose_nonplanarity(path):
     G = read_graph_from_excel(path)
