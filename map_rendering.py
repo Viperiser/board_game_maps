@@ -53,6 +53,139 @@ def _embedding_faces(embedding):
     return faces
 
 
+def unit_vector(v, fallback=(1.0, 0.0)):
+    v = np.asarray(v, dtype=float)
+    norm = np.linalg.norm(v)
+
+    if norm < 1e-12:
+        return np.asarray(fallback, dtype=float)
+
+    return v / norm
+
+
+def build_outer_outline(master_embedding, outer_face_id, primal_pos, style):
+    """
+    Build an organic outer outline from the outer face boundary walk.
+
+    Returns
+    -------
+    outline : dict
+        {
+            "points": [
+                {"type": "anchor", "xy": ..., "node": ...},
+                {"type": "port", "xy": ..., "halfedge": ..., "primal_edge": ...},
+                ...
+            ],
+            "halfedge_to_port": {
+                (u, v): (x, y),
+                ...
+            }
+        }
+    """
+    face_lookup = {face["id"]: face for face in master_embedding["faces"]}
+    outer_face = face_lookup[outer_face_id]
+
+    boundary_nodes = outer_face["boundary_nodes"]
+    half_edges = outer_face["half_edges"]
+
+    boundary_pts = [primal_pos[n] for n in boundary_nodes]
+    area = polygon_signed_area(boundary_pts)
+    outer_orientation = 1.0 if area >= 0 else -1.0
+
+    edge_offset = style["outer_outline_edge_offset"]
+    node_offset = style["outer_outline_node_offset"]
+
+    halfedge_normals = {
+        he: outer_halfedge_normal(he, primal_pos, outer_orientation)
+        for he in half_edges
+    }
+
+    points = []
+    halfedge_to_port = {}
+
+    n = len(half_edges)
+
+    for i, he in enumerate(half_edges):
+        u, v = he
+        prev_he = half_edges[i - 1]
+
+        # Anchor at u.
+        # Normal case: use the outside-angle bisector.
+        # Bridge turnaround case: if the boundary walk goes x -> u -> x,
+        # put the anchor beyond u, continuing away from x.
+        n_prev = halfedge_normals[prev_he]
+        n_curr = halfedge_normals[he]
+
+        pu = np.asarray(primal_pos[u], dtype=float)
+
+        prev_u, prev_v = prev_he
+        curr_u, curr_v = he
+
+        if prev_u == curr_v and prev_v == curr_u:
+            # Immediate reversal across the same bridge.
+            # We are at u, and the bridge connects u to curr_v.
+            other = curr_v
+            p_other = np.asarray(primal_pos[other], dtype=float)
+            anchor_dir = unit_vector(pu - p_other, fallback=n_curr)
+        else:
+            anchor_dir = unit_vector(n_prev + n_curr, fallback=n_curr)
+
+        anchor = pu + node_offset * anchor_dir
+        points.append(
+            {
+                "type": "anchor",
+                "xy": tuple(anchor),
+                "node": u,
+            }
+        )
+
+        # Port for directed half-edge u -> v.
+        pv = np.asarray(primal_pos[v], dtype=float)
+        mid = 0.5 * (pu + pv)
+        port = mid + edge_offset * n_curr
+
+        points.append(
+            {
+                "type": "port",
+                "xy": tuple(port),
+                "halfedge": he,
+                "primal_edge": tuple(sorted(he, key=str)),
+            }
+        )
+
+        halfedge_to_port[he] = tuple(port)
+
+    return {
+        "points": points,
+        "halfedge_to_port": halfedge_to_port,
+    }
+
+
+def outer_halfedge_normal(he, primal_pos, outer_orientation):
+    """
+    Return outward normal for directed outer half-edge he = (u, v).
+
+    outer_orientation is the signed orientation of the outer face boundary:
+    +1 for CCW, -1 for CW.
+    """
+    u, v = he
+
+    pu = np.asarray(primal_pos[u], dtype=float)
+    pv = np.asarray(primal_pos[v], dtype=float)
+
+    edge_unit = unit_vector(pv - pu)
+
+    left_normal = np.array([-edge_unit[1], edge_unit[0]], dtype=float)
+    right_normal = -left_normal
+
+    # For a CCW polygon, interior is on the left, so exterior is right.
+    # For a CW polygon, interior is on the right, so exterior is left.
+    if outer_orientation >= 0:
+        return right_normal
+    else:
+        return left_normal
+
+
 def _outer_face_size_score(embedding):
     faces = _embedding_faces(embedding)
     return -max(len(face) for face in faces)
@@ -1625,6 +1758,14 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     #    - outer face: placed outside the primal drawing
     # ------------------------------------------------------------
     outer_face_id = choose_outer_face_id(master_embedding)
+
+    outer_outline = build_outer_outline(
+        master_embedding,
+        outer_face_id,
+        primal_pos,
+        style,
+    )
+
     outer_square = make_outer_square(primal_pos, style)
 
     for face in master_embedding["faces"]:
@@ -1672,14 +1813,6 @@ def get_visual_data(master_embedding, primal_pos, style=None):
 
     node_xy[outer_face_id] = outer_square["centre"]
 
-    outer_ports = assign_outer_square_ports(
-        outer_square,
-        face_dual_order[outer_face_id],
-        master_embedding,
-        primal_pos,
-        node_xy,
-        outer_face_id,
-    )
     for edge_id, edge in master_embedding["edges"].items():
         u = edge["u"]
         v = edge["v"]
@@ -1716,37 +1849,26 @@ def get_visual_data(master_embedding, primal_pos, style=None):
             primal_edge = master_embedding["nodes"][border_id]["primal_edge"]
 
             if face_id == outer_face_id:
-                p_outer_port = np.array(outer_ports[edge_id], dtype=float)
+                he = edge["primal_halfedge"]
+                p_outer_port = np.array(
+                    outer_outline["halfedge_to_port"][he],
+                    dtype=float,
+                )
 
                 if face_at_start:
                     p0 = p_outer_port
-                    p_face = p0
-                    p_border = p3
+                    p3 = p_border
                 else:
+                    p0 = p_border
                     p3 = p_outer_port
-                    p_face = p3
-                    p_border = p0
 
-                outward = outer_dual_outward_normal(
-                    edge, master_embedding, primal_pos, node_xy, outer_face_id
+                p1, p2 = cubic_controls_for_primal(
+                    p0,
+                    p3,
+                    alpha1=style["primal_control_alpha1"],
+                    alpha2=style["primal_control_alpha2"],
                 )
 
-                c_face, c_border = cubic_controls_for_outer_dual(
-                    p_face,
-                    p_border,
-                    outward,
-                    primal_edge,
-                    primal_pos,
-                    idx=idx,
-                    n=n,
-                    launch_strength=style["outer_launch_strength"],
-                    arrival_strength=style["outer_arrival_strength"],
-                    tangent_strength=style["outer_tangent_strength"],
-                    curve_base=style["outer_curve_base"],
-                    distance_scale=style["outer_curve_distance_scale"],
-                    distance_power=style["outer_curve_distance_power"],
-                    angle_scale=style["outer_curve_angle_scale"],
-                )
             else:
                 c_face, c_border = cubic_controls_for_dual(
                     p_face,
@@ -1760,10 +1882,10 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                     tangent_strength=style["dual_tangent_strength"],
                 )
 
-            if face_at_start:
-                p1, p2 = c_face, c_border
-            else:
-                p1, p2 = c_border, c_face
+                if face_at_start:
+                    p1, p2 = c_face, c_border
+                else:
+                    p1, p2 = c_border, c_face
         else:
             p1, p2 = cubic_controls_for_primal(
                 p0,
@@ -1841,6 +1963,7 @@ def get_visual_data(master_embedding, primal_pos, style=None):
         "node_labels": node_labels,
         "face_labels": face_labels,
         "outer_square": outer_square,
+        "outer_outline": outer_outline,
     }
 
 
@@ -2004,7 +2127,64 @@ def draw_visual_data(visual_data, style=None):
             )
 
     # ------------------------------------------------------------
-    # 4. Final formatting
+    # 4. Draw outer outline
+    # ------------------------------------------------------------
+
+    outer_outline = visual_data.get("outer_outline")
+
+    if outer_outline is not None:
+        outline_points = outer_outline["points"]
+        pts = [np.asarray(p["xy"], dtype=float) for p in outline_points]
+
+        if len(pts) >= 2:
+            curve_strength = style["outer_outline_curve_strength"]
+
+            for i in range(len(pts)):
+                p0 = pts[i]
+                p3 = pts[(i + 1) % len(pts)]
+
+                p_prev = pts[i - 1]
+                p_next = pts[(i + 2) % len(pts)]
+
+                tangent0 = unit_vector(p3 - p_prev)
+                tangent1 = unit_vector(p_next - p0)
+
+                dist = np.linalg.norm(p3 - p0)
+
+                p1 = p0 + curve_strength * dist * tangent0
+                p2 = p3 - curve_strength * dist * tangent1
+
+                path = MplPath(
+                    [tuple(p0), tuple(p1), tuple(p2), tuple(p3)],
+                    [MplPath.MOVETO, MplPath.CURVE4, MplPath.CURVE4, MplPath.CURVE4],
+                )
+
+                patch = PathPatch(
+                    path,
+                    facecolor="none",
+                    edgecolor=style["dual_edge_color"],
+                    lw=style["edge_width"],
+                    alpha=style["edge_alpha"],
+                    capstyle=style["edge_capstyle"],
+                    joinstyle=style["edge_joinstyle"],
+                    zorder=2,
+                )
+                ax.add_patch(patch)
+
+        port_pts = [p["xy"] for p in outline_points if p["type"] == "port"]
+
+        if port_pts:
+            ax.scatter(
+                [p[0] for p in port_pts],
+                [p[1] for p in port_pts],
+                s=style["face_node_size"],
+                c=style["face_node_facecolor"],
+                edgecolors=to_rgba(style["dual_edge_color"], style["edge_alpha"]),
+                linewidths=node_linewidth,
+                zorder=style["node_zorder"],
+            )
+    # ------------------------------------------------------------
+    # 5. Final formatting
     # ------------------------------------------------------------
     ax.set_aspect(style["axis_aspect"])
 
@@ -2315,6 +2495,14 @@ VIS_STYLE = {
     "label_wrap_enabled": True,
     "label_wrap_width": 12,
     "label_linespacing": 0.9,
+    # ------------------------------------------------------------
+    # Outline style
+    # ------------------------------------------------------------
+    "outer_outline_edge_offset": 0.6,
+    "outer_outline_node_offset": 0.6,
+    "outer_outline_curve_strength": 0.35,
+    # CONTROL - REMOVE LATER
+    "draw_outer_outline_debug": True,
 }
 
 
@@ -2325,17 +2513,17 @@ VIS_STYLE = {
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
 # Run configuration
-PATH = "raw_data/20260423-Low Variance.xlsx"
-USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
+PATH = "raw_data/20260421-Test pentagon.xlsx"
+USE_TUTTE = False  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
 # Tutte will only work if there are no 'bridges' / danglers in the outer face
 # Otherwise outer face nodes get repeated and it breaks
-REFINE = False  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
+REFINE = True  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
 WEIGHTS = {
-    "node_spread": 0.6,  # Rewards spreading out nodes
+    "node_spread": 1,  # Rewards spreading out nodes
     "edge_uniformity": 0,  # Rewards edges of similar length
     "face_area": 0.0,  # Rewards faces having similar area
-    "angle_penalty": 0.0,  # Rewards angles that are nicely spread around their nodes
-    "outer_roundness": 1,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
+    "angle_penalty": 1,  # Rewards angles that are nicely spread around their nodes
+    "outer_roundness": 0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
     "outer_concavity": 100.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
 
