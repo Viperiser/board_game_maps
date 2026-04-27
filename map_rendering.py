@@ -6,9 +6,8 @@ from pathlib import Path
 import random
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import PathPatch
+from matplotlib.patches import PathPatch, Rectangle
 from matplotlib.path import Path as MplPath
-from matplotlib.patches import Rectangle
 from matplotlib.colors import to_rgba
 
 import matplotlib as mpl
@@ -432,18 +431,10 @@ def polygon_min_angle(points):
     return best
 
 
-def layout_score(G, pos, faces, weights=None, outer_face_nodes=None):
+def layout_score(G, pos, faces, weights, outer_face_nodes=None):
     """
     Higher is better.
     """
-    # if weights is None:
-    #     weights = {
-    #         "node_spread": 1.0,
-    #         "edge_uniformity": 0.35,
-    #         "face_area": 0.8,
-    #         "angle_penalty": 0.15,
-    #         "outer_roundness": 0.0,
-    #     }
 
     nodes = list(G.nodes())
     edges = list(G.edges())
@@ -698,7 +689,7 @@ def outer_dual_outward_normal(
 
 
 def assign_outer_square_ports(
-    outer_square, ordered_edge_ids, master_embedding, primal_pos, node_xy
+    outer_square, ordered_edge_ids, master_embedding, primal_pos, node_xy, outer_face_id
 ):
     """
     Assign one square-boundary attachment point per outer dual edge.
@@ -725,7 +716,6 @@ def assign_outer_square_ports(
             border_id = v
 
         p_border = np.array(node_xy[border_id], dtype=float)
-        outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
         outward = outer_dual_outward_normal(
             edge, master_embedding, primal_pos, node_xy, outer_face_id
         )
@@ -761,64 +751,6 @@ def assign_outer_square_ports(
         else:
             _, pt = min(candidates, key=lambda x: x[0])
             ports[edge_id] = pt
-
-        ##### DEBUG PRINT #############
-        if edge_id == "e122":  # or whatever bad edge you pick
-            he = edge["primal_halfedge"]
-            opp_he = (he[1], he[0])
-
-            face_he = master_embedding["halfedge_to_face"][he]
-            face_opp = master_embedding["halfedge_to_face"][opp_he]
-
-            p_border_dbg = p_border
-            p_he_face = (
-                np.array(node_xy.get(face_he, (None, None)), dtype=float)
-                if face_he in node_xy
-                else None
-            )
-            p_opp_face = (
-                np.array(node_xy.get(face_opp, (None, None)), dtype=float)
-                if face_opp in node_xy
-                else None
-            )
-
-            print("\n--- DEBUG EDGE ---")
-            print("edge_id:", edge_id)
-            print("primal_edge:", edge["primal_edge"])
-            print("primal_halfedge:", he)
-            print("halfedge_sign:", edge.get("halfedge_sign"))
-
-            print("face(he):", face_he)
-            print("face(opp_he):", face_opp)
-            print("outer_face_id:", outer_face_id)
-
-            print("border_id:", border_id)
-            print("p_border:", p_border_dbg)
-
-            if p_he_face is not None:
-                print("p_face_he:", p_he_face)
-            if p_opp_face is not None:
-                print("p_face_opp:", p_opp_face)
-
-            print("outward:", outward)
-
-            # Also show both candidate normals
-            a, b = edge["primal_edge"]
-            pa = np.array(primal_pos[a], dtype=float)
-            pb = np.array(primal_pos[b], dtype=float)
-            edge_unit = (pb - pa) / np.linalg.norm(pb - pa)
-            n1 = np.array([-edge_unit[1], edge_unit[0]])
-            n2 = -n1
-
-            print("n1:", n1)
-            print("n2:", n2)
-
-            if p_opp_face is not None:
-                v = p_border_dbg - p_opp_face
-                print("dot(v, n1):", np.dot(v, n1))
-                print("dot(v, n2):", np.dot(v, n2))
-
-            #### END OF DEBUG PRINT #############
 
     return ports
 
@@ -1012,13 +944,6 @@ def polygon_centroid(points):
     return (cx, cy)
 
 
-def _ordered_copy(G, node_order):
-    H = nx.Graph()
-    H.add_nodes_from(node_order)
-    H.add_edges_from(G.edges())
-    return H
-
-
 def _generate_orderings(G, n_trials, seed):
     rng = random.Random(seed)
 
@@ -1174,7 +1099,9 @@ def get_planar_embedding(
 
         score = score_fn(emb)
 
-        if best_emb is None or score < best_score:
+        if (
+            best_emb is None or score < best_score
+        ):  # Lower (more negative) is better for this score
             best_emb = emb
             best_score = score
 
@@ -1480,20 +1407,11 @@ def refine_primal_layout(
     pos : dict
         Refined positions.
     """
-    import random
 
     if fixed_nodes is None:
         fixed_nodes = set()
     else:
         fixed_nodes = set(fixed_nodes)
-
-    # if weights is None:
-    #     weights = {
-    #         "node_spread": 1.0,
-    #         "edge_uniformity": 0.35,
-    #         "face_area": 0.8,
-    #         "angle_penalty": 0.15,
-    #     }
 
     rng = random.Random(seed)
 
@@ -1612,12 +1530,6 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     style = {
         "border_t": 0.5,
         "face_centroid_shrink": 0.88,
-        "outer_face_offset": 0.35,
-        "outer_face_angle": 135,
-        "dual_control_alpha": 0.55,
-        "dual_control_beta": 0.18,
-        "dual_max_fan_offset": 1.0,
-        "primal_control_alpha": 0.5,
         "region_label_offset_y": 0.06,
         "show_node_labels": True,
         "show_face_labels": False,
@@ -1655,7 +1567,6 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     # ------------------------------------------------------------
     outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
     outer_square = make_outer_square(primal_pos, style)
-    node_xy[outer_face_id] = outer_square["centre"]
 
     for face in master_embedding["faces"]:
         face_id = face["id"]
@@ -1700,14 +1611,15 @@ def get_visual_data(master_embedding, primal_pos, style=None):
         ]
         face_dual_order[node_id] = dual_ids
 
-    outer_square = make_outer_square(primal_pos, style)
     node_xy[outer_face_id] = outer_square["centre"]
+
     outer_ports = assign_outer_square_ports(
         outer_square,
         face_dual_order[outer_face_id],
         master_embedding,
         primal_pos,
         node_xy,
+        outer_face_id,
     )
     for edge_id, edge in master_embedding["edges"].items():
         u = edge["u"]
@@ -1756,7 +1668,6 @@ def get_visual_data(master_embedding, primal_pos, style=None):
                     p_face = p3
                     p_border = p0
 
-                outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
                 outward = outer_dual_outward_normal(
                     edge, master_embedding, primal_pos, node_xy, outer_face_id
                 )
@@ -2148,7 +2059,6 @@ def main(filename, weights, refine=True, use_tutte=True):
     )
 
     visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
-    # print("Visual data:", visual_data)
 
     base_path = Path(filename)
     stem = base_path.stem
@@ -2348,15 +2258,12 @@ VIS_STYLE = {
 # VIS_STYLE above is the style dict for the visualisation - tweak as desired, but it should be mostly fine as is for different matrices
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
-PATH = "20260423-Low Variance.xlsx"
-
-
+# Run configuration
+PATH = "raw_data/20260416-Test square diagonal.xlsx"
 USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
 # Tutte will only work if there are no 'bridges' / danglers in the outer face
 # Otherwise outer face nodes get repeated and it breaks
-
 REFINE = False  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
-
 WEIGHTS = {
     "node_spread": 0.6,  # Rewards spreading out nodes
     "edge_uniformity": 0,  # Rewards edges of similar length
