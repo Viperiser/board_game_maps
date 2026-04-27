@@ -2750,17 +2750,17 @@ VIS_STYLE = {
 
 
 # Run configuration
-PATH = "raw_data/20260423-Low Variance.xlsx"
-USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
+PATH = "raw_data/20260421-Zone 1-Bank-Mon.xlsx"
+USE_TUTTE = False  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
 # Tutte will only work if there are no 'bridges' / danglers in the outer face
 # Otherwise outer face nodes get repeated and it breaks
-REFINE = False  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
+REFINE = True  # Whether to run the optional refinement pass after the initial layout. This can improve spacing and face quality, but is also quite slow, especially for larger graphs. If using REFINE=True, you may want to tweak the WEIGHTS below to get better results - the current values are just what worked well for the Hammer of the Scots graph.
 WEIGHTS = {
     "node_spread": 1,  # Rewards spreading out nodes
     "edge_uniformity": 0,  # Rewards edges of similar length
     "face_area": 0.0,  # Rewards faces having similar area
-    "angle_penalty": 0,  # Rewards angles that are nicely spread around their nodes
-    "outer_roundness": 0.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
+    "angle_penalty": 1,  # Rewards angles that are nicely spread around their nodes
+    "outer_roundness": 1.0,  # Rewards outer face nodes being placed in a more circular arrangement, rather than all bunched up on one side
     "outer_concavity": 100.0,  # Penalises outer face nodes being placed in a concave arrangement, which can lead to weird dual edges that loop around the outside of the drawing
 }
 
