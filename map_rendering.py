@@ -39,29 +39,22 @@ def _outer_face_size_score(embedding):
     return -max(len(face) for face in faces)
 
 
-def detect_outer_face_id(master_embedding, primal_pos):
+def choose_outer_face_id(master_embedding):
     """
-    Return the face labelled 'Outer' if present.
-    Otherwise fall back to largest polygon area.
+    Choose the outer face by longest boundary walk.
+
+    Bridges are intentionally double-counted because they appear twice
+    in the face boundary walk.
     """
-    for face in master_embedding["faces"]:
-        face_id = face["id"]
-        label = master_embedding["nodes"][face_id].get("label")
-        if label == "Outer":
-            return face_id
+    if not master_embedding["faces"]:
+        raise ValueError("master_embedding has no faces")
 
-    best_face_id = None
-    best_area = -1.0
+    outer_face = max(
+        master_embedding["faces"],
+        key=lambda face: len(face["half_edges"]),
+    )
 
-    for face in master_embedding["faces"]:
-        pts = [primal_pos[n] for n in face["boundary_nodes"]]
-        area = abs(polygon_signed_area(pts))
-
-        if area > best_area:
-            best_area = area
-            best_face_id = face["id"]
-
-    return best_face_id
+    return outer_face["id"]
 
 
 def cyclic_orders_match(expected, actual):
@@ -1565,7 +1558,7 @@ def get_visual_data(master_embedding, primal_pos, style=None):
     #    - bounded faces: shrunk polygon centroid
     #    - outer face: placed outside the primal drawing
     # ------------------------------------------------------------
-    outer_face_id = detect_outer_face_id(master_embedding, primal_pos)
+    outer_face_id = choose_outer_face_id(master_embedding)
     outer_square = make_outer_square(primal_pos, style)
 
     for face in master_embedding["faces"]:
@@ -1992,7 +1985,7 @@ def main(filename, weights, refine=True, use_tutte=True):
     for k in sorted(primal_pos_tmp, key=str):
         print(k, tuple(round(x, 6) for x in primal_pos_tmp[k]))
 
-    outer_face_id = detect_outer_face_id(master_embedding, primal_pos_tmp)
+    outer_face_id = choose_outer_face_id(master_embedding)
 
     face_lookup = {face["id"]: face for face in master_embedding["faces"]}
     outer_face_nodes = list(face_lookup[outer_face_id]["boundary_nodes"])
@@ -2055,7 +2048,7 @@ def main(filename, weights, refine=True, use_tutte=True):
 
     print(
         "OUTER FACE ID AFTER REFINEMENT:",
-        detect_outer_face_id(master_embedding, primal_pos),
+        choose_outer_face_id(master_embedding),
     )
 
     visual_data = get_visual_data(master_embedding, primal_pos, style=VIS_STYLE)
