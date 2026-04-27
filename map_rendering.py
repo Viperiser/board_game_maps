@@ -10,6 +10,8 @@ from matplotlib.patches import PathPatch, Rectangle
 from matplotlib.path import Path as MplPath
 from matplotlib.colors import to_rgba
 
+import textwrap
+
 import matplotlib as mpl
 
 mpl.rcParams["svg.fonttype"] = "path"
@@ -18,6 +20,23 @@ mpl.rcParams["pdf.fonttype"] = 42
 # ======================================================================
 # Helpers
 # ======================================================================
+
+
+def wrap_label(text, width):
+    """
+    Wrap label text without splitting words.
+    """
+    if width is None or width <= 0:
+        return text
+
+    return "\n".join(
+        textwrap.wrap(
+            str(text),
+            width=width,
+            break_long_words=False,
+            break_on_hyphens=False,
+        )
+    )
 
 
 def _embedding_faces(embedding):
@@ -1779,7 +1798,14 @@ def get_visual_data(master_embedding, primal_pos, style=None):
             x, y = node_xy[node_id]
             node_labels.append(
                 {
-                    "text": attrs.get("label", str(node_id)),
+                    "text": wrap_label(
+                        attrs.get("label", str(node_id)),
+                        (
+                            style["label_wrap_width"]
+                            if style["label_wrap_enabled"]
+                            else None
+                        ),
+                    ),
                     "xy": (x, y),
                     "node_id": node_id,
                     "type": "region",
@@ -1795,7 +1821,14 @@ def get_visual_data(master_embedding, primal_pos, style=None):
 
             face_labels.append(
                 {
-                    "text": attrs.get("label", str(node_id)),
+                    "text": wrap_label(
+                        attrs.get("label", str(node_id)),
+                        (
+                            style["label_wrap_width"]
+                            if style["label_wrap_enabled"]
+                            else None
+                        ),
+                    ),
                     "xy": node_xy[node_id],
                     "node_id": node_id,
                     "type": "face",
@@ -1901,21 +1934,21 @@ def draw_visual_data(visual_data, style=None):
         draw_nodes(
             node_groups["region"],
             style["region_node_facecolor"],
-            style["region_node_edgecolor"],
+            style["primal_edge_color"],
             style["region_node_size"],
         )
 
     draw_nodes(
         node_groups["border"],
         style["border_node_facecolor"],
-        style["border_node_edgecolor"],
+        style["border_node_color"],
         style["border_node_size"],
     )
 
     draw_nodes(
         node_groups["face"],
         style["face_node_facecolor"],
-        style["face_node_edgecolor"],
+        style["dual_edge_color"],
         style["face_node_size"],
     )
 
@@ -1945,6 +1978,7 @@ def draw_visual_data(visual_data, style=None):
                     edgecolor=style["label_bbox_edgecolor"],
                 ),
                 zorder=style["label_zorder"],
+                linespacing=style["label_linespacing"],
             )
 
     if style["show_face_labels"]:
@@ -1970,29 +2004,7 @@ def draw_visual_data(visual_data, style=None):
             )
 
     # ------------------------------------------------------------
-    # 4. Draw outer square if present
-    # ------------------------------------------------------------
-    outer_square = visual_data.get("outer_square")
-
-    if outer_square is not None:
-        left = outer_square["left"]
-        bottom = outer_square["bottom"]
-        side = outer_square["side"]
-
-        rect = Rectangle(
-            (left, bottom),
-            side,
-            side,
-            facecolor=style["outer_square_facecolor"],
-            edgecolor=style["outer_square_color"],
-            linewidth=style["outer_square_width"],
-            linestyle=style["outer_square_linestyle"],
-            zorder=style["outer_square_zorder"],
-        )
-        ax.add_patch(rect)
-
-    # ------------------------------------------------------------
-    # 5. Final formatting
+    # 4. Final formatting
     # ------------------------------------------------------------
     ax.set_aspect(style["axis_aspect"])
 
@@ -2113,7 +2125,7 @@ def main(filename, weights, refine=True, use_tutte=True):
     base_path = Path(filename)
     stem = base_path.stem
 
-    figures_dir = base_path.parent / "Figures"
+    figures_dir = Path("Figures")
     figures_dir.mkdir(exist_ok=True)
 
     figure_specs = [
@@ -2222,11 +2234,11 @@ VIS_STYLE = {
     "reference_node_count": 10,
     "visual_scale_min": 0.35,
     "visual_scale_max": 1.25,
-    "base_region_label_offset_y": 0.2,
-    "base_region_node_size": 300,
-    "base_border_node_size": 150,
-    "base_face_node_size": 300,
-    "base_font_size": 20,
+    "base_region_label_offset_y": 0.3,
+    "base_region_node_size": 250,
+    "base_border_node_size": 120,
+    "base_face_node_size": 250,
+    "base_font_size": 12,
     "base_edge_width": 2,
     # ------------------------------------------------------------
     # Geometry / construction parameters
@@ -2266,8 +2278,9 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     # Edge styling
     # ------------------------------------------------------------
-    "primal_edge_color": "#A45A6F",
-    "dual_edge_color": "#4A6FA4",
+    "primal_edge_color": "#1B9E77",
+    "dual_edge_color": "#D95F02",
+    "border_node_color": "#7570B3",
     "edge_width": None,
     "edge_alpha": 0.7,
     "edge_capstyle": "round",
@@ -2275,12 +2288,9 @@ VIS_STYLE = {
     # ------------------------------------------------------------
     # Node styling
     # ------------------------------------------------------------
-    "region_node_facecolor": "#E7C8CF",
-    "region_node_edgecolor": "#A45A6F",
+    "region_node_facecolor": "#CFECE4",
     "border_node_facecolor": "#D6D2CB",
-    "border_node_edgecolor": "#6B665E",
-    "face_node_facecolor": "#C9D6EA",
-    "face_node_edgecolor": "#4A6FA4",
+    "face_node_facecolor": "#F6D5BF",
     "region_node_size": None,
     "border_node_size": None,
     "face_node_size": None,
@@ -2296,20 +2306,15 @@ VIS_STYLE = {
     "label_alpha": 0.85,
     "face_label_color": "#aa0000",
     "label_ha": "center",
-    "label_va": "center_baseline",
+    "label_va": "bottom",
     "label_zorder": 4,
     "label_bbox_boxstyle": "round,pad=0.2",
     "label_bbox_facecolor": "#ffffff",
     "label_bbox_alpha": 0,
     "label_bbox_edgecolor": "none",
-    # ------------------------------------------------------------
-    # Outer square styling
-    # ------------------------------------------------------------
-    "outer_square_color": "#6A8BB8",
-    "outer_square_width": 2,
-    "outer_square_linestyle": "-",
-    "outer_square_facecolor": "none",
-    "outer_square_zorder": 2,
+    "label_wrap_enabled": True,
+    "label_wrap_width": 12,
+    "label_linespacing": 0.9,
 }
 
 
@@ -2320,7 +2325,7 @@ VIS_STYLE = {
 # Finally note 'SCALE_PARAM' above the dictionary - this affects font and node sizes and should be tweaked for more or fewer nodes
 
 # Run configuration
-PATH = "raw_data/20260426-Hammer of the Scots.xlsx"
+PATH = "raw_data/20260423-Low Variance.xlsx"
 USE_TUTTE = True  # Whether to use Tutte embedding for initial layout, or just the combinatorial embedding layout. Tutte is often better but can be very slow for larger graphs.
 # Tutte will only work if there are no 'bridges' / danglers in the outer face
 # Otherwise outer face nodes get repeated and it breaks
